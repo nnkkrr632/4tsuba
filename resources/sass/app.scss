@@ -1,0 +1,21 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+//Vuetifyと競合する？
+//@import '~bootstrap/scss/bootstrap';
+
+//Vuetify vuetify.jsの方で読み込んでるからこっち(ccss)はいらない？
+// @import "~vuetify/dist/vuetify.min.css";
+// @import "@mdi/font/css/materialdesignicons.css";
+// @import "material-design-icons-iconfont/dist/material-design-icons.css";
+
+//scssカラーパック
+$color-pack: false;
+@import "~vuetify/src/styles/main.sass";
+
+//vue-image-lightbox
+// @import "../../../node_modules/vue-image-lightbox/dist/vue-image-lightbox.min.css";
