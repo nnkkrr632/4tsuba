@@ -81,6 +81,7 @@ export default {
                     .then(res => {
                         this.posts = res.data;
                         this.highlightSearchWord();
+                        this.getImagesForLightBox();
                     });
             }   
         },
@@ -124,7 +125,6 @@ export default {
     mounted() {
         this.getMyInfo();
         this.getSearchedPosts();
-        this.getImagesForLightBox();
     },
 };
 </script>
