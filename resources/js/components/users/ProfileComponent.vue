@@ -211,7 +211,6 @@ export default {
                 })
                 .then(res => {
                     this.user_posts = res.data;
-                    this.getPostedImagesForLightBox();
                 });
         },
         getUserLikePosts() {
@@ -225,12 +224,13 @@ export default {
                 })
                 .then(res => {
                     this.user_like_posts = res.data;
-                    this.getLikedImagesForLightBox();
                 });
         },
         updatePosts(emitted_post_id) {
           this.getUserLikePosts();
           this.getUserPosts();
+          this.getPostedImagesForLightBox();
+          this.getLikedImagesForLightBox();
         },
         switchMute() {
             console.log('this is switchMute');
@@ -321,6 +321,8 @@ export default {
         this.getUserInfo();
         this.getUserPosts();
         this.getUserLikePosts();
+        this.getPostedImagesForLightBox();
+        this.getLikedImagesForLightBox();
     },
     watch: {
         $route(to,from) {

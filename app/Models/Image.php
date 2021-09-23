@@ -53,26 +53,6 @@ class Image extends Model
             )->where('images.thread_id', $thread_id)->orderBy('posts.displayed_post_id')->get();
         return $images;
     }
-    //返信
-    public function returnImagesForTheResponses($thread_id, $displayed_post_id)
-    {
-        $images = DB::table('images')->leftJoin('posts', 'images.post_id', '=', 'posts.id')
-            ->leftJoin('users', 'posts.user_id', '=', 'users.id')
-            ->select(
-                'posts.displayed_post_id',
-                'images.post_id',
-                DB::raw('CONCAT("/storage/images/", images.image_name) as thumb'),
-                DB::raw('CONCAT("/storage/images/", images.image_name) as src'),
-                DB::raw('CONCAT("【レス番:", posts.displayed_post_id, "】【ユーザー:", users.name, "】「", posts.body, "」") as caption'),
-            )->where('images.thread_id', $thread_id)->where(function ($query) use ($thread_id, $displayed_post_id) {
-                $query->orWhereIn('posts.displayed_post_id', function ($query) use ($thread_id, $displayed_post_id) {
-                    $query->select('origin_d_post_id')->from('responses')->where('thread_id', $thread_id)->where('dest_d_post_id', $displayed_post_id);
-                })->orWhereIn('posts.displayed_post_id', function ($query) use ($thread_id, $displayed_post_id) {
-                    $query->select('dest_d_post_id')->from('responses')->where('thread_id', $thread_id)->where('dest_d_post_id', $displayed_post_id);
-                });
-            })->orderBy('posts.id')->get();
-        return $images;
-    }
     //ユーザープロフィール(書込)
     public function returnImagesTheUserPosted($user_id)
     {
