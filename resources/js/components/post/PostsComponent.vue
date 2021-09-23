@@ -22,10 +22,10 @@
                 v-bind:post="post"
                 v-bind:index="index"
                 v-bind:my_info="my_info"
-                @receiveUpdate="updateEntry"
+                @re_get_mainly_posts="updateEntry"
                 @receiveForResponses="getResponses"
                 @receiveForAnchor="transferAnchor"
-                @receiveForLightBox="showImages"
+                @igniteLightBox="showImages"
             >
             </post-object-component>
         </div>

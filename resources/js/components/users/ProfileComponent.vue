@@ -1,6 +1,21 @@
 <template>
     <div>
         <headline-component v-bind:headline="headline"></headline-component>
+        <!-- Light Box -->
+        <light-box
+            v-if="posted_media.length > 0"
+            ref="lightbox_for_post"
+            :media="posted_media"
+            :show-light-box="false"
+            :show-caption="true"
+        ></light-box>
+        <light-box
+            v-if="liked_media.length > 0"
+            ref="lightbox_for_like"
+            :media="liked_media"
+            :show-light-box="false"
+            :show-caption="true"
+        ></light-box>
 
         <v-card flat class="ml-4">
             <v-toolbar color="green lighten-5" flat>
@@ -10,20 +25,18 @@
                         style="object-fit: cover;"
                     />
                 </v-list-item-avatar>
-                <v-toolbar-title class="green--text">{{ user_info.name }}</v-toolbar-title>
+                <v-toolbar-title class="green--text">{{
+                    user_info.name
+                }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <!-- 自分のプロフィールはプロフィール編集ボタン -->
-                <v-btn v-if="my_info.id == user_id"
-                        class="white--text"
-                        color="green lighten-2"
-                        depressed
-                        to=/setting/account/profile
-                >
-                        表示プロフィールを変更
+                <v-btn v-if="my_info.id == user_id" class="white--text"
+                color="green lighten-2" depressed to=/setting/account/profile >
+                表示プロフィールを変更
                 </v-btn>
                 <!-- 他人のプロフィールはミュートボタン -->
                 <template v-else>
-                    <!-- ミュートしていない場合、ミュートボタン -->                    
+                    <!-- ミュートしていない場合、ミュートボタン -->
                     <v-tooltip v-if="!user_info.is_login_user_mute" bottom>
                         <template v-slot:activator="{ on }">
                             <span v-on="on"
@@ -37,7 +50,7 @@
                         </template>
                         <span>ミュート</span>
                     </v-tooltip>
-                    <!-- ミュートしている場合、ミュート解除ボタン -->                    
+                    <!-- ミュートしている場合、ミュート解除ボタン -->
                     <v-tooltip v-else bottom>
                         <template v-slot:activator="{ on }">
                             <span v-on="on"
@@ -63,44 +76,32 @@
                     >
                         <v-tabs-slider></v-tabs-slider>
                         <!-- @clickにtab.methodのようにしようとしたいができない -->
-                        <v-tab :to="tabs[0].link" @click="updatePosts">
+                        <v-tab :to="tabs[0].link" @click="getUserPosts">
                             {{ tabs[0].name }}
                             <v-icon>{{ tabs[0].icon }}</v-icon>
                         </v-tab>
-                        <v-tab :to="tabs[1].link" @click="updatePosts">
+                        <v-tab :to="tabs[1].link" @click="getUserLikePosts">
                             {{ tabs[1].name }}
                             <v-icon>{{ tabs[1].icon }}</v-icon>
                         </v-tab>
                     </v-tabs>
                 </template>
             </v-toolbar>
-            <!-- Light Box -->
-            <light-box v-if="posted_media.length > 0"
-                ref="lightbox_for_post"
-                :media="posted_media"
-                :show-light-box="false"
-                :show-caption="true"
-            ></light-box>
-            <light-box v-if="liked_media.length > 0"
-                ref="lightbox_for_like"
-                :media="liked_media"
-                :show-light-box="false"
-                :show-caption="true"
-            ></light-box>
-
             <!-- タブ中身s -->
             <v-tabs-items v-model="tab">
                 <!-- タブ中身 書込 -->
                 <v-tab-item value="posts">
-                <div class="my-2 green--text text--lighten-1">{{user_info.posts_count}}件の書込</div>
-                  
+                    <div class="my-2 green--text text--lighten-1">
+                        {{ user_info.posts_count }}件の書込
+                    </div>
+
                     <div v-for="(post, index) in user_posts" :key="post.id">
                         <post-object-component
                             v-bind:post="post"
                             v-bind:index="index"
                             v-bind:my_info="my_info"
                             v-bind:need_thread="true"
-                            @receiveForLightBox="showImagesForPost"
+                            @igniteLightBox="showPostedImages"
                             ref="child"
                         >
                         </post-object-component>
@@ -109,7 +110,9 @@
 
                 <!-- タブ中身 いいね -->
                 <v-tab-item value="likes">
-                <div class="my-2 green--text text--lighten-1">{{user_info.likes_count}}件のいいね</div>                
+                    <div class="my-2 green--text text--lighten-1">
+                        {{ user_info.likes_count }}件のいいね
+                    </div>
                     <div
                         v-for="(post, index) in user_like_posts"
                         :key="post.id"
@@ -119,8 +122,8 @@
                             v-bind:index="index"
                             v-bind:my_info="my_info"
                             v-bind:need_thread="true"
-                            @receiveTrueOrFalse="callUpdateTrueOrFalse"
-                            @receiveForLightBox="showImagesForLike"
+                            @re_get_posts_at_my_profile_like="getUserLikePosts"
+                            @igniteLightBox="showLikedImages"
                         >
                         </post-object-component>
                     </div>
@@ -140,7 +143,7 @@
 <script>
 import HeadlineComponent from "../common/HeadlineComponent.vue";
 import PostObjectComponent from "../post/PostObjectComponent.vue";
-import LightBox from 'vue-image-lightbox';
+import LightBox from "vue-image-lightbox";
 
 export default {
     data() {
@@ -165,18 +168,13 @@ export default {
                     icon: "mdi-heart",
                     link: "likes"
                 },
-                {
-                    name: "ブックマークスレッド",
-                    icon: "mdi-star",
-                    link: "threads"
-                }
             ]
         };
     },
     components: {
         HeadlineComponent,
         PostObjectComponent,
-        LightBox,
+        LightBox
     },
     methods: {
         getMyInfo() {
@@ -187,18 +185,17 @@ export default {
         },
         getUserInfo() {
             console.log("this is getUserInfo");
-            console.log([this.user_id]);
-            axios.get("/api/users/", {
-                params: {
-                    user_id_list: [this.user_id]
-                }
-            }).then(res => {
-                this.user_info = res.data[0];
-            });
-        },
-        updateUserId() {
-            console.log('this is updateUserId');
             this.user_id = this.$route.params.user_id;
+            console.log('this page user is user_id '+ this.user_id);
+            axios
+                .get("/api/users/", {
+                    params: {
+                        user_id_list: [this.user_id]
+                    }
+                })
+                .then(res => {
+                    this.user_info = res.data[0];
+                });
         },
         getUserPosts() {
             console.log("this is getUserPosts");
@@ -228,72 +225,51 @@ export default {
                     this.getLikedImagesForLightBox();
                 });
         },
-        updatePosts(emitted_post_id) {
-          this.getUserLikePosts();
-          this.getUserPosts();
-        },
         switchMute() {
-            console.log('this is switchMute');
+            console.log("this is switchMute");
 
             //ミュートする場合
-            if(!this.user_info.is_login_user_mute) {
-                if(confirm("このユーザーをミュートしますか？")) {
-                this.user_info.is_login_user_mute = 1;
-                axios
-                    .put("/api/mute_users", {
-                        user_id: this.user_id
-                    })
-                    .then(response => {
-                        console.log(response);
-                        console.log("ユーザーミュート登録完了");
-                        this.getUserPosts();
-                    })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    });
-
-                }
-            } 
-            //ミュート解除する場合
-            else {
-                if(confirm("ユーザーのミュートを解除しますか？")) {
-                this.user_info.is_login_user_mute = 0;
-                console.log(this.user_id);
-                axios
-                    .delete("/api/mute_users", {
-                        data: {
-                        user_id: this.user_id
-                        }
-
-                    })
-                    .then(response => {
-                        console.log(response);
-                        console.log("ユーザーミュート解除完了");
-                        this.getUserPosts();
-                    })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    });
-
+            if (!this.user_info.is_login_user_mute) {
+                if (confirm("このユーザーをミュートしますか？")) {
+                    this.user_info.is_login_user_mute = 1;
+                    axios
+                        .put("/api/mute_users", {
+                            user_id: this.user_id
+                        })
+                        .then(response => {
+                            console.log(response);
+                            console.log("ユーザーミュート登録完了");
+                            this.getUserPosts();
+                        })
+                        .catch(error => {
+                            console.log(error.response.data);
+                        });
                 }
             }
-            
-        },
-        //自分のプロフィールだった場合、「いいね」側でのハートマークの変更を「書込」側のハートマークへ反映
-        callUpdateTrueOrFalse(emitted_post_id) {
-            if(this.my_info.id == this.user_id) {
-                console.log('this is callUpdateTrueOrFalse');
-                for(let i=0; i<this.$refs.child.length; i++) {
-                    if(this.$refs.child[i].post.id == emitted_post_id) {
-                        console.log('identified,' + this.$refs.child[i].post.id);
-                        this.$refs.child[i].updateTrueOrFalse();
-                    }
+            //ミュート解除する場合
+            else {
+                if (confirm("ユーザーのミュートを解除しますか？")) {
+                    this.user_info.is_login_user_mute = 0;
+                    console.log(this.user_id);
+                    axios
+                        .delete("/api/mute_users", {
+                            data: {
+                                user_id: this.user_id
+                            }
+                        })
+                        .then(response => {
+                            console.log(response);
+                            console.log("ユーザーミュート解除完了");
+                            this.getUserPosts();
+                        })
+                        .catch(error => {
+                            console.log(error.response.data);
+                        });
                 }
-                this.updatePosts();
             }
         },
         getPostedImagesForLightBox() {
-            console.log('this is getPostedImagesForLightBox');
+            console.log("this is getPostedImagesForLightBox");
             axios
                 .get("/api/images/users/" + this.user_id + "/post")
                 .then(res => {
@@ -301,20 +277,19 @@ export default {
                 });
         },
         getLikedImagesForLightBox() {
-            console.log('this is getLikedImagesForLightBox');
+            console.log("this is getLikedImagesForLightBox");
             axios
                 .get("/api/images/users/" + this.user_id + "/like")
                 .then(res => {
                     this.liked_media = res.data;
                 });
         },
-        showImagesForPost(emitted_lightbox_index) {
+        showPostedImages(emitted_lightbox_index) {
             this.$refs.lightbox_for_post.showImage(emitted_lightbox_index);
         },
-        showImagesForLike(emitted_lightbox_index) {
+        showLikedImages(emitted_lightbox_index) {
             this.$refs.lightbox_for_like.showImage(emitted_lightbox_index);
-        }
-
+        },
     },
     mounted() {
         this.getMyInfo();
@@ -323,8 +298,9 @@ export default {
         this.getUserLikePosts();
     },
     watch: {
-        $route(to,from) {
-            this.updateUserId();
+        $route(to, from) {
+            //ユーザープロフィールページから自分のユーザープロフィールに移動したときにコンポーネントが同じだから
+            //更新されない。URLのユーザーIDが変わるのでウォッチして更新する。直接likeに飛ぶリンクはないため、getUserLikedPost();は不要
             this.getUserInfo();
             this.getUserPosts();
         }

@@ -22,7 +22,7 @@
                 v-bind:my_info="my_info"
                 v-bind:need_thread="true"
                 v-bind:search="true"
-                @receiveForLightBox="showImages"
+                @igniteLightBox="showImages"
             >
             </post-object-component>
         </div>
