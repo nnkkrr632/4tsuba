@@ -101,6 +101,7 @@ export default {
                 })
                 .then(res => {
                     this.posts = res.data;
+                    this.getThreadImagesForLightBox();
                 });
         },
         getResponses(emitted_displayed_post_id) {
@@ -114,8 +115,8 @@ export default {
                 })
                 .then(res => {
                     this.posts = res.data;
+                    this.getResponseImagesForLightBox(emitted_displayed_post_id);
                 });
-            
         },
         transferAnchor(emitted_displayed_post_id) {
             console.log("this is transferAnchor");
@@ -144,7 +145,6 @@ export default {
         updateEntry() {
             console.log('this is updateEntry');
             this.getPosts();
-            this.getImagesForLightBox();
             this.getThread();
             this.scrollToEnd();
         },
@@ -153,10 +153,18 @@ export default {
             const el = this.$refs.bottom;
             el.scrollIntoView({behavior: 'smooth'});
         },
-        getImagesForLightBox() {
-            console.log('this is getImagesForLightBox');
+        getThreadImagesForLightBox() {
+            console.log('this is getThreadImagesForLightBox');
             axios
                 .get("/api/images/threads/" + this.thread_id)
+                .then(res => {
+                    this.media = res.data;
+                });
+        },
+        getResponseImagesForLightBox(displayed_post_id) {
+            console.log('this is getResponseImagesForLightBox');
+            axios
+                .get("/api/images/threads/" + this.thread_id + '/responses/' + displayed_post_id)
                 .then(res => {
                     this.media = res.data;
                 });
@@ -175,7 +183,6 @@ export default {
         this.getMyInfo();
         this.getThread();
         this.getPosts();
-        this.getImagesForLightBox();
     },
 };
 </script>

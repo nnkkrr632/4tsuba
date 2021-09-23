@@ -110,6 +110,7 @@ Route::get('/exists/threads/{thread_id}/responses/{displayed_post_id}', [Respons
 Route::get('/images/threads', [ImageController::class, 'returnThreadImages']);
 //lightbox
 Route::get('/images/threads/{thread_id}', [ImageController::class, 'returnImagesForTheThread']);
+Route::get('/images/threads/{thread_id}/responses/{displayed_post_id}', [ImageController::class, 'returnImagesForTheResponses']);
 Route::get('/images/users/{user_id}/post', [ImageController::class, 'returnImagesTheUserPosted']);
 Route::get('/images/users/{user_id}/like', [ImageController::class, 'returnImagesTheUserLiked']);
 Route::get('/images/search', [ImageController::class, 'returnImagesForTheSearch']);
