@@ -54,6 +54,11 @@ class ImageController extends Controller
         $image = new Image();
         return $image->returnImagesForTheThread($thread_id);
     }
+    public function returnImagesForTheResponses($thread_id, $displayed_post_id)
+    {
+        $image = new Image();
+        return $image->returnImagesForTheResponses($thread_id, $displayed_post_id);
+    }
     public function returnImagesTheUserPosted($user_id)
     {
         if (true) {
