@@ -238,8 +238,16 @@ export default {
                         })
                         .then(response => {
                             console.log(response);
-                            console.log("ユーザーミュート登録完了");
-                            this.getUserPosts();
+                            if(response.data == 'is_already_stored') {
+                                alert('既にミュート済みのユーザーです。')
+                            }
+                            else if(response.data == 'not_mute_me') {
+                                alert('自分をミュートすることはできません。');
+                                this.user_info.is_login_user_mute = 0;
+                            }
+                            else {
+                                this.getUserPosts();
+                            }
                         })
                         .catch(error => {
                             console.log(error.response.data);

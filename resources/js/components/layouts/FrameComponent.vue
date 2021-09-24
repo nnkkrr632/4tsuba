@@ -1,9 +1,9 @@
 <template>
     <v-app>
         <!-- サイドドロワー -->
-        <drawer-component></drawer-component>
+        <drawer-component v-bind:my_info="my_info"></drawer-component>
         <!-- ヘッダー -->
-        <header-component></header-component>
+        <header-component v-bind:my_info="my_info"></header-component>
 
         <!-- コンテンツ表示位置 -->
         <v-main>
@@ -22,6 +22,23 @@ import HeaderComponent from "./header/HeaderComponent.vue";
 import DrawerComponent from "./drawer/DrawerComponent.vue";
 
 export default {
+    data() {
+        return {
+            my_info: {},
+        }
+    },
+    methods: {
+        getMyInfo() {
+            console.log("this is getMyInfo");
+            axios.get("/api/users/me/info").then(res => {
+                if(!res.data == false)
+                this.my_info = res.data;
+            });
+        },
+    },
+    mounted() {
+        this.getMyInfo();
+    },
     components: {
         ConfirmLoginComponent,
         HeaderComponent,

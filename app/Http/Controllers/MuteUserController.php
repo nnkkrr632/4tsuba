@@ -17,15 +17,17 @@ class MuteUserController extends Controller
 
     public function store(Request $request)
     {
-        //既に登録済みか否かをチェック
-        $is_already_stored = MuteUser::where('muting_user_id', Auth::id())->where('user_id', $request->user_id)->count();
-        if (!$is_already_stored) {
+        $mute_user = new MuteUser();
+
+        if ($mute_user->check_already_stored($request->user_id)) {
+            return 'is_already_stored';
+        } else if ($mute_user->check_mute_me($request->user_id)) {
+            return "not_mute_me";
+        } else {
             MuteUser::create([
                 'muting_user_id' => Auth::id(),
                 'user_id' => $request->user_id,
             ]);
-        } else {
-            return "is_already_stored";
         }
     }
 

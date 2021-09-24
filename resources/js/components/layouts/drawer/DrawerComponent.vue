@@ -1,5 +1,6 @@
 <template>
     <div>
+    <template v-if="Object.keys(my_info).length">
         <v-navigation-drawer
             app
             nav
@@ -10,7 +11,7 @@
         >
             <v-container>
                 <!-- アバター部分 -->
-                <template v-if="my_info">
+                <template>
                     <v-list-item color="green lighten-2" :to="'/users/' + my_info['id'] + '/posts'">
                             <v-list-item-avatar size="50" tile>
                                 <img
@@ -88,14 +89,30 @@
                 </v-list>
             </v-container>
         </v-navigation-drawer>
+    </template>
+    <template v-else class="red">
+        <v-navigation-drawer
+         width="60"
+         permanent
+        app
+        nav
+        clipped
+        >
+        </v-navigation-drawer>
+    </template>
     </div>
 </template>
 
 <script>
 export default {
+    props: {
+        my_info: {
+            type: Object,
+            default: () => {},
+        },
+    },
     data() {
         return {
-            my_info: null,
             mini: true,
             nav_lists: [
                 {
@@ -135,12 +152,6 @@ export default {
         };
     },
     methods: {
-        getMyInfo() {
-            console.log("this is getMyInfo");
-            axios.get("/api/users/me/info").then(res => {
-                this.my_info = res.data;
-            });
-        },
         handleResize: function() {
             if (window.innerWidth <= 960) {
                 this.mini = true;
@@ -218,7 +229,6 @@ export default {
     },
 
     mounted() {
-        this.getMyInfo();
         this.switchNavLists();
     },
 };

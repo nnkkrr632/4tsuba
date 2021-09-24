@@ -113,7 +113,11 @@ const router = new VueRouter({
             path: '/threads/:thread_id',
             name: 'thread.show',
             component: PostsComponent,
-            props: true,
+            //propsの型をNumberで指定
+            props: (to) => {
+               const thread_id = Number.parseInt(to.params.thread_id, 10);
+               return { thread_id };
+             },
             //ページ遷移前に存在チェックしてエラーハンドリング
             beforeEnter: (to, from, next) => {
                axios.get("/api/exists/threads/" + to.params.thread_id).then((res) => {
@@ -212,6 +216,14 @@ const router = new VueRouter({
             name: 'setting.mute_users',
             component: MuteUsersComponent,
          },
+         //github
+         {
+            path: '/github',
+            beforeEnter() {
+               let github = 'https://github.com/nnkkrr632/4tsuba';
+               window.open(github, '_blank');
+            }
+         },
          //not found
          {
             path: '*',
@@ -225,6 +237,7 @@ const router = new VueRouter({
 function isLoggedIn() {
    return localStorage.getItem("auth");
 }
+
 
 router.beforeEach((to, from, next) => {
    //forGuestがついてないURLへのアクセス

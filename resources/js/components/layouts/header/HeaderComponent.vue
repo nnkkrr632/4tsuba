@@ -1,12 +1,13 @@
 <template>
     <div>
-        <v-app-bar  color="white" app flat outlined clipped-left height="80" class="green--text" >
+        <v-app-bar  color="white" app flat outlined clipped-left height="80"  v-bind:max-width="max_width" class="green--text" >
             <v-toolbar-title>
                 <span class="d-none d-sm-inline">よつば</span>
                 <v-icon class="d-sm-none  mr-3 mb-2" color="green lighten-2">mdi-clover</v-icon>
             </v-toolbar-title>
             <v-spacer class="d-none d-sm-inline"></v-spacer>
-            <!-- 検索バー PC用 -->
+            <!-- 検索バー ログイン時のみ表示 -->
+            <template v-if="Object.keys(my_info).length">
                 <v-text-field
                     class="mt-5"
                     dense
@@ -31,11 +32,13 @@
                         <v-icon>mdi-magnify</v-icon>
                     </v-btn>
                 </router-link>
+            </template>
+            <!-- 未ログイン時のみ表示 -->
             <v-toolbar-items >
-                <v-btn text to="/login" class="grey--text">
-                <v-icon>mdi-login</v-icon>
-                <span class="d-none d-sm-inline">ログイン</span>
-            </v-btn>
+                <v-btn v-if="!Object.keys(my_info).length" text to="/login" class="grey--text">
+                    <v-icon>mdi-login</v-icon>
+                    <span class="d-none d-sm-inline">ログイン</span>
+                </v-btn>
                 <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn v-on="on" text class="grey--text">
@@ -67,29 +70,53 @@
 
 <script>
 export default {
+    props: {
+        my_info: {
+            type: Object,
+            default: () => {},
+        },
+    },
     data() {
         return {
             search_string: null,
+            max_width: 1085,
             others: [
                 {
                     name: "よつばとは？",
-                    icon: "mdi-vuetify",
+                    icon: "mdi-clover",
                     link: "/introduction"
                 },
                 {
                     name: "ユーザー登録",
-                    icon: "mdiaccount-plus",
+                    icon: "mdi-account-plus",
                     link: "/register"
                 },
                 {
                     name: "作者Github",
                     icon: "mdi-github-face",
-                    link: "/guthub-issue-board"
+                    link: "/github"
                 },
             ],
         };
     },
     methods: {
+        narrowMaxWidth() {
+            if(Object.keys(this.my_info).length) {
+                console.log('logined');
+                this.max_width = 1085;
+            } else {
+                console.log('not logined');
+                this.max_width = 880;
+            }
+        }
     },
+    mounted() {
+        this.narrowMaxWidth();
+    },
+    watch: {
+        my_info: function() {
+            this.narrowMaxWidth();
+        }
+    }
 };
 </script>

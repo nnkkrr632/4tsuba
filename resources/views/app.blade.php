@@ -6,7 +6,7 @@
      <meta name="viewport" content="width=device-width, initial-scale=1">
 
      <!-- CSRF Token -->
-     <meta name="csrf-token" content="{{ csrf_token() }}">
+     <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
 
      <title>{{ config('app.name', 'Vue Laravel SPA') }}</title>
 
@@ -16,6 +16,9 @@
      <!-- Fonts -->
      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+     <script type="text/javascript">
+         window.csrf_token = "{{ csrf_token() }}"
+     </script>
  </head>
 
  <body>
