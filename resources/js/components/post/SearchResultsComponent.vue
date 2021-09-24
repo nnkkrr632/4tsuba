@@ -23,6 +23,7 @@
                 v-bind:need_thread="true"
                 v-bind:search="true"
                 @igniteLightBox="showImages"
+                @re_get_mainly_posts="getSearchedPosts"                
             >
             </post-object-component>
         </div>

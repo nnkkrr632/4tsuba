@@ -425,6 +425,10 @@ export default {
                 })
                 .then(response => {
                     console.log(response);
+                    if(response.data == 'is_already_stored') {
+                        alert('既にいいね済みです。');
+                        this.post.likes_count--;
+                    }
                 })
                 .catch(error => {
                     console.log(error.response.data);

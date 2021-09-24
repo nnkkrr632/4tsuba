@@ -16,15 +16,20 @@ class LikeController extends Controller
     {
         //ポストが存在する(既に削除済みじゃない)ときのみいいねできる
         $post = new Post();
+        $like = new Like();
         if ($post->find($request->post_id)) {
-            Like::create([
-                'user_id' => Auth::id(),
-                'post_id' => $request->post_id,
-            ]);
+            if ($like->check_already_stored($request->post_id)) {
+                return 'is_already_stored';
+            } else {
+                Like::create([
+                    'user_id' => Auth::id(),
+                    'post_id' => $request->post_id,
+                ]);
 
-            //threadsテーブルのlike_countインクリメント
-            $thread = new Thread();
-            $thread->find($request->thread_id)->increment('like_count');
+                //threadsテーブルのlike_countインクリメント
+                $thread = new Thread();
+                $thread->find($request->thread_id)->increment('like_count');
+            }
         }
     }
 

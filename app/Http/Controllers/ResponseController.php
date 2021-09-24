@@ -33,11 +33,17 @@ class ResponseController extends Controller
     //VueRouter遷移前スレッド存在確認
     public function exists($thread_id, $displayed_post_id)
     {
-        //文字列をURLに入力されたら無理やり0に変換
-        $converted_thread_id = (int)$thread_id;
-        $converted_displayed_post_id = (int)$displayed_post_id;
+        //文字列をURLに入力されたら404送り
+        if (preg_match('/\D/', $thread_id)) {
+            return 0;
+        } else if (preg_match('/\D/', $displayed_post_id)) {
+            return 0;
+        } else {
+            $converted_thread_id = (int)$thread_id;
+            $converted_displayed_post_id = (int)$displayed_post_id;
 
-        return Response::where('thread_id', $converted_thread_id)
-            ->where('dest_d_post_id', $converted_displayed_post_id)->count();
+            return Response::where('thread_id', $converted_thread_id)
+                ->where('dest_d_post_id', $converted_displayed_post_id)->count();
+        }
     }
 }
