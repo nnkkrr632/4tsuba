@@ -226,7 +226,6 @@ function isLoggedIn() {
    return localStorage.getItem("auth");
 }
 
-
 router.beforeEach((to, from, next) => {
    //forGuestがついてないURLへのアクセス
    if (to.matched.some(record => !(record.meta.forGuest))) {
