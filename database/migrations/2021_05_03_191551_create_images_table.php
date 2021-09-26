@@ -26,6 +26,8 @@ class CreateImagesTable extends Migration
                 ->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->string('image_name', 100)->comment('画像名')->default('example.jqg');
             $table->unsignedInteger('image_size')->comment('画像サイズ')->default(0);
+            //複合uniqueキー
+            $table->unique(['thread_id', 'post_id']);
         });
     }
 

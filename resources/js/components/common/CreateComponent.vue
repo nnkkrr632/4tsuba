@@ -88,7 +88,7 @@ export default {
             //入力項目
             input: {title: null, body: null, image: null},
             //バリデーション関連
-            limit: { title: 10, body: 20 },
+            limit: { title: 10, body: 200 },
             valid: null,
             rules: {
                 required: value => !!value || "必ず入力してください",
@@ -113,7 +113,9 @@ export default {
 
             const form_data = new FormData();
             form_data.append("body", this.input.body);
-            form_data.append("image", this.input.image);
+            if(this.input.image) {
+                form_data.append("image", this.input.image);
+            }
 
             if(this.thread_or_post === 'thread') {
                 form_data.append("title", this.input.title);

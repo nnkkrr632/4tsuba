@@ -47,7 +47,7 @@ export default {
     //このpropsは親コンポーネントではなく、router-linkのparam
     props: {
         thread_id: {
-            type: String,
+            type: Number,
             default: 1,
             required: true
         },
@@ -139,7 +139,10 @@ export default {
                     this.updateEntry();
                 })
                 .catch(error => {
-                    console.log(error.response.data);
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        alert(error.response.data.message);
+                    }
                 });
         },
         updateEntry() {

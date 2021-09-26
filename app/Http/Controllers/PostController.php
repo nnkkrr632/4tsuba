@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Models\Thread;
 use App\Models\Response;
 use App\Models\Like;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
 use App\Models\Gatekeeper;
-use App\Models\User;
 //authを使用する
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
 use Illuminate\Support\Facades\Gate;
+//フォームリクエスト
+use App\Http\Requests\StorePostRequest;
+
 
 class PostController extends Controller
 {
@@ -116,34 +117,29 @@ class PostController extends Controller
 
 
     //作成 store
-    public function store(Request $request)
+    public function store(StorePostRequest $store_post_request)
     {
-        //書込が本文なし(＝画像のみ)のとき
-        if (!$request->body) {
-            $request->body = 'コメントなし';
-        }
-
         //リクエストにポストidを追加
         $temp_post = new Post();
-        $request->merge([
-            'displayed_post_id' => $temp_post->returnMaxDisplayedPostId($request->thread_id) + 1,
+        $store_post_request->merge([
+            'displayed_post_id' => $temp_post->returnMaxDisplayedPostId($store_post_request->thread_id) + 1,
         ]);
 
         //返信関係登録
-        if (strpos($request->body, '>>') !== false) {
+        if (strpos($store_post_request->body, '>>') !== false) {
             $response_controller = new ResponseController();
-            $response_controller->store($request);
+            $response_controller->store($store_post_request);
         }
 
         //NGワード置換
         $gate_keeper = new GateKeeper();
-        $checked_body = $gate_keeper->convertNgWordsIfExist($request->body);
+        //$checked_body = $gate_keeper->convertNgWordsIfExist($store_post_request->body);
 
         $post = Post::create([
             'user_id' => Auth::id(),
-            'thread_id' => $request->thread_id,
-            'displayed_post_id' => $request->displayed_post_id,
-            'body' => $checked_body,
+            'thread_id' => $store_post_request->thread_id,
+            'displayed_post_id' => $store_post_request->displayed_post_id,
+            'body' => $store_post_request->body,
         ]);
 
         //スレッドのpost_countをインクリメント
@@ -151,12 +147,12 @@ class PostController extends Controller
         $post->thread()->increment('post_count');
 
         //画像があれば
-        if ($request->hasFile('image')) {
-            $request->merge([
+        if ($store_post_request->hasFile('image')) {
+            $store_post_request->merge([
                 'post_id' => $post->id,
             ]);
             $image_controller = new ImageController();
-            $image_controller->store($request);
+            $image_controller->store($store_post_request);
         }
     }
 

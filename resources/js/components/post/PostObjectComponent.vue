@@ -427,7 +427,13 @@ export default {
                     console.log(response);
                 })
                 .catch(error => {
+                    console.log(error.response);
                     console.log(error.response.data);
+                    console.log(error.response.data.message);
+                    console.log(error.response.data.errors);
+                    if(error.response.status === 422) {
+                        alert('入力がバリデーションエラーです。');
+                    }
                 });
         },
         dislike() {
@@ -446,7 +452,10 @@ export default {
                     this.$emit("re_get_posts_at_my_profile_like");
                 })
                 .catch(error => {
-                    console.log(error.response.data);
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        alert('入力がバリデーションエラーです。');
+                    }
                 });
         },
         editBody() {
@@ -484,7 +493,10 @@ export default {
                     this.$emit("re_get_mainly_posts");
                 })
                 .catch(error => {
-                    console.log(error.response.data);
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        alert(error.response.data.message);
+                    }
                 });
         },
         editCancel() {

@@ -102,6 +102,8 @@
                             v-bind:my_info="my_info"
                             v-bind:need_thread="true"
                             @igniteLightBox="showPostedImages"
+                            @re_get_mainly_posts="getUserPosts"
+
                             ref="child"
                         >
                         </post-object-component>
@@ -123,6 +125,7 @@
                             v-bind:my_info="my_info"
                             v-bind:need_thread="true"
                             @re_get_posts_at_my_profile_like="getUserLikePosts"
+                            @re_get_mainly_posts="getUserLikePosts"
                             @igniteLightBox="showLikedImages"
                         >
                         </post-object-component>

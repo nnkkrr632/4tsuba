@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+//フォームリクエスト
+use App\Http\Requests\StoreLikeRequest;
+use App\Http\Requests\DestroyLikeRequest;
 
 use Illuminate\Http\Request;
 use App\Models\Like;
@@ -12,36 +15,28 @@ use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreLikeRequest $store_like_request)
     {
-        //ポストが存在する(既に削除済みじゃない)ときのみいいねできる
-        $post = new Post();
-        $like = new Like();
-        if ($post->find($request->post_id)) {
-            if ($like->check_already_stored($request->post_id)) {
-                return 'is_already_stored';
-            } else {
-                Like::create([
-                    'user_id' => Auth::id(),
-                    'post_id' => $request->post_id,
-                ]);
 
-                //threadsテーブルのlike_countインクリメント
-                $thread = new Thread();
-                $thread->find($request->thread_id)->increment('like_count');
-            }
-        }
+        Like::create([
+            'user_id' => Auth::id(),
+            'post_id' => $store_like_request->post_id,
+        ]);
+
+        //threadsテーブルのlike_countインクリメント
+        $thread = new Thread();
+        $thread->find($store_like_request->thread_id)->increment('like_count');
     }
 
-    public function destroy(Request $request)
+    public function destroy(DestroyLikeRequest $destroy_like_request)
     {
         $target_like = Like::where('user_id', Auth::id())
-            ->where('post_id', $request->post_id)->first();
+            ->where('post_id', $destroy_like_request->post_id)->first();
         $this->authorize('delete', $target_like);
         $target_like->delete();
 
         //threadsテーブルのlike_countデクリメント
         $thread = new Thread();
-        $thread->find($request->thread_id)->decrement('like_count');
+        $thread->find($destroy_like_request->thread_id)->decrement('like_count');
     }
 }
