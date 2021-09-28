@@ -11,6 +11,8 @@ use App\Models\Gatekeeper;
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
 use Illuminate\Support\Facades\Gate;
+//フォームリクエスト
+use App\Http\Requests\StoreTPIRequest;
 
 
 class ThreadController extends Controller
@@ -77,24 +79,24 @@ class ThreadController extends Controller
     }
 
     //スレッド store
-    public function store(Request $request)
+    public function store(StoreTPIRequest $store_t_p_i_request)
     {
         //NGワード置換
         $gate_keeper = new GateKeeper();
-        $checked_title = $gate_keeper->convertNgWordsIfExist($request->title);
+        $checked_title = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->title);
 
         $thread = Thread::create([
             'user_id' => Auth::id(),
             'title' => $checked_title,
         ]);
 
-        //リクエストにスレッドidを追加
-        $request->merge([
+        //リクエストにポストIDを追加
+        $store_t_p_i_request->merge([
             'thread_id' => $thread->id,
         ]);
 
         $post_controller = new PostController();
-        $post_controller->store($request);
+        $post_controller->store($store_t_p_i_request);
 
         return $thread->id;
     }

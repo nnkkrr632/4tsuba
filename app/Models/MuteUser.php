@@ -38,14 +38,4 @@ class MuteUser extends Model
         }
         return $posts;
     }
-
-    public function check_mute_me($user_id)
-    {
-        return Auth::id() == $user_id;
-    }
-    public function check_already_stored($user_id)
-    {
-        return MuteUser::where('muting_user_id', Auth::id())
-            ->where('user_id', $user_id)->count();
-    }
 }

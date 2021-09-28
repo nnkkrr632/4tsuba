@@ -30,9 +30,4 @@ class Like extends Model
         return $this->select('user_id as liking_user_id', 'post_id as liked_post_id', 'created_at as liked_at')
             ->where('user_id', $user_id);
     }
-    public function check_already_stored($post_id)
-    {
-        return Like::where('user_id', Auth::id())
-            ->where('post_id', $post_id)->count();
-    }
 }

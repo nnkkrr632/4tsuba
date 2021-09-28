@@ -67,7 +67,7 @@ export default {
             icon: null,
             valid: null,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
             },
             notice: 'メールアドレス・パスワードの変更 はこちら',
             link: '/setting/account/account',

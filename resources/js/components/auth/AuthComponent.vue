@@ -17,8 +17,8 @@
                         prepend-icon="mdi-account"
                         type="text"
                         v-model="name"
-                        :rules="[rules.required]"
                     />
+                    <!-- :rules="[rules.required]"  -->
                     <v-text-field
                         outlined
                         label="メールアドレス"
@@ -28,9 +28,8 @@
                         prepend-icon="email"
                         type="text"
                         v-model="email"
-                        :rules="[rules.required, rules.email]"
                     />
-
+                    <!-- :rules="[rules.required, rules.email]" -->
                     <v-text-field
                         outlined
                         id="password"
@@ -41,9 +40,8 @@
                         prepend-icon="lock"
                         type="password"
                         v-model="password"
-                        :rules="[rules.required, rules.password]"
                     />
-
+                    <!-- :rules="[rules.required, rules.password]" -->
                     <v-text-field
                         outlined
                         v-if="register_or_login === 'register'"
@@ -52,8 +50,9 @@
                         color="green lightten-3"
                         prepend-icon="lock"
                         type="password"
-                        :rules="[rules.required, rules.password_confirm]"
+                        v-model="password_confirm"
                     />
+                    <!-- :rules="[rules.required, rules.password_confirm]" -->
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -94,10 +93,12 @@ export default {
             name: null,
             email: null,
             password: null,
+            password_confirm: null,
+
             //バリデーション項目
             valid: null,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
                 email: value => {
                     const pattern = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
                     return (
@@ -129,7 +130,8 @@ export default {
                         .post("/api/register", {
                             name: this.name,
                             email: this.email,
-                            password: this.password
+                            password: this.password,
+                            password_confirm:this.password_confirm,
                         })
                         .then(response => {
                             console.log(response);
@@ -137,10 +139,14 @@ export default {
                             this.$router.push("/threads");
                             this.$router.go({ path: "/threads", force: true });
                         })
-                        .catch(error => {
-                            console.log(error.response.data);
-                            alert(error.response.data.message);                            
-                        });
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            let alert_message = alert_array.join('\n');
+                            alert(alert_message);
+                        }
+                    });
                 } else {
                     axios
                         .post("/api/login", {
@@ -154,12 +160,14 @@ export default {
                             this.$router.go({ path: "/threads", force: true });
 
                         })
-                        .catch(error => {
-                            console.log(error.response.data);
-                            if(error.response.data.message == "The given data was invalid.") {
-                                alert('メールアドレスもしくはパスワードが正しくありません。');
-                            }
-                        });
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            let alert_message = alert_array.join('\n');
+                            alert(alert_message);
+                        }
+                    });
                 }
             });
         },

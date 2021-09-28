@@ -34,13 +34,17 @@ class RegularExpressionRule implements Rule
      *
      * @return string
      */
-    public function message()
-    {
-        return 'HTMLタグを入力できません。';
-    }
-
     public function forbidHtmlTag()
     {
         return 'regex: /^(?!.*<.{1,40}>).*$/s';
+    }
+    public function redefineAlphaNum()
+    {
+        return 'regex: /^[a-zA-Z0-9]+$/';
+    }
+    //implementの影響でmessage()メソッドを持たなくてはならないらしい
+    public function message()
+    {
+        return ['HTMLタグを入力できません。', '半角英数字でお願いいたします。'];
     }
 }

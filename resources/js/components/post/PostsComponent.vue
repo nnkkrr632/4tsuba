@@ -32,7 +32,11 @@
 
         <v-divider></v-divider>
         <!-- 書き込み部分 -->
-        <create-component @receiveInput="storePost" v-bind:anchor="anchor"></create-component>
+        <create-component
+            @re_get_mainly_posts="updateEntry"
+            v-bind:anchor="anchor"
+            v-bind:thread_id="thread_id"
+        ></create-component>
         <span ref="bottom"></span>
     </div>
 </template>
@@ -121,29 +125,6 @@ export default {
         transferAnchor(emitted_displayed_post_id) {
             console.log("this is transferAnchor");
             this.anchor = '>>' + emitted_displayed_post_id + " ";
-        },
-        storePost(emitted_form_data) {
-            const form_data = emitted_form_data;
-            form_data.append("thread_id", this.thread_id);
-            console.log("this is post");
-            for (let value of form_data.entries()) {
-                console.log(value);
-            }
-            axios
-                .post("/api/posts", form_data, {
-                    headers: { "content-type": "multipart/form-data" }
-                })
-                .then(response => {
-                    console.log(response);
-                    console.log("書き込み作成");
-                    this.updateEntry();
-                })
-                .catch(error => {
-                    console.log(error.response);
-                    if(error.response.status === 422) {
-                        alert(error.response.data.message);
-                    }
-                });
         },
         updateEntry() {
             console.log('this is updateEntry');

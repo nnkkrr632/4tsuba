@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
 use Illuminate\Support\Facades\Gate;
 //フォームリクエスト
-use App\Http\Requests\StorePostRequest;
-
+use App\Http\Requests\StoreTPIRequest;
+use App\Http\Requests\EditPIRequest;
+use App\Http\Requests\DestroyPIRequest;
 
 class PostController extends Controller
 {
@@ -117,29 +118,29 @@ class PostController extends Controller
 
 
     //作成 store
-    public function store(StorePostRequest $store_post_request)
+    public function store(StoreTPIRequest $store_t_p_i_request)
     {
-        //リクエストにポストidを追加
+        //リクエストにディスプレイドポストidを追加
         $temp_post = new Post();
-        $store_post_request->merge([
-            'displayed_post_id' => $temp_post->returnMaxDisplayedPostId($store_post_request->thread_id) + 1,
+        $store_t_p_i_request->merge([
+            'displayed_post_id' => $temp_post->returnMaxDisplayedPostId($store_t_p_i_request->thread_id) + 1,
         ]);
 
         //返信関係登録
-        if (strpos($store_post_request->body, '>>') !== false) {
+        if (strpos($store_t_p_i_request->body, '>>') !== false) {
             $response_controller = new ResponseController();
-            $response_controller->store($store_post_request);
+            $response_controller->store($store_t_p_i_request);
         }
 
         //NGワード置換
         $gate_keeper = new GateKeeper();
-        //$checked_body = $gate_keeper->convertNgWordsIfExist($store_post_request->body);
+        //$checked_body = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->body);
 
         $post = Post::create([
             'user_id' => Auth::id(),
-            'thread_id' => $store_post_request->thread_id,
-            'displayed_post_id' => $store_post_request->displayed_post_id,
-            'body' => $store_post_request->body,
+            'thread_id' => $store_t_p_i_request->thread_id,
+            'displayed_post_id' => $store_t_p_i_request->displayed_post_id,
+            'body' => $store_t_p_i_request->body,
         ]);
 
         //スレッドのpost_countをインクリメント
@@ -147,26 +148,26 @@ class PostController extends Controller
         $post->thread()->increment('post_count');
 
         //画像があれば
-        if ($store_post_request->hasFile('image')) {
-            $store_post_request->merge([
+        if ($store_t_p_i_request->image) {
+            $store_t_p_i_request->merge([
                 'post_id' => $post->id,
             ]);
             $image_controller = new ImageController();
-            $image_controller->store($store_post_request);
+            $image_controller->store($store_t_p_i_request);
         }
     }
 
 
     //ポスト更新
-    public function edit(Request $request)
+    public function edit(EditPIRequest $edit_pi_request)
     {
-        $target_post = Post::find($request->id);
+        $target_post = Post::find($edit_pi_request->id);
         $response = Gate::inspect('delete', $target_post);
 
         if ($response->allowed()) {
             //NGワード置換
             $gate_keeper = new GateKeeper();
-            $checked_body = $gate_keeper->convertNgWordsIfExist($request->body);
+            $checked_body = $gate_keeper->convertNgWordsIfExist($edit_pi_request->body);
 
             $target_post->update([
                 'body' => $checked_body,
@@ -175,19 +176,19 @@ class PostController extends Controller
 
             //一度返信関係をリセット  and 再取得
             $response_controller = new ResponseController();
-            $response_controller->destroy($request);
+            $response_controller->destroy($edit_pi_request);
             //返信関係再登録
-            if (strpos($request->body, '>>') !== false) {
-                $response_controller->store($request);
+            if (strpos($edit_pi_request->body, '>>') !== false) {
+                $response_controller->store($edit_pi_request);
             }
 
             //画像があれば
-            if ($request->hasFile('image')) {
+            if ($edit_pi_request->hasFile('image')) {
                 $image_controller = new ImageController();
-                $image_controller->edit($request);
+                $image_controller->edit($edit_pi_request);
             }
             //編集前の画像削除の場合(画像変更の場合でも画像を削除にチェックしてたら画像を削除するからこの位置)
-            if ($request->delete_image) {
+            if ($edit_pi_request->delete_image) {
                 $image_controller = new ImageController();
                 $image_controller->destroy($target_post->id);
             }
@@ -198,15 +199,15 @@ class PostController extends Controller
 
 
     //ポスト削除
-    public function destroy(Request $request)
+    public function destroy(DestroyPIRequest $destroy_pi_request)
     {
-        $target_post = Post::find($request->id);
+        $target_post = Post::find($destroy_pi_request->id);
         $response = Gate::inspect('delete', $target_post);
 
         if ($response->allowed()) {
             $target_post->delete();
             $image_controller = new ImageController();
-            $image_controller->destroy($request->id);
+            $image_controller->destroy($destroy_pi_request->id);
         } else {
             return $response->message();
         }

@@ -241,19 +241,16 @@ export default {
                         })
                         .then(response => {
                             console.log(response);
-                            if(response.data == 'is_already_stored') {
-                                alert('既にミュート済みのユーザーです。')
-                            }
-                            else if(response.data == 'not_mute_me') {
-                                alert('自分をミュートすることはできません。');
-                                this.user_info.is_login_user_mute = 0;
-                            }
-                            else {
-                                this.getUserPosts();
-                            }
+                            this.getUserPosts();
                         })
                         .catch(error => {
-                            console.log(error.response.data);
+                            console.log(error.response);
+                            if(error.response.status === 422) {
+                                alert(error.response.data.message);
+                                if(error.response.data.message === '自分をミュートすることはできません。') {
+                                    this.my_info.id = this.user_id;
+                                }
+                            }
                         });
                 }
             }
@@ -274,7 +271,13 @@ export default {
                             this.getUserPosts();
                         })
                         .catch(error => {
-                            console.log(error.response.data);
+                            console.log(error.response);
+                            if(error.response.status === 422) {
+                                alert(error.response.data.message);
+                                if(error.response.data.message === '自分をミュート解除することはできません。') {
+                                    this.my_info.id = this.user_id;
+                                }
+                            }
                         });
                 }
             }

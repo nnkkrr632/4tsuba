@@ -7,37 +7,38 @@ use App\Models\Image;
 use App\Models\Like;
 
 //フォームリクエスト
-use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\StoreTPIRequest;
+use App\Http\Requests\EditPIRequest;
 
 class ImageController extends Controller
 {
-    public function store(StorePostRequest $store_post_request)
+    public function store(StoreTPIRequest $store_t_p_i_request)
     {
         //リクエストされたファイルの情報を持ったUploadedFileクラスのインスタンス
-        $uploaded_image = $store_post_request->file('image');
+        $uploaded_image = $store_t_p_i_request->file('image');
         //ファイル保存処理  storage/app/public/images の意味 app配下から記述する
         $uploaded_image->store('public/images');
 
         Image::create([
-            'thread_id' => $store_post_request->thread_id,
-            'post_id' => $store_post_request->post_id,
+            'thread_id' => $store_t_p_i_request->thread_id,
+            'post_id' => $store_t_p_i_request->post_id,
             'image_name' => $uploaded_image->hashName(),
             'image_size' => $uploaded_image->getSize(),
         ]);
     }
 
-    public function edit(Request $request)
+    public function edit(EditPIRequest $edit_pi_request)
     {
-        $uploaded_image = $request->file('image');
+        $uploaded_image = $edit_pi_request->file('image');
         $uploaded_image->store('public/images');
 
-        Image::where('post_id', $request->id)
+        Image::where('post_id', $edit_pi_request->id)
             ->updateOrCreate(
                 [
-                    'post_id' => $request->id
+                    'post_id' => $edit_pi_request->id
                 ],
                 [
-                    'thread_id' => $request->thread_id,
+                    'thread_id' => $edit_pi_request->thread_id,
                     'image_name' => $uploaded_image->hashName(),
                     'image_size' => $uploaded_image->getSize(),
                 ]

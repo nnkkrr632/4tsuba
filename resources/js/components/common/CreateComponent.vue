@@ -14,8 +14,8 @@
                 auto-grow
                 :hint="'必須 & 最大' + limit.title + '文字'"
                 persistent-hint
-                :rules="[rules.required, rules.length_title]"
             ></v-textarea>
+              <!-- :rules="[rules.required, rules.length_title]" -->  
 
             <!-- 本文 -->
             <v-textarea
@@ -28,21 +28,21 @@
                 auto-grow
                 :hint="'必須 & 最大' + limit.body + '文字'"
                 persistent-hint
-                :rules="[rules.required, rules.length_body]"
                 ref="focusBody"
             ></v-textarea>
+               <!-- :rules="[rules.required, rules.length_body]" --> 
 
             <!-- 画像 -->
             <v-file-input
                 v-model="input.image"
                 color="green lightten-2"
-                accept="image/png, image/gif, image/jpg, image/jpeg"
                 placeholder="JPG, JPEG, PNG, GIF"
                 :hint="hint[0]"
                 persistent-hint
                 chips
                 show-size
             ></v-file-input>
+            <!--                 accept="image/png, image/gif, image/jpg, image/jpeg"  -->
 
             <template v-if="thread_or_post === 'thread'">
             <div  class="mt-16 grey--text text--darken-1">
@@ -62,7 +62,7 @@
                 class="white--text"
                 color="green lighten-2"
                 depressed
-                @click="emit"
+                @click="store"
             >
                 {{button_message[0]}}
             </v-btn>
@@ -78,54 +78,104 @@ export default {
             type: String,
             default: "post",
         },
+        thread_id: {
+            type:Number,
+            default: null,
+        },
         anchor: {
             type: String,
             default: null
-        }
+        },
     },
     data: function() {
         return {
             //入力項目
             input: {title: null, body: null, image: null},
             //バリデーション関連
-            limit: { title: 10, body: 200 },
+            limit: { title: 20, body: 200 },
             valid: null,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
                 //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
                 length_title: value =>
                     (value && value.length <= this.limit.title) ||
-                    this.limit.title + "文字以内で入力してください",
+                    this.limit.title + "文字以内で入力してください。",
                 length_body: value =>
                     (value && value.length <= this.limit.body) ||
-                    this.limit.body + "文字以内で入力してください"
+                    this.limit.body + "文字以内で入力してください。"
             },
-            hint: ["", "スレッドのサムネイル(※)を設定できます。 ※スレッド内で最も若い番号(書き込み順)の画像"],
+            hint: ["", "スレッドのサムネイル(※)を設定できます。 ※スレッド内で最も若い番号(書き込み順)の画像が自動登録"],
             button_message: ["書き込む", "スレッドを作成する"],
             body_label: ["書き込む", "本文"],
+            created_thread_id: null,
         };
     },
     methods: {
-        emit() {
+        store() {
+            console.log('this is store')
             const result = this.$refs.form.validate();
             console.log("入力内容バリデーション " + result);
-            console.log(this.input);
 
             const form_data = new FormData();
             form_data.append("body", this.input.body);
+            //スレッドならタイトル、ポストならスレッドidを追加
+            if(this.thread_or_post === 'thread') {
+                form_data.append("title", this.input.title);
+            } else {
+                form_data.append("thread_id", this.thread_id);
+            }
+            //画像があるなら追加
             if(this.input.image) {
                 form_data.append("image", this.input.image);
             }
-
-            if(this.thread_or_post === 'thread') {
-                form_data.append("title", this.input.title);
+            //確認
+            for (let value of form_data.entries()) {
+                console.log(value);
             }
-
-            this.$emit("receiveInput", form_data);
-            this.input.body = null;
-            this.input.image = null;
-            
-            
+            //ポスト
+            if(this.thread_or_post === 'post') {
+                console.log('this is store post');
+                axios
+                    .post("/api/posts", form_data, {
+                        headers: { "content-type": "multipart/form-data" }
+                    })
+                    .then(response => {
+                        console.log(response);
+                        this.$emit("re_get_mainly_posts");
+                        this.input.body = null;
+                        this.input.image = null;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            let alert_message = alert_array.join('\n');
+                            alert(alert_message);
+                        }
+                    });
+            }
+            //スレッド
+            else {
+                console.log('this is store thread');
+                axios
+                    .post("/api/threads", form_data, {
+                        headers: { "content-type": "multipart/form-data" }
+                    })
+                    .then(response => {
+                        console.log(response);
+                        this.created_thread_id = response.data;
+                        console.log(this.created_thread_id);
+                        this.$router.push({ name: 'thread.show', params: { thread_id: this.created_thread_id }})
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            let alert_message = alert_array.join('\n');
+                            alert(alert_message);
+                        }
+                    });
+            }
         },
         switchWords() {
             if(this.thread_or_post === 'thread') {
@@ -146,6 +196,6 @@ export default {
     },
     mounted() {
         this.switchWords();
-    }
+    },
 };
 </script>

@@ -7,8 +7,8 @@
             name="mute_word"
             type="text"
             v-model="mute_word"
-            :rules="[rules.required, rules.length]"
         />
+        <!-- :rules="[rules.required, rules.length]" -->
     </v-form>
         <v-btn
             :disabled="!valid"
@@ -35,11 +35,11 @@ export default {
             valid: null,
             limit: 10,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
                 //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
                 length: value =>
                     (value && value.length <= this.limit) ||
-                    this.limit + "文字以内で入力してください",
+                    this.limit + "文字以内で入力してください。",
             },
         }
     },
@@ -52,17 +52,15 @@ export default {
             .post("/api/mute_words", form_data)
             .then(res => {
                 console.log(res);
-                console.log(res.data);
-                if(res.data == "is_already_stored") {
-                    alert('既に登録されています。');
-                }
                 this.$emit("receiveUpdate");
                 this.mute_word = null;
             })
             .catch(error => {
-                        console.log(error.response.data);
-                        
-                    });
+                console.log(error.response);
+                if(error.response.status === 422) {
+                    alert(error.response.data.message);
+                }
+            });
         },
     }
 }

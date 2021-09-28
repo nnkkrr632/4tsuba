@@ -6,6 +6,9 @@ use App\Models\MuteWord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+//フォームリクエスト
+use App\Http\Requests\StoreMuteWordRequest;
+use App\Http\Requests\DestroyMuteWordRequest;
 
 class MuteWordController extends Controller
 {
@@ -14,24 +17,17 @@ class MuteWordController extends Controller
         return MuteWord::where('user_id', Auth::id())->orderBy('id', 'desc')->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreMuteWordRequest $store_mute_word_request)
     {
-
-        //既に登録済みか否かをチェック
-        $is_already_stored = MuteWord::where('user_id', Auth::id())->where('mute_word', $request->mute_word)->count();
-        if (!$is_already_stored) {
-            MuteWord::create([
-                'user_id' => Auth::id(),
-                'mute_word' => $request->mute_word,
-            ]);
-        } else {
-            return "is_already_stored";
-        }
+        MuteWord::create([
+            'user_id' => Auth::id(),
+            'mute_word' => $store_mute_word_request->mute_word,
+        ]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(DestroyMuteWordRequest $destroy_mute_word_request)
     {
-        $target_mute_word = MuteWord::where('user_id', Auth::id())->where('id', $request->id)->first();
+        $target_mute_word = MuteWord::where('id', $destroy_mute_word_request->id)->first();
         $this->authorize('delete', $target_mute_word);
         $target_mute_word->delete();
     }

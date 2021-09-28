@@ -89,7 +89,7 @@ export default {
             password: null,
             valid: null,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
                 email: value => {
                     const pattern = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
                     return (

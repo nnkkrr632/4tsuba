@@ -156,8 +156,8 @@
                                 auto-grow
                                 :hint="'必須 & 最大' + limit.body + '文字'"
                                 persistent-hint
-                                :rules="[rules.required, rules.length_body]"
                             ></v-textarea>
+                            <!-- :rules="[rules.required, rules.length_body]" -->
                             <!-- 画像 -->
                             <template v-if="post.image">
                                 <v-file-input
@@ -405,11 +405,11 @@ export default {
             limit: { body: 20 },
             valid: null,
             rules: {
-                required: value => !!value || "必ず入力してください",
+                required: value => !!value || "入力必須です。",
                 //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
                 length_body: value =>
                     (value && value.length <= this.limit.body) ||
-                    this.limit.body + "文字以内で入力してください"
+                    this.limit.body + "文字以内で入力してください。"
             }
         };
     },
@@ -428,11 +428,9 @@ export default {
                 })
                 .catch(error => {
                     console.log(error.response);
-                    console.log(error.response.data);
-                    console.log(error.response.data.message);
-                    console.log(error.response.data.errors);
                     if(error.response.status === 422) {
-                        alert('入力がバリデーションエラーです。');
+                        alert(error.response.data.message);
+                        this.post.likes_count--;
                     }
                 });
         },
@@ -454,7 +452,8 @@ export default {
                 .catch(error => {
                     console.log(error.response);
                     if(error.response.status === 422) {
-                        alert('入力がバリデーションエラーです。');
+                        alert(error.response.data.message);
+                        this.post.likes_count++;
                     }
                 });
         },
@@ -466,7 +465,6 @@ export default {
         },
         editPost() {
             console.log("this is editPost");
-            this.is_editing = false;
             const form_data = new FormData();
             form_data.append("thread_id", this.post.thread_id);
             form_data.append("id", this.post.id);
@@ -478,18 +476,18 @@ export default {
             if (this.post.image !== null) {
                 form_data.append("image", this.post.image);
             }
-            console.log(form_data);
+            //確認
+            for (let value of form_data.entries()) {
+                console.log(value);
+            }
             axios
                 .post("/api/posts/edit", form_data, {
                     headers: { "content-type": "multipart/form-data" }
                 })
                 .then(response => {
-                    if (response.data == "bad_user") {
-                        console.log(response);
-                        alert("書込者以外は編集できません。");
-                    } else {
-                        this.post.is_edited = 1;
-                    }
+                    console.log(response);
+                    this.post.is_edited = 1;
+                    this.is_editing = false;
                     this.$emit("re_get_mainly_posts");
                 })
                 .catch(error => {
@@ -522,21 +520,18 @@ export default {
                     .delete("/api/posts", {
                         data: {
                             id: this.post.id,
-                            thread_id: this.post.thread_id,
-                            user_id: this.post.user_id
                         }
                     })
                     .then(response => {
                         console.log(response.data);
-                        if (response.data === "bad_user") {
-                            alert("書込者以外は削除できません。");
-                        } else {
                             this.post.deleted_at = "deleted";
                             this.$emit("re_get_mainly_posts");
-                        }
                     })
                     .catch(error => {
-                        console.log(error.response.data);
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            alert(error.response.data.message);
+                        }
                     });
             }
         },

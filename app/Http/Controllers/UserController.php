@@ -6,19 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class UserController extends Controller
 {
     public function returnUserInfo(Request $request)
     {
-        //ミュートユーザー機能で誰もミューとしていないときnullが入ってくるからエスケープ
+        //ミュートユーザー機能で誰もミュートしていないときnullが入ってくるからエスケープ
         if (!$request->user_id_list) {
             return null;
         } else {
             $user_id_list = $request->user_id_list;
             //ユーザー詳細ページとミュートユーザー一覧ページでこのメソッドを共有している。
-            //前者では必ず1人に絞られるため$user_id_list[0]とすることでログインユーザーがその人をミューとしているか判定している
+            //前者では必ず1人に絞られるため$user_id_list[0]とすることでログインユーザーがその人をミュートしているか判定している
             return User::whereIn('id', $user_id_list)
                 ->withCount([
                     'posts',

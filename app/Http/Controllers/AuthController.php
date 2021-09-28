@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+//フォームリクエスト
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\DestroyPIRequest;
+
 
 class AuthController extends Controller
 {
@@ -55,21 +60,16 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $login_request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        $credentials = $request->only('email', 'password');
+        $credentials = $login_request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             return response()->json(['name' => Auth::user()->name], 200);
         }
-
+        //↓のHTTP422エラーが出るときはフォームリクエストのバリデーションを突破している
         throw ValidationException::withMessages([
-            'email' => '認証情報が正しくありません'
+            'email_password' => 'メールアドレスもしくはパスワードが正しくありません。'
         ]);
     }
 
@@ -79,22 +79,18 @@ class AuthController extends Controller
         return response()->json(['message' => 'ログアウト成功'], 200);
     }
 
-    public function register(Request $request)
+    //登録
+    public function register(RegisterRequest $register_request)
     {
-        $request->validate([
-            'name' => ['required', 'between:1,10'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'between:8,20'],
-        ]);
-
+        //password_confirmはフォームリクエストのみで使ってコントローラーでは使わない
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'name' => $register_request->name,
+            'email' => $register_request->email,
+            'password' => bcrypt($register_request->password)
         ]);
 
         //user作成が成功したら、ログイン扱い
-        $this->login($request);
+        $this->login($register_request);
     }
 
     public function destroy(Request $request)
