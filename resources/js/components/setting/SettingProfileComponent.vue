@@ -6,11 +6,11 @@
             <v-file-input
                 v-model="icon"
                 color="green lightten-2"
-                accept="image/png, image/gif, image/jpg, image/jpeg"
                 label="プロフィールアイコン"
                 chips
                 show-size
             ></v-file-input>
+            <!-- accept="image/png, image/gif, image/jpg, image/jpeg"  -->
             <v-text-field
                 outlined
                 label="表示名"
@@ -19,8 +19,8 @@
                 prepend-icon="mdi-account"
                 type="text"
                 v-model="my_info.name"
-                :rules="[rules.required]"
             />
+            <!-- :rules="[rules.required]" -->
 
         </v-form>
         <div class="d-flex justify-end">
@@ -100,7 +100,20 @@ export default {
                     this.$router.push("/users/" + this.my_info.id + "/posts");
                     this.$router.go({path: "/users/" + this.my_info.id + "/posts", force: true});
                 })
-
+                .catch(error => {
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        console.log(alert_array);
+                        let flat_array = alert_array.flat();
+                        console.log(flat_array);
+                        let alert_string = flat_array.join();
+                        console.log(alert_string);
+                        let alert_message = alert_string.replace(/,/g, '\n');
+                        console.log(alert_message);
+                        alert(alert_message);
+                    }
+                });                
         },
         resetProfile() {
             console.log('this is resetProfile');

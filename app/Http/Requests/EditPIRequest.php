@@ -55,12 +55,6 @@ class EditPIRequest extends FormRequest
         ];
     }
 
-    public function attributes()
-    {
-        return [
-            'body' => '書込',
-        ];
-    }
     public function withValidator(Validator $validator)
     {
         //画像用
@@ -87,7 +81,7 @@ class EditPIRequest extends FormRequest
             'body.required' => '入力必須です。',
             'body.not_in' => '入力必須です(not_in)。',
             'body.between' => '1文字~200文字で入力してください。',
-            'body.regex' => $regular_expression_rule->message(),
+            'body.regex' => $regular_expression_rule->message()[0],
             'image.image' => '添付は画像ファイルを指定してください。',
             'image.mimes' => '画像ファイルは「jpeg」「jpg」「png」「gif」形式のみ可能です。',
             'image.max' => '3.0MBを超える画像は添付できません。',

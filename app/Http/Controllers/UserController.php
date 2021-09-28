@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+//フォームリクエスト
+use App\Http\Requests\EditProfileRequest;
 
 class UserController extends Controller
 {
@@ -39,12 +41,12 @@ class UserController extends Controller
         }
     }
 
-    public function editProfile(Request $request)
+    public function editProfile(EditProfileRequest $edit_profile_request)
     {
-        User::find(Auth::id())->update(['name' => $request->name,]);
+        User::find(Auth::id())->update(['name' => $edit_profile_request->name,]);
 
-        if ($request->file('icon')) {
-            $uploaded_icon = $request->file('icon');
+        if ($edit_profile_request->file('icon')) {
+            $uploaded_icon = $edit_profile_request->file('icon');
             $uploaded_icon->store('public/icons');
             User::find(Auth::id())->update([
                 'icon_name' => $uploaded_icon->hashName(),

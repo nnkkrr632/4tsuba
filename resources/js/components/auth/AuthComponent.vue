@@ -143,8 +143,7 @@ export default {
                         console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
-                            let alert_message = alert_array.join('\n');
-                            alert(alert_message);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
                         }
                     });
                 } else {
@@ -164,8 +163,7 @@ export default {
                         console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
-                            let alert_message = alert_array.join('\n');
-                            alert(alert_message);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
                         }
                     });
                 }

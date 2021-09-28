@@ -44,7 +44,6 @@ class RegisterRequest extends FormRequest
                 'required',
                 'not_in:"null"',
                 $regular_expression_rule->redefineAlphaNum(),
-                'min:8',
             ],
             'password_confirm' => [
                 'required',
@@ -70,7 +69,6 @@ class RegisterRequest extends FormRequest
             'password.required' => '【パスワード】入力必須です。',
             'password.not_in' => '【パスワード】入力必須です(not_in)。',
             'password.regex' => '【パスワード】' . $regular_expression_rule->message()[1],
-            'password.min' => '【パスワード】8文字以上でお願いします。',
             'password_confirm.required' => '【パスワード確認】入力必須です。',
             'password_confirm.not_in' => '【パスワード確認】入力必須です(not_in)。',
             'password_confirm.same' => '【パスワード確認】パスワードと一致しません。',

@@ -40,11 +40,12 @@ class RegularExpressionRule implements Rule
     }
     public function redefineAlphaNum()
     {
-        return 'regex: /^[a-zA-Z0-9]+$/';
+        //半角英数字「混合で」8~24文字
+        return 'regex: /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]{8,24}$/';
     }
     //implementの影響でmessage()メソッドを持たなくてはならないらしい
     public function message()
     {
-        return ['HTMLタグを入力できません。', '半角英数字でお願いいたします。'];
+        return ['HTMLタグを入力できません。', '半角英数字混合の8~24文字でお願いいたします。'];
     }
 }

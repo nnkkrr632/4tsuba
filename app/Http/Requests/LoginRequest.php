@@ -38,7 +38,6 @@ class LoginRequest extends FormRequest
                 'required',
                 'not_in:"null"',
                 $regular_expression_rule->redefineAlphaNum(),
-                'min:8',
             ],
         ];
     }
@@ -54,8 +53,7 @@ class LoginRequest extends FormRequest
             'email.between' => '【メールアドレス】1文字~100文字で入力してください。',
             'password.required' => '【パスワード】入力必須です。',
             'password.not_in' => '【パスワード】入力必須です(not_in)。',
-            'password.regex' => '【パスワード】' . $regular_expression_rule->messageRedefineAlphaNum(),
-            'password.min' => '【パスワード】8文字以上でお願いします。',
+            'password.regex' => '【パスワード】' . $regular_expression_rule->message()[1],
         ];
     }
 }

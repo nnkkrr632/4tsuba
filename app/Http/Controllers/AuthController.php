@@ -9,7 +9,6 @@ use App\Models\User;
 //フォームリクエスト
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\DestroyPIRequest;
 
 
 class AuthController extends Controller
@@ -90,7 +89,12 @@ class AuthController extends Controller
         ]);
 
         //user作成が成功したら、ログイン扱い
-        $this->login($register_request);
+        $login_request = new LoginRequest();
+        $login_request->merge([
+            'email' => $register_request->email,
+            'password' => $register_request->password,
+        ]);
+        $this->login($login_request);
     }
 
     public function destroy(Request $request)

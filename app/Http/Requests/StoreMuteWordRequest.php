@@ -50,7 +50,7 @@ class StoreMuteWordRequest extends FormRequest
             'mute_word.required' => '入力必須です。',
             'mute_word.not_in' => '入力必須です(not_in)。',
             'mute_word.between' => '1文字~10文字で入力してください。',
-            'mute_word.regex' => $regular_expression_rule->message(),
+            'mute_word.regex' => $regular_expression_rule->message()[0],
             'mute_word.unique' => '既に登録されています。',
         ];
     }
