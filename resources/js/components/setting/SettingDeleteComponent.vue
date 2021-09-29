@@ -18,7 +18,7 @@
             <v-icon class="mb-1" color="green lighten-3"
                 >mdi-information-outline</v-icon
             >
-            <span>スレッドの書込を削除したい場合は、お手数ですが、書込のゴミ箱アイコンより削除ください。</span>
+            <span>スレッドの書込を削除したい場合は、お手数ですが、書込のゴミ箱アイコンより削除してください。</span>
         </div>
     </div>
 
@@ -32,8 +32,8 @@
                 prepend-icon="lock"
                 type="password"
                 v-model="password"
-                :rules="[rules.required, rules.password]"
             />
+            <!-- :rules="[rules.required, rules.password]" -->
         </v-form>
         <div class="d-flex justify-end">
             <v-card v-if="my_info.role === 'guest'"
@@ -52,6 +52,13 @@
                 {{message}}
             </v-btn>
         </div>
+        <div class="mt-8 grey--text text--darken-1 d-flex justify-end">
+            <v-icon class="mb-1" color="green lighten-3"
+                >mdi-information-outline</v-icon
+            >
+            <router-link :to="link_threads">アカウントを削除せず続ける</router-link>
+        </div>
+
     </div>
 </template>
 
@@ -76,6 +83,7 @@ export default {
             },
             message: 'アカウントを削除する',
             message_for_guest: 'ゲストユーザーは削除できません',
+            link_threads: '/threads'
         };
     },
     components: {
@@ -107,9 +115,16 @@ export default {
                         if (confirm('アカウントを削除しました。ご利用ありがとうございました。')) {
                             this.$router.go({path: "/login", force: true});
                         }
-
                     }
                 })
+                .catch(error => {
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
+                });
+                
         },
     },
     mounted() {

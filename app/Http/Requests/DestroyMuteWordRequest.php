@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestMessage;
 
 class DestroyMuteWordRequest extends FormRequest
 {
@@ -40,11 +41,13 @@ class DestroyMuteWordRequest extends FormRequest
     }
     public function messages()
     {
+        $form_request_message = new FormRequestMessage();
+        $head = 'ミュートワード';
         return [
-            'id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'id.not_in' => '送信値の変更を検知したためキャンセルしました。',
-            'id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'id.exists' => '送信値の変更を検知したためキャンセルしました。',
+            'id.required' => $form_request_message->cancel($head),
+            'id.not_in' => $form_request_message->cancel($head),
+            'id.numeric' => $form_request_message->cancel($head),
+            'id.exists' => $form_request_message->cancel($head),
         ];
     }
 }

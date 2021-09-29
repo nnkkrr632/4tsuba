@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\RegularExpressionRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\FormRequestMessage;
 
 class StoreMuteWordRequest extends FormRequest
 {
@@ -45,13 +46,14 @@ class StoreMuteWordRequest extends FormRequest
     }
     public function messages()
     {
-        $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+        $head = 'ミュートワード';
         return [
-            'mute_word.required' => '入力必須です。',
-            'mute_word.not_in' => '入力必須です(not_in)。',
-            'mute_word.between' => '1文字~10文字で入力してください。',
-            'mute_word.regex' => $regular_expression_rule->message()[0],
-            'mute_word.unique' => '既に登録されています。',
+            'mute_word.required' => $form_request_message->required($head),
+            'mute_word.not_in' => $form_request_message->not_in($head),
+            'mute_word.between' => $form_request_message->between(1, 10, $head),
+            'mute_word.regex' => $form_request_message->forbidHtmlTag($head),
+            'mute_word.unique' => $form_request_message->muteWordAlreadyRegistered($head),
         ];
     }
 }

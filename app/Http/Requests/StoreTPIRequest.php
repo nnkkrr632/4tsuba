@@ -6,8 +6,7 @@ use App\Rules\RegularExpressionRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use PHPUnit\Framework\Constraint\RegularExpression;
-use Illuminate\Validation\Rule;
-
+use App\Models\FormRequestMessage;
 
 class StoreTPIRequest extends FormRequest
 {
@@ -64,19 +63,20 @@ class StoreTPIRequest extends FormRequest
 
     public function messages()
     {
-        $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+        $heads = ['スレッドタイトル', '書込', '画像'];
         return [
-            'title.required' => '【スレッドタイトル】入力必須です。',
-            'title.not_in' => '【スレッドタイトル】入力必須です(not_in)。',
-            'title.regex' => '【スレッドタイトル】' . $regular_expression_rule->message()[0],
-            'title.between' => '【スレッドタイトル】1文字~20文字で入力してください。',
-            'body.required' => '【書込】入力必須です。',
-            'body.not_in' => '【書込】入力必須です(not_in)。',
-            'body.between' => '【書込】1文字~200文字で入力してください。',
-            'body.regex' => '【書込】' . $regular_expression_rule->message()[0],
-            'image.image' => '【画像】画像ファイルを指定してください。',
-            'image.mimes' => '【画像】「jpeg」「jpg」「png」「gif」形式に対応しています。',
-            'image.max' => '【画像】3.0MBを超える画像は添付できません。',
+            'title.required' => $form_request_message->required($heads[0]),
+            'title.not_in' => $form_request_message->not_in($heads[0]),
+            'title.regex' => $form_request_message->forbidHtmlTag($heads[0]),
+            'title.between' => $form_request_message->between(1, 20, $heads[0]),
+            'body.required' => $form_request_message->required($heads[1]),
+            'body.not_in' => $form_request_message->not_in($heads[1]),
+            'body.between' => $form_request_message->between(1, 200, $heads[1]),
+            'body.regex' => $form_request_message->forbidHtmlTag($heads[1]),
+            'image.image' => $form_request_message->image($heads[2]),
+            'image.mimes' => $form_request_message->imageMime($heads[2]),
+            'image.max' => $form_request_message->imageMaxSize($heads[2]),
         ];
     }
 }

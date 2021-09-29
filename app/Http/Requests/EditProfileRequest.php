@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\RegularExpressionRule;
 use Illuminate\Contracts\Validation\Validator;
+use App\Models\FormRequestMessage;
 
 class EditProfileRequest extends FormRequest
 {
@@ -47,15 +48,16 @@ class EditProfileRequest extends FormRequest
 
     public function messages()
     {
-        $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+        $heads = ['表示名', 'アイコン'];
         return [
-            'name.required' => '【表示名】入力必須です。',
-            'name.not_in' => '【表示名】入力必須です。(not_in)',
-            'name.between' => '【表示名】1文字~20文字で入力してください。',
-            'name.regex' => '【表示名】' . $regular_expression_rule->message()[0],
-            'icon.image' => '【画像】画像ファイルを指定してください。',
-            'icon.mimes' => '【画像】「jpeg」「jpg」「png」「gif」形式に対応しています。',
-            'icon.max' => '【画像】3.0MBを超える画像は添付できません。',
+            'name.required' => $form_request_message->required($heads[0]),
+            'name.not_in' => $form_request_message->not_in($heads[0]),
+            'name.between' => $form_request_message->between(1, 20, $heads[0]),
+            'name.regex' => $form_request_message->forbidHtmlTag($heads[0]),
+            'icon.image' => $form_request_message->image($heads[1]),
+            'icon.mimes' => $form_request_message->imageMime($heads[1]),
+            'icon.max' => $form_request_message->imageMaxSize($heads[1]),
         ];
     }
 }

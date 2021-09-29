@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestMessage;
 
 class DestroyLikeRequest extends FormRequest
 {
@@ -48,15 +49,17 @@ class DestroyLikeRequest extends FormRequest
     }
     public function messages()
     {
+        $form_request_message = new FormRequestMessage();
+        $heads = ['スレッドタイトル', '書込'];
         return [
-            'thread_id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'thread_id.not_in' => '送信値の変更を検知したためキャンセルしました。',
-            'thread_id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'thread_id.exists' => '送信値の変更を検知したためキャンセルしました。',
-            'post_id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'post_id.not_in' => '送信値の変更を検知したためキャンセルしました。',
-            'post_id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'post_id.exists' => '送信値の変更を検知したためキャンセルしました。',
+            'thread_id.required' => $form_request_message->cancel($heads[0]),
+            'thread_id.not_in' => $form_request_message->cancel($heads[0]),
+            'thread_id.numeric' => $form_request_message->cancel($heads[0]),
+            'thread_id.exists' => $form_request_message->cancel($heads[0]),
+            'post_id.required' => $form_request_message->cancel($heads[1]),
+            'post_id.not_in' => $form_request_message->cancel($heads[1]),
+            'post_id.numeric' => $form_request_message->cancel($heads[1]),
+            'post_id.exists' => $form_request_message->cancel($heads[1]),
         ];
     }
 }

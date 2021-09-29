@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestMessage;
 
 class DestroyMuteUserRequest extends FormRequest
 {
@@ -42,11 +43,14 @@ class DestroyMuteUserRequest extends FormRequest
     }
     public function messages()
     {
+        $form_request_message = new FormRequestMessage();
+        $head = 'ミュートユーザー';
+
         return [
-            'user_id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'user_id.not_in' => '自分をミュート解除することはできません。',
-            'user_id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'user_id.exists' => 'このユーザーはミュートされていないため、ミュートを解除できません。',
+            'user_id.required' => $form_request_message->cancel($head),
+            'user_id.not_in' => $form_request_message->cancel($head),
+            'user_id.numeric' => $form_request_message->cancel($head),
+            'user_id.exists' => $form_request_message->cancel($head),
         ];
     }
 }

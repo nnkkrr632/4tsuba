@@ -46,6 +46,6 @@ class RegularExpressionRule implements Rule
     //implementの影響でmessage()メソッドを持たなくてはならないらしい
     public function message()
     {
-        return ['HTMLタグを入力できません。', '半角英数字混合の8~24文字でお願いいたします。'];
+        //
     }
 }

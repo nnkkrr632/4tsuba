@@ -62,7 +62,11 @@ export default {
                     this.$emit("receiveUpdate");
                 })
                 .catch(error => {
-                    console.log(error.response.data);
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
                 });
             }
         }

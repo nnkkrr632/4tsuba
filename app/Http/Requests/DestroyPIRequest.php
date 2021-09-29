@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\FormRequestMessage;
 
 class DestroyPIRequest extends FormRequest
 {
@@ -45,11 +46,13 @@ class DestroyPIRequest extends FormRequest
     }
     public function messages()
     {
+        $form_request_message = new FormRequestMessage();
+        $head = '書込';
         return [
-            'id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'id.not_in' => '送信値の変更を検知したためキャンセルしました。',
-            'id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'id.exists' => '書込者以外は削除できません。',
+            'id.required' => $form_request_message->cancel($head),
+            'id.not_in' => $form_request_message->cancel($head),
+            'id.numeric' => $form_request_message->cancel($head),
+            'id.exists' => $form_request_message->onlyOwnerCanDestroy($head),
         ];
     }
 }

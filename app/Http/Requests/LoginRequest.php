@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\RegularExpressionRule;
+use App\Models\FormRequestMessage;
 
 class LoginRequest extends FormRequest
 {
@@ -44,16 +45,18 @@ class LoginRequest extends FormRequest
 
     public function messages()
     {
-        $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+        $heads = ['メールアドレス', 'パスワード'];
+
         return [
-            'email.required' => '【メールアドレス】入力必須です。',
-            'email.not_in' => '【メールアドレス】入力必須です。(not_in)',
-            'email.email' => '【メールアドレス】メールアドレス形式で入力してください。',
-            'email.exists' => '【メールアドレス】未登録のメールアドレスです。',
-            'email.between' => '【メールアドレス】1文字~100文字で入力してください。',
-            'password.required' => '【パスワード】入力必須です。',
-            'password.not_in' => '【パスワード】入力必須です(not_in)。',
-            'password.regex' => '【パスワード】' . $regular_expression_rule->message()[1],
+            'email.required' => $form_request_message->required($heads[0]),
+            'email.not_in' => $form_request_message->not_in($heads[0]),
+            'email.email' => $form_request_message->email($heads[0]),
+            'email.exists' => $form_request_message->emailNotRegistered($heads[0]),
+            'email.between' => $form_request_message->between(1, 100, $heads[0]),
+            'password.required' => $form_request_message->required($heads[1]),
+            'password.not_in' => $form_request_message->not_in($heads[1]),
+            'password.regex' => $form_request_message->passwordRule($heads[1]),
         ];
     }
 }

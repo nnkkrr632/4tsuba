@@ -426,13 +426,14 @@ export default {
                 .then(response => {
                     console.log(response);
                 })
-                .catch(error => {
-                    console.log(error.response);
-                    if(error.response.status === 422) {
-                        alert(error.response.data.message);
-                        this.post.likes_count--;
-                    }
-                });
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
+                            this.post.likes_count--;
+                        }
+                    });
         },
         dislike() {
             console.log("this is dislike");
@@ -449,13 +450,14 @@ export default {
                     console.log(response);
                     this.$emit("re_get_posts_at_my_profile_like");
                 })
-                .catch(error => {
-                    console.log(error.response);
-                    if(error.response.status === 422) {
-                        alert(error.response.data.message);
-                        this.post.likes_count++;
-                    }
-                });
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
+                            this.post.likes_count++;
+                        }
+                    });
         },
         editBody() {
             console.log("this is editBody");
@@ -493,7 +495,8 @@ export default {
                 .catch(error => {
                     console.log(error.response);
                     if(error.response.status === 422) {
-                        alert(error.response.data.message);
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
                     }
                 });
         },
@@ -530,7 +533,8 @@ export default {
                     .catch(error => {
                         console.log(error.response);
                         if(error.response.status === 422) {
-                            alert(error.response.data.message);
+                            let alert_array = Object.values(error.response.data.errors);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
                         }
                     });
             }

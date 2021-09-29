@@ -11,8 +11,8 @@
                 prepend-icon="email"
                 type="text"
                 v-model="my_info.email"
-                :rules="[rules.required, rules.email]"
             />
+            <!-- :rules="[rules.required, rules.email]" -->
             <v-text-field
                 outlined
                 id="current_password"
@@ -22,8 +22,9 @@
                 prepend-icon="lock"
                 type="password"
                 v-model="current_password"
-                :rules="[rules.required, rules.password]"
+                
             />
+            <!-- :rules="[rules.required, rules.password]" -->
             <v-text-field
                 outlined
                 id="new_password"
@@ -33,17 +34,19 @@
                 prepend-icon="lock"
                 type="password"
                 v-model="password"
-                :rules="[rules.required, rules.password]"
+                
             />
-
+            <!-- :rules="[rules.required, rules.password]" -->
             <v-text-field
                 outlined
                 label="新しいパスワード(確認)"
                 color="green lightten-3"
                 prepend-icon="lock"
                 type="password"
-                :rules="[rules.required, rules.password_confirm]"
+                v-model="password_confirm"
+                
             />
+            <!--  :rules="[rules.required, rules.password_confirm]" -->
         </v-form>
         <div class="d-flex justify-end">
         <v-btn v-if="my_info.role !== 'guest'"
@@ -87,6 +90,7 @@ export default {
             my_info: {},
             current_password: null,
             password: null,
+            password_confirm: null,
             valid: null,
             rules: {
                 required: value => !!value || "入力必須です。",
@@ -132,6 +136,7 @@ export default {
                     email: this.my_info.email,
                     current_password: this.current_password,
                     password: this.password,
+                    password_confirm: this.password_confirm,
                 })
                 .then(response => {
                     console.log(response.data);
@@ -147,6 +152,13 @@ export default {
                         }
                     }
                 })
+                .catch(error => {
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
+                });
         },
     },
     mounted() {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FormRequestMessage;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\RegularExpressionRule;
 
@@ -30,7 +31,7 @@ class RegisterRequest extends FormRequest
             'name' => [
                 'required',
                 'not_in:"null"',
-                'between:1,10',
+                'between:1,20',
                 $regular_expression_rule->forbidHtmlTag(),
             ],
             'email' => [
@@ -55,23 +56,24 @@ class RegisterRequest extends FormRequest
 
     public function messages()
     {
-        $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+        $heads = ['表示名', 'メールアドレス', 'パスワード', 'パスワード確認'];
         return [
-            'name.required' => '【表示名】入力必須です。',
-            'name.not_in' => '【表示名】入力必須です。(not_in)',
-            'name.between' => '【表示名】1文字~10文字で入力してください。',
-            'name.regex' => '【表示名】' . $regular_expression_rule->message()[0],
-            'email.required' => '【メールアドレス】入力必須です。',
-            'email.not_in' => '【メールアドレス】入力必須です。(not_in)',
-            'email.email' => '【メールアドレス】メールアドレス形式で入力してください。',
-            'email.unique' => '【メールアドレス】既に登録済みのメールアドレスです。',
-            'email.between' => '【メールアドレス】1文字~100文字で入力してください。',
-            'password.required' => '【パスワード】入力必須です。',
-            'password.not_in' => '【パスワード】入力必須です(not_in)。',
-            'password.regex' => '【パスワード】' . $regular_expression_rule->message()[1],
-            'password_confirm.required' => '【パスワード確認】入力必須です。',
-            'password_confirm.not_in' => '【パスワード確認】入力必須です(not_in)。',
-            'password_confirm.same' => '【パスワード確認】パスワードと一致しません。',
+            'name.required' => $form_request_message->required($heads[0]),
+            'name.not_in' => $form_request_message->not_in($heads[0]),
+            'name.between' => $form_request_message->between(1, 20, $heads[0]),
+            'name.regex' => $form_request_message->forbidHtmlTag($heads[0]),
+            'email.required' => $form_request_message->required($heads[1]),
+            'email.not_in' => $form_request_message->not_in($heads[1]),
+            'email.email' => $form_request_message->email($heads[1]),
+            'email.unique' => $form_request_message->emailAlreadyRegistered($heads[1]),
+            'email.between' => $form_request_message->between(1, 100, $heads[1]),
+            'password.required' => $form_request_message->required($heads[2]),
+            'password.not_in' => $form_request_message->not_in($heads[2]),
+            'password.regex' => $form_request_message->passwordRule($heads[2]),
+            'password_confirm.required' => $form_request_message->required($heads[3]),
+            'password_confirm.not_in' => $form_request_message->not_in($heads[3]),
+            'password_confirm.same' => $form_request_message->passwordConfirm($heads[3]),
         ];
     }
 }

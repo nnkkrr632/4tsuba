@@ -14,6 +14,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MuteWordController;
 use App\Http\Controllers\MuteUserController;
+use App\Http\Controllers\NotFoundController;
 
 
 use App\Http\Controllers\AuthController;
@@ -119,3 +120,11 @@ Route::get('/images/search', [ImageController::class, 'returnImagesForTheSearch'
 Route::put('/like', [LikeController::class, 'store']);
 Route::delete('/like', [LikeController::class, 'destroy']);
 // --------------------------------------------------------------------
+
+//404
+Route::any('{any}', function () {
+    return response()->json([
+        'status'    => 404,
+        'message'   => 'Not Found.',
+    ], 404);
+})->where('any', '.*');

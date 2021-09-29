@@ -13,52 +13,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 //フォームリクエスト
 use App\Http\Requests\StoreTPIRequest;
+use App\Http\Requests\ThreadsOrderByRequest;
 
 
 class ThreadController extends Controller
 {
     //スレッド取得
-    public function index(Request $request)
+    public function index(ThreadsOrderByRequest $threads_order_by_request)
     {
-
         $image = new Image();
         $thread_image_table = $image->returnThreadImageTable();
-
-        $sort_list = array("最終更新", "作成日時", "書込数", "いいね数");
-        $order_set = array();
-
-        switch ($request->sort) {
-            case $sort_list[0]:
-                array_push($order_set, 'updated_at');
-                break;
-            case $sort_list[1]:
-                array_push($order_set, 'created_at');
-                break;
-            case $sort_list[2]:
-                array_push($order_set, 'post_count');
-                break;
-            case $sort_list[3]:
-                array_push($order_set, 'like_count');
-                break;
-            default:
-                array_push($order_set, 'updated_at');
-        }
-
-        switch ($request->order) {
-            case 'desc':
-                array_push($order_set, 'desc');
-                break;
-            case 'asc':
-                array_push($order_set, 'asc');
-                break;
-            default:
-                array_push($order_set, 'desc');
-        }
 
         return Thread::leftJoinSub($thread_image_table, 'thread_image_table', function ($join) {
             $join->on('threads.id', '=', 'thread_image_table.thread_id');
         })
-            ->orderBy('threads.' . $order_set[0], $order_set[1])->get()
+            ->orderBy('threads.' . $threads_order_by_request->column, $threads_order_by_request->desc_asc)->get()
             ->makeVisible(['created_at', 'updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
     }
 

@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\RegularExpressionRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use PHPUnit\Framework\Constraint\RegularExpression;
+use App\Rules\RegularExpressionRule;
 use Illuminate\Validation\Rule;
+use App\Models\FormRequestMessage;
 use Illuminate\Support\Facades\Auth;
 
 class EditPIRequest extends FormRequest
@@ -73,19 +74,22 @@ class EditPIRequest extends FormRequest
     public function messages()
     {
         $regular_expression_rule = new RegularExpressionRule();
+        $form_request_message = new FormRequestMessage();
+
+        $heads = ['書込', '画像'];
         return [
-            'id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'id.not_in' => '送信値の変更を検知したためキャンセルしました。',
-            'id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'id.exists' => '書込者以外は変更できません。',
-            'body.required' => '入力必須です。',
-            'body.not_in' => '入力必須です(not_in)。',
-            'body.between' => '1文字~200文字で入力してください。',
-            'body.regex' => $regular_expression_rule->message()[0],
-            'image.image' => '添付は画像ファイルを指定してください。',
-            'image.mimes' => '画像ファイルは「jpeg」「jpg」「png」「gif」形式のみ可能です。',
-            'image.max' => '3.0MBを超える画像は添付できません。',
-            'delete_image.in' => '送信値の変更を検知したためキャンセルしました。',
+            'id.required' => $form_request_message->cancel($heads[0]),
+            'id.not_in' => $form_request_message->cancel($heads[0]),
+            'id.numeric' => $form_request_message->cancel($heads[0]),
+            'id.exists' => $form_request_message->OnlyOwnerCanEdit($heads[0]),
+            'body.required' => $form_request_message->required($heads[0]),
+            'body.not_in' => $form_request_message->not_in($heads[0]),
+            'body.between' => $form_request_message->between(1, 200, $heads[0]),
+            'body.regex' => $form_request_message->forbidHtmlTag($heads[0]),
+            'image.image' => $form_request_message->image($heads[1]),
+            'image.mimes' => $form_request_message->imageMime($heads[1]),
+            'image.max' => $form_request_message->imageMaxSize($heads[1]),
+            'delete_image.in' => $form_request_message->cancel($heads[0]),
         ];
     }
 }

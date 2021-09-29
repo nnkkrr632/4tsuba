@@ -4,7 +4,7 @@
             <headline-component v-bind:headline="headline"></headline-component>
             <v-spacer></v-spacer>
             <!-- 子コンポーネントからのemit受け取り @イベント名="メソッド名" -->
-            <sort-component @receiveSortObject="updateSort"></sort-component>
+            <sort-component @update_order_by="updateOrderBy"></sort-component>
         </div>
 
         <!-- スレッド一覧 -->
@@ -37,7 +37,7 @@ export default {
             my_info: {},
             threads: [],
             headline: "スレッド一覧",
-            received_sort_object: {}
+            order_by: {'column':'updated_at', 'desc_asc':'desc'},
         };
     },
     methods: {
@@ -47,11 +47,11 @@ export default {
                 this.my_info = res.data;
             });
         },
-        updateSort(emited_sort_object) {
+        updateOrderBy(emitted_order_by) {
             console.log("this is updateSort");
-            this.received_sort_object = emited_sort_object;
-            console.log(this.received_sort_object);
-
+            this.order_by['column'] = emitted_order_by['column'];
+            this.order_by['desc_asc'] = emitted_order_by['desc_asc'];
+            console.log(this.order_by);
             //他のメソッドはthis.methodName()で実行できる
             this.getThreads();
         },
@@ -60,13 +60,21 @@ export default {
             axios
                 .get("/api/threads", {
                     params: {
-                        sort: this.received_sort_object.sort,
-                        order: this.received_sort_object.order
+                        column: this.order_by.column,
+                        desc_asc: this.order_by.desc_asc
                     }
                 })
                 .then(res => {
                     this.threads = res.data;
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
                 });
+
         }
     },
     components: {

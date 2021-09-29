@@ -4,8 +4,8 @@
             color="green lighten-2"
             item-color="green lighten-2"
             append-icon="mdi-menu"
-            v-model="selected_sort"
-            :items="sorts"
+            v-model="selected_column"
+            :items="Object.values(columns)"
             hint="並び順"
             persistent-hint
             @change="changeSort()"
@@ -15,7 +15,7 @@
             color="green lighten-2"
             on-icon="mdi-arrow-down-bold"
             off-icon="mdi-arrow-up-bold"
-            :hint="order[0]"
+            :hint="desc_asc[0]"
             persistent-hint
             v-model="true_false"
             class="ml-3"
@@ -31,27 +31,30 @@
 export default {
     data() {
         return {
-            sorts: ["最終更新", "作成日時", "書込数", "いいね数"],
+            columns: {'updated_at':'最終更新', 'created_at':'作成日時', 'post_count':'書込数', 'like_count':'いいね数'},
             //バインドする変数
-            selected_sort: "最終更新",
+            selected_column: "最終更新",
             true_false: true,
-            order: ["desc", "asc"],
+            desc_asc: ["desc", "asc"],
             //メソッドでAPIとして送信する変数
-            sort_object: {}
+            order_by: {'column':null, 'desc_asc':null},
         };
     },
     methods: {
         switchHint() {
-            this.order = this.order.reverse();
-            console.log(this.order);
+            this.desc_asc = this.desc_asc.reverse();
+            console.log(this.desc_asc);
         },
         changeSort() {
-            this.$set(this.sort_object, 'sort', this.selected_sort);
-            this.$set(this.sort_object, 'order', this.order[0]);
-            console.log(this.sort_object);
+            this.order_by['column'] = this.getKeyByValue(this.columns,this.selected_column);
+            this.order_by['desc_asc'] = this.desc_asc[0];
+            console.log(this.order_by);
 
             //親コンポーネントへのemit  第一引数は親コンポーネントで受け取るためのイベント名
-            this.$emit("receiveSortObject", this.sort_object);
+            this.$emit("update_order_by", this.order_by);
+        },
+        getKeyByValue(object,value) {
+            return Object.keys(object).find(key => object[key] === value);
         }
     }
 };

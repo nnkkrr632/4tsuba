@@ -58,7 +58,8 @@ export default {
             .catch(error => {
                 console.log(error.response);
                 if(error.response.status === 422) {
-                    alert(error.response.data.message);
+                    let alert_array = Object.values(error.response.data.errors);
+                    alert(alert_array.flat().join().replace(/,/g, '\n'));
                 }
             });
         },

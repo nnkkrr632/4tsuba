@@ -246,10 +246,8 @@ export default {
                         .catch(error => {
                             console.log(error.response);
                             if(error.response.status === 422) {
-                                alert(error.response.data.message);
-                                if(error.response.data.message === '自分をミュートすることはできません。') {
-                                    this.my_info.id = this.user_id;
-                                }
+                                let alert_array = Object.values(error.response.data.errors);
+                                alert(alert_array.flat().join().replace(/,/g, '\n'));
                             }
                         });
                 }
@@ -273,10 +271,8 @@ export default {
                         .catch(error => {
                             console.log(error.response);
                             if(error.response.status === 422) {
-                                alert(error.response.data.message);
-                                if(error.response.data.message === '自分をミュート解除することはできません。') {
-                                    this.my_info.id = this.user_id;
-                                }
+                                let alert_array = Object.values(error.response.data.errors);
+                                alert(alert_array.flat().join().replace(/,/g, '\n'));
                             }
                         });
                 }

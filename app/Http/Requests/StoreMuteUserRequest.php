@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FormRequestMessage;
 
 class StoreMuteUserRequest extends FormRequest
 {
@@ -43,12 +44,14 @@ class StoreMuteUserRequest extends FormRequest
     }
     public function messages()
     {
+        $form_request_message = new FormRequestMessage();
+        $head = 'ミュートユーザー';
         return [
-            'user_id.required' => '送信値の変更を検知したためキャンセルしました。',
-            'user_id.not_in' => '自分をミュートすることはできません。',
-            'user_id.numeric' => '送信値の変更を検知したためキャンセルしました。',
-            'user_id.exists' => '送信値の変更を検知したためキャンセルしました。',
-            'user_id.unique' => '既にミュート済みです。',
+            'user_id.required' => $form_request_message->cancel($head),
+            'user_id.not_in' => $form_request_message->cancel($head),
+            'user_id.numeric' => $form_request_message->cancel($head),
+            'user_id.exists' => $form_request_message->cancel($head),
+            'user_id.unique' => $form_request_message->cancel($head),
         ];
     }
 }

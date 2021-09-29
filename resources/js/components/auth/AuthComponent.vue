@@ -44,6 +44,7 @@
                     <!-- :rules="[rules.required, rules.password]" -->
                     <v-text-field
                         outlined
+                        name="password"
                         v-if="register_or_login === 'register'"
                         label="パスワード(確認)"
                         placeholder="p@ssw0rd"
