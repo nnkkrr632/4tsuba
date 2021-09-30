@@ -73,10 +73,15 @@ class ThreadController extends Controller
     //VueRouter遷移前スレッド存在確認
     public function exists($thread_id)
     {
-        //文字列をURLに入力されたら無理やり0に変換
-        $converted_thread_id = (int)$thread_id;
+        //文字列をURLに入力されたら404送り
+        if (preg_match('/\D/', $thread_id)) {
+            return 0;
+        } else {
+            //文字列をURLに入力されたら無理やり0に変換
+            $converted_thread_id = (int)$thread_id;
 
-        return Thread::where('id', $converted_thread_id)->count();
+            return Thread::where('id', $converted_thread_id)->count();
+        }
     }
 
     //スレッド削除(スタッフ用)

@@ -6,7 +6,7 @@
                 <v-spacer />
             </v-toolbar>
             <v-card-text>
-                <v-form ref="form" v-model="valid">
+                <v-form ref="form">
                     <v-text-field
                         v-if="register_or_login === 'register'"
                         outlined
@@ -15,21 +15,22 @@
                         color="green lightten-3"
                         name="name"
                         prepend-icon="mdi-account"
-                        type="text"
+                        :counter="word_counts[0]"
+                        :hint="'必須 & 最大' + word_counts[0] + '文字'"
                         v-model="name"
                     />
-                    <!-- :rules="[rules.required]"  -->
                     <v-text-field
                         outlined
                         label="メールアドレス"
-                        placeholder="4tsuba@test.com"
+                        placeholder="example_4tsuba@4tsuba.site"
                         color="green lightten-3"
                         name="email"
                         prepend-icon="email"
                         type="text"
+                        :counter="word_counts[1]"
+                        :hint="'必須 & 最大' + word_counts[1] + '文字'"
                         v-model="email"
                     />
-                    <!-- :rules="[rules.required, rules.email]" -->
                     <v-text-field
                         outlined
                         id="password"
@@ -39,9 +40,10 @@
                         name="password"
                         prepend-icon="lock"
                         type="password"
+                        :counter="word_counts[0]"
+                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 英字と数字を必ず含む'"
                         v-model="password"
                     />
-                    <!-- :rules="[rules.required, rules.password]" -->
                     <v-text-field
                         outlined
                         name="password"
@@ -51,15 +53,15 @@
                         color="green lightten-3"
                         prepend-icon="lock"
                         type="password"
+                        :counter="word_counts[0]"
+                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 英数字混合'"
                         v-model="password_confirm"
                     />
-                    <!-- :rules="[rules.required, rules.password_confirm]" -->
                 </v-form>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <v-btn
-                    :disabled="!valid"
                     class="white--text"
                     color="green lighten-2"
                     depressed
@@ -95,30 +97,7 @@ export default {
             email: null,
             password: null,
             password_confirm: null,
-
-            //バリデーション項目
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                email: value => {
-                    const pattern = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
-                    return (
-                        pattern.test(value) || "メールアドレスを入力して下さい"
-                    );
-                },
-                password: value => {
-                    const pattern = /^(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i;
-                    return (
-                        pattern.test(value) ||
-                        "8文字以上 かつ 半角英数字記号を含む"
-                    );
-                },
-                password_confirm: value => {
-                    return (
-                        value === this.password || "パスワードが一致しません"
-                    );
-                }
-            },
+            word_counts:[20, 100, 8],
             title: ["ログイン", "ユーザー登録"],
             link: ["register", "login"]
         };

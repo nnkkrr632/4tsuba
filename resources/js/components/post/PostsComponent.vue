@@ -67,6 +67,7 @@ export default {
             posts: {},
             anchor: null,
             media: [],
+            response_map: {},
         };
     },
     methods: {
@@ -106,6 +107,7 @@ export default {
                 .then(res => {
                     this.posts = res.data;
                     this.getThreadImagesForLightBox();
+                    //this.getResponseMap();
                 });
         },
         getResponses(emitted_displayed_post_id) {
@@ -155,7 +157,65 @@ export default {
         },
         showImages(emitted_lightbox_index) {
             this.$refs.lightbox.showImage(emitted_lightbox_index);
-        }
+        },
+        //宛先表示 一旦中止
+        // getResponseMap() {
+        //     console.log('this is getResponseMap');
+        //     axios
+        //         .get("/api/threads/" + this.thread_id + "/responses")
+        //         .then(res => {
+        //             this.response_map = res.data;
+        //             this.InsertResponseMapIntoPosts();
+        //         });
+        // },
+        // InsertResponseMapIntoPosts() {
+        //     console.log('this is InsertResponseMapIntoPosts');
+
+        //     for(let i = 0; i<this.response_map.length; i++) {
+        //         // this.posts.forEach(function(post) {
+        //         for(let j = 0; j<this.posts.length; j++) {
+        //             let to_body = this.response_map[i]['to_body'];
+        //             let from = this.response_map[i]['from'];
+        //             let to = this.response_map[i]['to'];
+        //             //from側にtoリストを作成
+        //             if(this.posts[j]['displayed_post_id'] == from) {
+        //                 if(!this.posts[j]['to_list']) {
+        //                 this.posts[j]['to_list'] = {[to]:to_body};
+        //                 }else {
+        //                     Object.assign(this.posts[j]['to_list'], {[to]:to_body});
+        //                 }
+        //             }
+
+        //         }
+        //             //returnBodyがなぜか呼び出せない。これできれば最高なのに
+        //             // //from側にtoリストを作成
+        //             // if(post['displayed_post_id'] == from) {
+        //             //     if(!post['to_list']) {
+        //             //     post['to_list'] = {to: this.returnBody(to)};
+        //             //     }else {
+        //             //         post['to_list'].to = this.returnBody(to);
+        //             //     }
+        //             // }
+        //             // //to側にfromリストを作成
+        //             // if(post['displayed_post_id'] == to) {
+        //             //     if(!post['from_list']) {
+        //             //     post['from_list'] = {from: this.returnBody(from)};
+        //             //     }else {
+        //             //         post['from_list'].from = this.returnBody(from);
+        //             //     }
+        //             // }
+        //         }
+        //    },
+        // returnBody(displayed_post_id) {
+        //     posts.forEach(function(post) {
+        //         if(post['displayed_post_id'] == displayed_post_id) {
+        //             return post['body'];
+        //         } else {
+        //             return null;
+        //         }
+        //     }) 
+        // },
+
     },
     components: {
         ThreadObjectComponent,

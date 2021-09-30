@@ -1,17 +1,17 @@
 <template>
 <div>
-    <v-form ref="form" v-model="valid">
+    <v-form ref="form" >
         <v-text-field
             outlined
             color="green lightten-3"
+            :counter="word_count"
+            :hint="'必須 & 最大' + word_count + '文字'"
             name="mute_word"
             type="text"
             v-model="mute_word"
         />
-        <!-- :rules="[rules.required, rules.length]" -->
     </v-form>
         <v-btn
-            :disabled="!valid"
             class="white--text"
             color="green lighten-2"
             depressed
@@ -32,15 +32,7 @@ export default {
     data() {
         return {
             mute_word: null,
-            valid: null,
-            limit: 10,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
-                length: value =>
-                    (value && value.length <= this.limit) ||
-                    this.limit + "文字以内で入力してください。",
-            },
+            word_count: 10,
         }
     },
     methods: {

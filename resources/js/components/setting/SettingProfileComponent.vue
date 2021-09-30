@@ -2,30 +2,32 @@
     <div>
         <headline-component v-bind:headline="headline"></headline-component>
 
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form">
+            <!-- アイコン -->
             <v-file-input
                 v-model="icon"
                 color="green lightten-2"
-                label="プロフィールアイコン"
+                label="プロフィールアイコン(JPG, JPEG, PNG, GIF）"
                 chips
                 show-size
+                accept="image/png, image/gif, image/jpg, image/jpeg" 
             ></v-file-input>
-            <!-- accept="image/png, image/gif, image/jpg, image/jpeg"  -->
+            <!-- 表示名 -->
             <v-text-field
                 outlined
                 label="表示名"
                 color="green lightten-3"
                 name="name"
                 prepend-icon="mdi-account"
-                type="text"
+                :counter="max_word_count"
+                :hint="'必須 & 最大' + max_word_count + '文字'"
+                persistent-hint
                 v-model="my_info.name"
             />
-            <!-- :rules="[rules.required]" -->
 
         </v-form>
         <div class="d-flex justify-end">
         <v-btn
-            :disabled="!valid"
             class="white--text"
             color="green lighten-2"
             depressed
@@ -65,11 +67,8 @@ export default {
             headline: "表示プロフィール変更",
             my_info: {},
             icon: null,
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-            },
-            notice: 'メールアドレス・パスワードの変更 はこちら',
+            max_word_count: 20,
+            notice: 'メールアドレス/パスワードの変更 はこちら',
             link: '/setting/account/account',
         };
     },

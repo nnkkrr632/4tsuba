@@ -2,7 +2,7 @@
     <div>
 
         <!-- 入力フォーム -->
-        <v-form ref="form" v-model="valid" class="pa-4 ">
+        <v-form ref="form" class="pa-4 ">
             <!-- スレッドタイトル -->
             <v-textarea v-if="thread_or_post === 'thread'"
                 v-model="input.title"
@@ -15,7 +15,6 @@
                 :hint="'必須 & 最大' + limit.title + '文字'"
                 persistent-hint
             ></v-textarea>
-              <!-- :rules="[rules.required, rules.length_title]" -->  
 
             <!-- 本文 -->
             <v-textarea
@@ -30,13 +29,13 @@
                 persistent-hint
                 ref="focusBody"
             ></v-textarea>
-               <!-- :rules="[rules.required, rules.length_body]" --> 
 
             <!-- 画像 -->
             <v-file-input
                 v-model="input.image"
                 color="green lightten-2"
                 placeholder="JPG, JPEG, PNG, GIF"
+                accept="image/png, image/gif, image/jpg, image/jpeg" 
                 :hint="hint[0]"
                 persistent-hint
                 chips
@@ -58,7 +57,6 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-                :disabled="!valid"
                 class="white--text"
                 color="green lighten-2"
                 depressed
@@ -93,17 +91,6 @@ export default {
             input: {title: null, body: null, image: null},
             //バリデーション関連
             limit: { title: 20, body: 200 },
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
-                length_title: value =>
-                    (value && value.length <= this.limit.title) ||
-                    this.limit.title + "文字以内で入力してください。",
-                length_body: value =>
-                    (value && value.length <= this.limit.body) ||
-                    this.limit.body + "文字以内で入力してください。"
-            },
             hint: ["", "スレッドのサムネイル(※)を設定できます。 ※スレッド内で最も若い番号(書き込み順)の画像が自動登録"],
             button_message: ["書き込む", "スレッドを作成する"],
             body_label: ["書き込む", "本文"],
@@ -113,8 +100,6 @@ export default {
     methods: {
         store() {
             console.log('this is store')
-            const result = this.$refs.form.validate();
-            console.log("入力内容バリデーション " + result);
 
             const form_data = new FormData();
             form_data.append("body", this.input.body);

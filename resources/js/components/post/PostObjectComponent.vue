@@ -146,7 +146,7 @@
                     </div>
                     <!-- 編集中 -->
                     <template v-else>
-                        <v-form ref="form" v-model="valid" class="pa-4 ">
+                        <v-form ref="form" class="pa-4 ">
                             <v-textarea
                                 class="mt-6"
                                 v-model="post.body"
@@ -157,7 +157,6 @@
                                 :hint="'必須 & 最大' + limit.body + '文字'"
                                 persistent-hint
                             ></v-textarea>
-                            <!-- :rules="[rules.required, rules.length_body]" -->
                             <!-- 画像 -->
                             <template v-if="post.image">
                                 <v-file-input
@@ -190,7 +189,6 @@
                                 キャンセル
                             </v-btn>
                             <v-btn
-                                :disabled="!valid"
                                 class="white--text"
                                 color="green lighten-2"
                                 depressed
@@ -200,7 +198,22 @@
                             </v-btn>
                         </div>
                     </template>
-
+                    <!-- 宛先表示は一旦中止 -->
+                    <!-- <template v-if="post.to_list">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <span
+                                class="blue--text text--lighten-1"
+                                v-bind="attrs"
+                                v-on="on"
+                                >
+                                >>{{Object.keys(post.to_list).join(', >>')}}
+                                </span>
+                            </template>
+                            <span>{{Object.values(post.to_list).join()}}</span>
+                        </v-tooltip>
+                    </template>
+                    <br> -->
                     <template v-if="post.responded_count">
                         <v-icon>mdi-message-arrow-left</v-icon>
                         <router-link
@@ -402,15 +415,7 @@ export default {
         return {
             is_editing: false,
             before_edit: {},
-            limit: { body: 20 },
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                //「value &&」がないと初期状態(すなわちvalue = null)のとき、valueが読み取れませんとエラーが出る
-                length_body: value =>
-                    (value && value.length <= this.limit.body) ||
-                    this.limit.body + "文字以内で入力してください。"
-            }
+            limit: { body: 200 },
         };
     },
     methods: {
@@ -431,7 +436,7 @@ export default {
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
-                            this.post.likes_count--;
+                            this.$emit("re_get_mainly_posts");
                         }
                     });
         },
@@ -455,7 +460,7 @@ export default {
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
-                            this.post.likes_count++;
+                            this.$emit("re_get_mainly_posts");
                         }
                     });
         },

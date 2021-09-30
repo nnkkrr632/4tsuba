@@ -1,7 +1,10 @@
 <template>
     <div>
         <div class="d-flex justify-end">
-            <headline-component v-bind:headline="headline"></headline-component>
+            <headline-component v-bind:headline="
+                'スレッド一覧：' + threads.length + '件'"
+            >
+            </headline-component>
             <v-spacer></v-spacer>
             <!-- 子コンポーネントからのemit受け取り @イベント名="メソッド名" -->
             <sort-component @update_order_by="updateOrderBy"></sort-component>
@@ -36,7 +39,6 @@ export default {
         return {
             my_info: {},
             threads: [],
-            headline: "スレッド一覧",
             order_by: {'column':'updated_at', 'desc_asc':'desc'},
         };
     },

@@ -22,7 +22,7 @@
         </div>
     </div>
 
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form">
             <v-text-field
                 outlined
                 id="new_password"
@@ -31,9 +31,10 @@
                 name="password"
                 prepend-icon="lock"
                 type="password"
+                :counter="word_count"
+                :hint="'必須 & 最低' + word_count + '文字 & 英字と数字を必ず含む'"               
                 v-model="password"
             />
-            <!-- :rules="[rules.required, rules.password]" -->
         </v-form>
         <div class="d-flex justify-end">
             <v-card v-if="my_info.role === 'guest'"
@@ -43,7 +44,6 @@
             > <span class="grey--text">{{message_for_guest}}</span>
             </v-card>
             <v-btn v-else
-                :disabled="!valid"
                 class="white--text"
                 color="green lighten-2"
                 depressed
@@ -70,20 +70,10 @@ export default {
             my_info: {},
             current_password: null,
             password: null,
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                password: value => {
-                    const pattern = /^(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i;
-                    return (
-                        pattern.test(value) ||
-                        "8文字以上 かつ 半角英数字記号を含む"
-                    );
-                },
-            },
             message: 'アカウントを削除する',
             message_for_guest: 'ゲストユーザーは削除できません',
-            link_threads: '/threads'
+            link_threads: '/threads',
+            word_count: 8,
         };
     },
     components: {
@@ -106,7 +96,7 @@ export default {
                     console.log(response.data);
                     if(response.message == "This action is unauthorized.") {
                     console.log(response);
-                    alert('ゲストユーザーはメールアドレス・パスワードを変更できません。');
+                    alert('ゲストユーザーはメールアドレス/パスワードを変更できません。');
                     }
                     else if(response.data === 'bad_password'){
                         alert('パスワードが違います。');

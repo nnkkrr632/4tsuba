@@ -47,7 +47,7 @@ class DestroyMuteWordRequest extends FormRequest
             'id.required' => $form_request_message->cancel($head),
             'id.not_in' => $form_request_message->cancel($head),
             'id.numeric' => $form_request_message->cancel($head),
-            'id.exists' => $form_request_message->cancel($head),
+            'id.exists' => $form_request_message->notMuteThisWord($head),
         ];
     }
 }

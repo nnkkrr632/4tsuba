@@ -1,8 +1,8 @@
 <template>
     <div>
-        <headline-component v-bind:headline="'メールアドレス・パスワード 変更'"></headline-component>
+        <headline-component v-bind:headline="'メールアドレス/パスワード 変更'"></headline-component>
 
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form">
             <v-text-field
                 outlined
                 label="メールアドレス"
@@ -10,9 +10,10 @@
                 name="email"
                 prepend-icon="email"
                 type="text"
+                :counter="word_counts[0]"
+                :hint="'必須 & 最大' + word_counts[0] + '文字'"
                 v-model="my_info.email"
             />
-            <!-- :rules="[rules.required, rules.email]" -->
             <v-text-field
                 outlined
                 id="current_password"
@@ -21,10 +22,11 @@
                 name="password"
                 prepend-icon="lock"
                 type="password"
+                :counter="word_counts[1]"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
                 v-model="current_password"
                 
             />
-            <!-- :rules="[rules.required, rules.password]" -->
             <v-text-field
                 outlined
                 id="new_password"
@@ -33,24 +35,24 @@
                 name="password"
                 prepend-icon="lock"
                 type="password"
+                :counter="word_counts[1]"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
                 v-model="password"
                 
             />
-            <!-- :rules="[rules.required, rules.password]" -->
             <v-text-field
                 outlined
                 label="新しいパスワード(確認)"
                 color="green lightten-3"
                 prepend-icon="lock"
                 type="password"
+                :counter="word_counts[1]"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
                 v-model="password_confirm"
-                
             />
-            <!--  :rules="[rules.required, rules.password_confirm]" -->
         </v-form>
         <div class="d-flex justify-end">
         <v-btn v-if="my_info.role !== 'guest'"
-            :disabled="!valid"
             class="white--text"
             color="green lighten-2"
             depressed
@@ -91,32 +93,11 @@ export default {
             current_password: null,
             password: null,
             password_confirm: null,
-            valid: null,
-            rules: {
-                required: value => !!value || "入力必須です。",
-                email: value => {
-                    const pattern = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
-                    return (
-                        pattern.test(value) || "メールアドレスを入力して下さい"
-                    );
-                },
-                password: value => {
-                    const pattern = /^(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i;
-                    return (
-                        pattern.test(value) ||
-                        "8文字以上 かつ 半角英数字記号を含む"
-                    );
-                },
-                password_confirm: value => {
-                    return (
-                        value === this.password || "パスワードが一致しません"
-                    );
-                }
-            },
             link_profile: '/setting/account/profile',
             link_delete_account: '/setting/account/delete',
             message: 'メールアドレス/パスワードを変更する',
             message_for_guest: 'ゲストユーザーは変更できません',
+            word_counts:[100, 8],
         };
     },
     components: {
@@ -142,12 +123,12 @@ export default {
                     console.log(response.data);
                     if(response.message == "This action is unauthorized.") {
                     console.log(response);
-                    alert('ゲストユーザーはメールアドレス・パスワードを変更できません。');
+                    alert('ゲストユーザーはメールアドレス/パスワードを変更できません。');
                     }
                     else if(response.data === 'bad_password'){
                         alert('現在のパスワードが違います。');
                     } else {
-                        if (confirm('メールアドレス・パスワードを変更しました。')) {
+                        if (confirm('メールアドレス/パスワードを変更しました。')) {
                             this.$router.push("/users/" + this.my_info.id + "/posts");
                         }
                     }

@@ -4,10 +4,6 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 //ルーティングに必要なコンポーネントのimport
-import TaskListComponent from "./components/TaskListComponent";
-import TaskShowComponent from "./components/TaskShowComponent";
-import TaskCreateComponent from "./components/TaskCreateComponent";
-import TaskEditComponent from "./components/TaskEditComponent";
 //threads
 import CreateThreadComponent from "./components/thread/CreateThreadComponent";
 import ThreadsComponent from "./components/thread/ThreadsComponent";
@@ -54,28 +50,6 @@ const router = new VueRouter({
          component: LogoutComponent,
       },
 
-        {
-            path: '/tasks',
-            name: 'task.list',
-            component: TaskListComponent
-        },
-        {
-           path: '/tasks/:taskId',
-           name: 'task.show',
-           component: TaskShowComponent,
-           props: true
-        },
-        {
-           path: '/tasks/create',
-           name: 'task.create',
-           component: TaskCreateComponent
-        },
-        {
-           path: '/tasks/:taskId/edit',
-           name: 'task.edit',
-           component: TaskEditComponent,
-           props: true
-        },
         //threads
          {
             path: '/threads/create',

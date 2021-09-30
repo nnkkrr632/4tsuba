@@ -83,6 +83,13 @@ export default {
                         this.posts = res.data;
                         this.highlightSearchWord();
                         this.getImagesForLightBox();
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        if(error.response.status === 422) {
+                            let alert_array = Object.values(error.response.data.errors);
+                            alert(alert_array.flat().join().replace(/,/g, '\n'));
+                        }
                     });
             }   
         },

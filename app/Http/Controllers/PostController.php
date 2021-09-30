@@ -17,13 +17,14 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreTPIRequest;
 use App\Http\Requests\EditPIRequest;
 use App\Http\Requests\DestroyPIRequest;
+use App\Http\Requests\GetPostsRequest;
 
 class PostController extends Controller
 {
     //★ポスト取得
     //※query() ：動的にwhere句を生成。=>スレッド個別とユーザープロフィールでこのメソッドを使い回す。
     //クエリパラメータで値を渡す api/posts?where=thread_id&value=2
-    public function index(Request $request)
+    public function index(GetPostsRequest $get_posts_request)
     {
         // $temp_post = new Post();
         // $login_user_post_table = $temp_post->returnLoginUserPostTable($thread_id);
@@ -39,48 +40,50 @@ class PostController extends Controller
                 },
             ]);
         //スレッド
-        if ($request->where == 'thread_id') {
+        if ($get_posts_request->where == 'thread_id') {
             //スレッド内の返信関係を取得 thread_idを特定しないと掴みようがないため、この位置
             $response = new Response();
-            $responded_count_table = $response->returnRespondedCountTable($request->value);
+            $responded_count_table = $response->returnRespondedCountTable($get_posts_request->value);
 
             $query->withTrashed()->leftJoinSub($responded_count_table, 'responded_count_table', function ($join) {
                 $join->on('posts.displayed_post_id', '=', 'responded_count_table.dest_d_post_id');
-            })->where('posts.thread_id', $request->value)->orderBy('posts.id');
+            })->where('posts.thread_id', $get_posts_request->value)->orderBy('posts.id');
         }
         //返信
-        else if ($request->where == 'responses') {
+        else if ($get_posts_request->where == 'responses') {
             $response = new Response();
-            $responded_count_table = $response->returnRespondedCountTable($request->value);
+            $responded_count_table = $response->returnRespondedCountTable($get_posts_request->value);
 
-            $query->withTrashed()->where('posts.thread_id', $request->value[0])
+            $query->withTrashed()->where('posts.thread_id', $get_posts_request->value[0])
                 ->leftJoinSub($responded_count_table, 'responded_count_table', function ($join) {
                     $join->on('posts.displayed_post_id', '=', 'responded_count_table.dest_d_post_id');
-                })->where(function ($query) use ($request) {
-                    $query->orWhereIn('posts.displayed_post_id', function ($query) use ($request) {
-                        $query->select('origin_d_post_id')->from('responses')->where('thread_id', $request->value[0])->where('dest_d_post_id', $request->value[1]);
-                    })->orWhereIn('posts.displayed_post_id', function ($query) use ($request) {
-                        $query->select('dest_d_post_id')->from('responses')->where('thread_id', $request->value[0])->where('dest_d_post_id', $request->value[1]);
+                })->where(function ($query) use ($get_posts_request) {
+                    $query->orWhereIn('posts.displayed_post_id', function ($query) use ($get_posts_request) {
+                        $query->select('origin_d_post_id')->from('responses')->where('thread_id', $get_posts_request->value[0])
+                            ->where('dest_d_post_id', $get_posts_request->value[1]);
+                    })->orWhereIn('posts.displayed_post_id', function ($query) use ($get_posts_request) {
+                        $query->select('dest_d_post_id')->from('responses')->where('thread_id', $get_posts_request->value[0])
+                            ->where('dest_d_post_id', $get_posts_request->value[1]);
                     });
                 })->orderBy('posts.id');
         }
         //プロフィール書込
-        else if ($request->where == 'user_id') {
-            $query->where('posts.user_id', $request->value)->orderBy('posts.id', 'desc');
+        else if ($get_posts_request->where == 'user_id') {
+            $query->where('posts.user_id', $get_posts_request->value)->orderBy('posts.id', 'desc');
         }
         //プロフィールいいね欄
-        else if ($request->where == 'user_like') {
+        else if ($get_posts_request->where == 'user_like') {
             $like = new Like();
-            $liked_posts_table = $like->returnLikedPostsTable($request->value);
+            $liked_posts_table = $like->returnLikedPostsTable($get_posts_request->value);
 
             $query->withTrashed()->leftJoinSub($liked_posts_table, 'liked_posts_table', function ($join) {
                 $join->on('posts.id', '=', 'liked_posts_table.liked_post_id');
             })->whereNotNull('liked_posts_table.liked_post_id')->orderBy('liked_posts_table.liked_at', 'desc');
         }
         //ワード検索
-        else if ($request->where == 'search') {
-            //$request->valueは検索単語の配列(vue側でsplit)
-            $search_word_list = $request->value;
+        else if ($get_posts_request->where == 'search') {
+            //$get_posts_request->valueは検索単語の配列(vue側でsplit)
+            $search_word_list = $get_posts_request->value;
             $query->where(function ($query) use ($search_word_list) {
                 foreach ($search_word_list as $search_word) {
                     $query->orWhere('posts.body', 'LIKE', "%" . $search_word . "%");
@@ -95,7 +98,6 @@ class PostController extends Controller
         $posts = $mute_word->addHasMuteWordsKeyToPosts($posts);
         $mute_user = new MuteUser();
         $posts = $mute_user->addPostedByMuteUsersKeyToPosts($posts);
-
 
         $lightbox_index = 0;
         foreach ($posts as $post) {

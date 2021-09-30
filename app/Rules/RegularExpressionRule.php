@@ -40,8 +40,8 @@ class RegularExpressionRule implements Rule
     }
     public function redefineAlphaNum()
     {
-        //半角英数字「混合で」8~24文字
-        return 'regex: /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]{8,24}$/';
+        //半角英字と数字の両方を少なくとも1つは含む & 記号可 & 8~24文字
+        return 'regex: /^(?=.*[0-9])(?=.*[a-zA-Z])[ -~]{8,24}$/';
     }
     //implementの影響でmessage()メソッドを持たなくてはならないらしい
     public function message()

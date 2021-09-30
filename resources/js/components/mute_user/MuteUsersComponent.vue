@@ -3,7 +3,7 @@
         <headline-component
             v-bind:headline="
                 'ミュートユーザー設定：  設定中' +
-                    mute_user_id_list.length +
+                    mute_users.length +
                     '人'
             "
         >
@@ -13,15 +13,15 @@
         <v-container>
             <v-row no-gutters>
                 <v-col
-                    v-for="mute_user_info in mute_users_info"
-                    :key="mute_user_info.id"
+                    v-for="mute_user in mute_users"
+                    :key="mute_user.id"
                     cols="12"
                     md="6"
                     class="ml-1"
                 >
                     <mute-user-object-component
-                        v-bind:mute_user_info="mute_user_info"
-                        @receiveUpdate="getMuteUsersList"
+                        v-bind:mute_user="mute_user"
+                        @receiveUpdate="getMuteUsers"
                     >
                     </mute-user-object-component>
                 </v-col>
@@ -37,8 +37,7 @@ export default {
     data() {
         return {
             my_id: 0,
-            mute_user_id_list: [],
-            mute_users_info: {}
+            mute_users: {},
         };
     },
     methods: {
@@ -48,29 +47,13 @@ export default {
                 this.my_id = res.data;
             });
         },
-        getMuteUsersList() {
-            console.log("this is getMuteUsersList");
+        getMuteUsers() {
+            console.log("this is getMuteUsers");
             axios.get("/api/mute_users").then(res => {
-                this.mute_user_id_list = res.data;
-                console.log(this.mute_user_id_list);
-                //if(this.mute_user_id_list.length) {
-                this.getMuteUsersInfo();
-                //}
+                this.mute_users = res.data;
+                console.log(this.mute_users);
             });
         },
-        getMuteUsersInfo() {
-            console.log("this is getMuteUsersInfo");
-            axios
-                .get("/api/users/", {
-                    params: {
-                        user_id_list: this.mute_user_id_list
-                    }
-                })
-                .then(res => {
-                    this.mute_users_info = res.data;
-                    console.log(this.mute_users_info);
-                });
-        }
     },
     components: {
         HeadlineComponent,
@@ -78,7 +61,7 @@ export default {
     },
     mounted() {
         this.getMyId();
-        this.getMuteUsersList();
+        this.getMuteUsers();
     }
 };
 </script>

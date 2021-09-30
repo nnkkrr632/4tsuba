@@ -12,22 +12,15 @@ class UserController extends Controller
 {
     public function returnUserInfo(Request $request)
     {
-        //ミュートユーザー機能で誰もミュートしていないときnullが入ってくるからエスケープ
-        if (!$request->user_id_list) {
-            return null;
-        } else {
-            $user_id_list = $request->user_id_list;
-            //ユーザー詳細ページとミュートユーザー一覧ページでこのメソッドを共有している。
-            //前者では必ず1人に絞られるため$user_id_list[0]とすることでログインユーザーがその人をミュートしているか判定している
-            return User::whereIn('id', $user_id_list)
-                ->withCount([
-                    'posts',
-                    'likes',
-                    'mute_users AS is_login_user_mute' => function ($query) use ($user_id_list) {
-                        $query->where('muting_user_id', Auth::id())->where('user_id', $user_id_list[0]);
-                    },
-                ])->get();
-        }
+        $user_id = $request->user_id;
+        return User::where('id', $user_id)
+            ->withCount([
+                'posts',
+                'likes',
+                'mute_users AS is_login_user_mute' => function ($query) use ($user_id) {
+                    $query->where('muting_user_id', Auth::id())->where('user_id', $user_id);
+                },
+            ])->get();
     }
 
     public function exists($user_id)

@@ -58,7 +58,7 @@ class StoreLikeRequest extends FormRequest
             'post_id.not_in' => $form_request_message->cancel($heads[1]),
             'post_id.numeric' => $form_request_message->cancel($heads[1]),
             'post_id.exists' => $form_request_message->cancel($heads[1]),
-            'post_id.unique' => $form_request_message->cancel($heads[1]),
+            'post_id.unique' => $form_request_message->alreadyLike($heads[1]),
         ];
     }
 }

@@ -6,7 +6,7 @@
     >
         <v-list-item-avatar class=" mr-3" size="30" tile>
             <img
-                :src="'/storage/icons/' + mute_user_info.icon_name"
+                :src="'/storage/icons/' + mute_user.icon_name"
                 style="object-fit: cover;"
             />
         </v-list-item-avatar>
@@ -15,9 +15,9 @@
             onMouseOut="this.style.textDecoration='none';" 
             onMouseOver="this.style.textDecoration='underline';"                    
             class="green--text text--lighten-1"
-            v-bind:to="{name: 'user.posts', params: {user_id: mute_user_info.id}}"
+            v-bind:to="{name: 'user.posts', params: {user_id: mute_user.user_id}}"
         >
-            <span v-html="mute_user_info.name" class="ml-3"></span>
+            <span v-html="mute_user.name" class="ml-3"></span>
         </router-link>
 
         <v-spacer />
@@ -38,7 +38,7 @@
 
 export default {
     props: {
-        mute_user_info: {
+        mute_user: {
             type: Object,
             required: true,
         },
@@ -54,7 +54,7 @@ export default {
             axios
                 .delete("/api/mute_users", {
                     data: {
-                        user_id: this.mute_user_info.id,
+                        user_id: this.mute_user.user_id,
                     }
                 })
                 .then(response => {

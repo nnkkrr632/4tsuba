@@ -87,13 +87,36 @@ class FormRequestMessage extends Model
     {
         return  '【' . $head . '】' . '自分をミュート解除することはできません。';
     }
-    public function hasNotMutedThisUser($head)
+    public function notMuteThisUser($head)
     {
         return  '【' . $head . '】' . 'このユーザーをミュートしていません。';
     }
+    public function alreadyMuteThisUser($head)
+    {
+        return  '【' . $head . '】' . '既にミュート済みです。';
+    }
     //ミュートワード
-    public function muteWordAlreadyRegistered($head)
+    public function alreadyMuteThisWord($head)
     {
         return  '【' . $head . '】' . '既に登録済みです。';
+    }
+    public function notMuteThisWord($head)
+    {
+        return  '【' . $head . '】' . 'このワードをミュートしていません。';
+    }
+    //いいね
+    public function alreadyLike($head)
+    {
+        return  '【' . $head . '】' . '既にいいね済みです。';
+    }
+    public function notLike($head)
+    {
+        return  '【' . $head . '】' . 'この書込をいいねしていません。';
+    }
+
+    //ワード検索
+    public function notUseRegularExpression($head)
+    {
+        return  '【' . $head . '】' . '全文検索をしないでください。';
     }
 }

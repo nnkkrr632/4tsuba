@@ -191,11 +191,7 @@ export default {
             this.user_id = this.$route.params.user_id;
             console.log('this page user is user_id '+ this.user_id);
             axios
-                .get("/api/users/", {
-                    params: {
-                        user_id_list: [this.user_id]
-                    }
-                })
+                .get("/api/users/" + this.user_id)
                 .then(res => {
                     this.user_info = res.data[0];
                 });

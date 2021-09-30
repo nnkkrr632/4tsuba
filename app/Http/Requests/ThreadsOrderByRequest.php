@@ -26,12 +26,12 @@ class ThreadsOrderByRequest extends FormRequest
         return [
             'column' => [
                 'required',
-                'not_in',
+                'not_in:"null"',
                 'in:"updated_at","created_at","post_count","like_count"',
             ],
             'desc_asc' => [
                 'required',
-                'not_in',
+                'not_in:"null"',
                 'in:"desc","asc"',
             ],
         ];

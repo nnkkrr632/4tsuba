@@ -46,4 +46,12 @@ class ResponseController extends Controller
                 ->where('dest_d_post_id', $converted_displayed_post_id)->count();
         }
     }
+    public function returnResponseMapForTheThread($thread_id)
+    {
+        return Response::leftJoin('posts', function ($join) {
+            $join->on('posts.thread_id', '=', 'responses.thread_id');
+            $join->on('posts.displayed_post_id', '=', 'responses.dest_d_post_id');
+        })->where('responses.thread_id', $thread_id)->orderBy('origin_d_post_id', 'asc')
+            ->select('origin_d_post_id as from', 'dest_d_post_id as to', 'body as to_body')->get();
+    }
 }

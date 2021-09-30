@@ -50,7 +50,7 @@ class DestroyMuteUserRequest extends FormRequest
             'user_id.required' => $form_request_message->cancel($head),
             'user_id.not_in' => $form_request_message->cancel($head),
             'user_id.numeric' => $form_request_message->cancel($head),
-            'user_id.exists' => $form_request_message->cancel($head),
+            'user_id.exists' => $form_request_message->notMuteThisUser($head),
         ];
     }
 }

@@ -53,7 +53,7 @@ class StoreMuteWordRequest extends FormRequest
             'mute_word.not_in' => $form_request_message->not_in($head),
             'mute_word.between' => $form_request_message->between(1, 10, $head),
             'mute_word.regex' => $form_request_message->forbidHtmlTag($head),
-            'mute_word.unique' => $form_request_message->muteWordAlreadyRegistered($head),
+            'mute_word.unique' => $form_request_message->alreadyMuteThisWord($head),
         ];
     }
 }

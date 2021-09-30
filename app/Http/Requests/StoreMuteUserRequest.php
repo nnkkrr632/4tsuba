@@ -51,7 +51,7 @@ class StoreMuteUserRequest extends FormRequest
             'user_id.not_in' => $form_request_message->cancel($head),
             'user_id.numeric' => $form_request_message->cancel($head),
             'user_id.exists' => $form_request_message->cancel($head),
-            'user_id.unique' => $form_request_message->cancel($head),
+            'user_id.unique' => $form_request_message->alreadyMuteThisUser($head),
         ];
     }
 }
