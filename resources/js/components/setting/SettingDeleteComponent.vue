@@ -32,7 +32,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_count"
-                :hint="'必須 & 最低' + word_count + '文字 & 英字と数字を必ず含む'"               
+                :hint="'必須 & 最低' + word_count + '文字 & 半角英字と数字を含む'"               
                 v-model="password"
             />
         </v-form>

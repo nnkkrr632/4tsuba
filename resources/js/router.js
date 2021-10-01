@@ -24,9 +24,12 @@ import SettingDeleteComponent from "./components/setting/SettingDeleteComponent"
 import MuteWordsComponent from "./components/mute_word/MuteWordsComponent";
 //setting mute_users
 import MuteUsersComponent from "./components/mute_user/MuteUsersComponent";
-import axios from "axios";
+//introduction
+import IntroductionComponent from "./components/common/IntroductionComponent";
 //not found
 import NotFoundComponent from "./components/common/NotFoundComponent";
+
+import axios from "axios";
 
 //URLと↑でimportしたコンポーネントをマッピングする（ルーティング設定
 const router = new VueRouter({
@@ -48,6 +51,13 @@ const router = new VueRouter({
          path: '/logout',
          name: 'logout',
          component: LogoutComponent,
+      },
+      {
+         path: '/',
+         name: 'introduction',
+         component: IntroductionComponent,
+         alias: '/introduction',
+         meta: {forBoth: true }
       },
 
         //threads
@@ -193,6 +203,7 @@ const router = new VueRouter({
          //github
          {
             path: '/github',
+            meta: {forBoth: true },
             beforeEnter() {
                let github = 'https://github.com/nnkkrr632/4tsuba';
                window.open(github, '_blank');
@@ -214,18 +225,23 @@ function isLoggedIn() {
 
 
 router.beforeEach((to, from, next) => {
-   //forGuestがついてないURLへのアクセス
-   if (to.matched.some(record => !(record.meta.forGuest))) {
+   if (to.matched.some(record => (record.meta.forBoth))) {
+      next();
+   } 
+  //forGuestがついてないURLへのアクセス
+   else if (to.matched.some(record => !(record.meta.forGuest))) {
        if (!isLoggedIn()) {
           alert('ログインが必要です。');
            next("/login");
        } else {
           next();
        }
+   } 
    //forGuestがついているURLへのアクセス
-   } else if (to.matched.some(record => record.meta.forGuest)) {
+   else if (to.matched.some(record => record.meta.forGuest)) {
        if (isLoggedIn()) {
            alert('すでにログイン済みです。');
+           next("/threads");
        } else {
            next();
        }

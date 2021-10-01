@@ -41,7 +41,7 @@
                         prepend-icon="lock"
                         type="password"
                         :counter="word_counts[0]"
-                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 英字と数字を必ず含む'"
+                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
                         v-model="password"
                     />
                     <v-text-field
@@ -54,7 +54,7 @@
                         prepend-icon="lock"
                         type="password"
                         :counter="word_counts[0]"
-                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 英数字混合'"
+                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
                         v-model="password_confirm"
                     />
                 </v-form>
@@ -62,7 +62,7 @@
             <v-card-actions>
                 <v-spacer />
                 <v-btn
-                    class="white--text"
+                    class="white--text mr-3"
                     color="green lighten-2"
                     depressed
                     @click="submit"
@@ -70,7 +70,7 @@
                     {{ title[0] }}
                 </v-btn>
             </v-card-actions>
-            <div class="mt-8 grey--text text--darken-1 d-flex justify-end">
+            <div class="mt-8 mr-3 grey--text text--darken-1 d-flex justify-end">
                 <v-icon class="mb-1" color="green lighten-3"
                     >mdi-information-outline</v-icon
                 >
@@ -107,7 +107,7 @@ export default {
             axios.get("/sanctum/csrf-cookie").then(response => {
                 if (this.register_or_login === "register") {
                     axios
-                        .post("/api/register", {
+                        .post("/register", {
                             name: this.name,
                             email: this.email,
                             password: this.password,
@@ -116,8 +116,8 @@ export default {
                         .then(response => {
                             console.log(response);
                             localStorage.setItem("auth", "ture");
-                            this.$router.push("/threads");
-                            this.$router.go({ path: "/threads", force: true });
+                            //this.$router.push("/threads");
+                            //this.$router.go({ path: "/threads", force: true });
                         })
                     .catch(error => {
                         console.log(error.response);
@@ -128,16 +128,18 @@ export default {
                     });
                 } else {
                     axios
-                        .post("/api/login", {
+                        .post("/login", {
                             email: this.email,
                             password: this.password
                         })
                         .then(response => {
                             console.log(response);
-                            localStorage.setItem("auth", "ture");
+                            console.log(response.data.message)
+                            if(response.data.message === 'login_success') {
+                                localStorage.setItem("auth", "ture");
+                            }
                             this.$router.push("/threads");
                             this.$router.go({ path: "/threads", force: true });
-
                         })
                     .catch(error => {
                         console.log(error.response);

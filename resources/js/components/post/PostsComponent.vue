@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <!-- スレッドタイトル部分 -->
         <div @click="getPosts" style="cursor: pointer;">
@@ -7,7 +6,6 @@
             v-bind:thread="thread"
         ></thread-object-component>
         </div>
-        <v-btn @click="showImages"></v-btn>
         <!-- Light Box -->
         <light-box v-if="media.length > 0"
             ref="lightbox"
@@ -22,7 +20,7 @@
                 v-bind:post="post"
                 v-bind:index="index"
                 v-bind:my_info="my_info"
-                @re_get_mainly_posts="updateEntry"
+                @re_get_mainly_posts="updateEntry('update_or_destroy')"
                 @receiveForResponses="getResponses"
                 @receiveForAnchor="transferAnchor"
                 @igniteLightBox="showImages"
@@ -33,7 +31,7 @@
         <v-divider></v-divider>
         <!-- 書き込み部分 -->
         <create-component
-            @re_get_mainly_posts="updateEntry"
+            @re_get_mainly_posts="updateEntry('post')"
             v-bind:anchor="anchor"
             v-bind:thread_id="thread_id"
         ></create-component>
@@ -128,16 +126,13 @@ export default {
             console.log("this is transferAnchor");
             this.anchor = '>>' + emitted_displayed_post_id + " ";
         },
-        updateEntry() {
+        updateEntry(driver) {
             console.log('this is updateEntry');
             this.getPosts();
             this.getThread();
-            this.scrollToEnd();
-        },
-        scrollToEnd() {
-            console.log('this is scrollToEnd');
-            const el = this.$refs.bottom;
-            el.scrollIntoView({behavior: 'smooth'});
+            if(driver == 'post') {
+                setTimeout(this.scrollToBottom, 500)
+            }
         },
         getThreadImagesForLightBox() {
             console.log('this is getThreadImagesForLightBox');
@@ -158,64 +153,12 @@ export default {
         showImages(emitted_lightbox_index) {
             this.$refs.lightbox.showImage(emitted_lightbox_index);
         },
-        //宛先表示 一旦中止
-        // getResponseMap() {
-        //     console.log('this is getResponseMap');
-        //     axios
-        //         .get("/api/threads/" + this.thread_id + "/responses")
-        //         .then(res => {
-        //             this.response_map = res.data;
-        //             this.InsertResponseMapIntoPosts();
-        //         });
-        // },
-        // InsertResponseMapIntoPosts() {
-        //     console.log('this is InsertResponseMapIntoPosts');
-
-        //     for(let i = 0; i<this.response_map.length; i++) {
-        //         // this.posts.forEach(function(post) {
-        //         for(let j = 0; j<this.posts.length; j++) {
-        //             let to_body = this.response_map[i]['to_body'];
-        //             let from = this.response_map[i]['from'];
-        //             let to = this.response_map[i]['to'];
-        //             //from側にtoリストを作成
-        //             if(this.posts[j]['displayed_post_id'] == from) {
-        //                 if(!this.posts[j]['to_list']) {
-        //                 this.posts[j]['to_list'] = {[to]:to_body};
-        //                 }else {
-        //                     Object.assign(this.posts[j]['to_list'], {[to]:to_body});
-        //                 }
-        //             }
-
-        //         }
-        //             //returnBodyがなぜか呼び出せない。これできれば最高なのに
-        //             // //from側にtoリストを作成
-        //             // if(post['displayed_post_id'] == from) {
-        //             //     if(!post['to_list']) {
-        //             //     post['to_list'] = {to: this.returnBody(to)};
-        //             //     }else {
-        //             //         post['to_list'].to = this.returnBody(to);
-        //             //     }
-        //             // }
-        //             // //to側にfromリストを作成
-        //             // if(post['displayed_post_id'] == to) {
-        //             //     if(!post['from_list']) {
-        //             //     post['from_list'] = {from: this.returnBody(from)};
-        //             //     }else {
-        //             //         post['from_list'].from = this.returnBody(from);
-        //             //     }
-        //             // }
-        //         }
-        //    },
-        // returnBody(displayed_post_id) {
-        //     posts.forEach(function(post) {
-        //         if(post['displayed_post_id'] == displayed_post_id) {
-        //             return post['body'];
-        //         } else {
-        //             return null;
-        //         }
-        //     }) 
-        // },
-
+        scrollToBottom() {
+            console.log('this is scrollToBottom');
+            var element = document.documentElement;
+            var bottom = element.scrollHeight - element.clientHeight;
+            window.scrollTo({top: bottom, behavior: 'smooth'});            
+        }
     },
     components: {
         ThreadObjectComponent,

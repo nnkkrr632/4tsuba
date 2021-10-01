@@ -5,7 +5,7 @@
                 <span class="d-none d-sm-inline">よつば</span>
                 <v-icon class="d-sm-none  mr-3 mb-2" color="green lighten-2">mdi-clover</v-icon>
             </v-toolbar-title>
-            <v-spacer class="d-none d-sm-inline"></v-spacer>
+            <v-spacer></v-spacer>
             <!-- 検索バー ログイン時のみ表示 -->
             <template v-if="Object.keys(my_info).length">
                 <v-text-field
@@ -92,7 +92,7 @@ export default {
                     link: "/register"
                 },
                 {
-                    name: "作者Github",
+                    name: "GitHub",
                     icon: "mdi-github-face",
                     link: "/github"
                 },

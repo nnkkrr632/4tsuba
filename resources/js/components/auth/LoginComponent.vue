@@ -10,10 +10,10 @@
             >
         </v-card>
         <v-container>
-            <v-row no-gutters>
+            <v-row >
                 <v-col v-for="n in 3" :key="n" cols="12" md="4">
                     <v-btn
-                        class="white--text mt-3 mr-3"
+                        class="white--text mt-3 ml-3"
                         color="green lighten-2"
                         depressed
                         @click="loginAsGuest(n)"
@@ -40,17 +40,20 @@ export default {
             console.log("this is loginAsGuest");
             console.log($user_id);
             axios
-                .get("/api/login/guest/" + $user_id)
+                .get("/login/guest/" + $user_id)
                 .then(response => {
                     console.log(response);
                     localStorage.setItem("auth", "ture");
                     this.$router.push("/threads");
                     this.$router.go({ path: "/threads", force: true });
                 })
-                .catch(error => {
-                    console.log(error.response.data);
-                    alert(error.response.data.message);
-                });
+            .catch(error => {
+                console.log(error.response);
+                if(error.response.status === 422) {
+                    let alert_array = Object.values(error.response.data.errors);
+                    alert(alert_array.flat().join().replace(/,/g, '\n'));
+                }
+            });
         }
     }
 };

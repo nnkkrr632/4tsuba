@@ -58,7 +58,7 @@ class FormRequestMessage extends Model
     //パスワード
     public function passwordRule($head)
     {
-        return  '【' . $head . '】' . '半角英数字混合の8~24文字でお願いいたします。';
+        return  '【' . $head . '】' . '半角英字と数字を含む8~24文字でお願いいたします。';
     }
     public function passwordConfirm($head)
     {

@@ -23,7 +23,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
                 v-model="current_password"
                 
             />
@@ -36,7 +36,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
                 v-model="password"
                 
             />
@@ -47,7 +47,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 英字と数字を必ず含む'"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
                 v-model="password_confirm"
             />
         </v-form>
