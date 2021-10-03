@@ -19,11 +19,9 @@
                     v-model="search_string"
                 >
                 </v-text-field>
-                <router-link 
-                    style="text-decoration: none;"
-                    v-bind:to="'/posts/' + search_string"
-                >            
                     <v-btn
+                        :disabled="!Boolean(search_string)"
+                        :to="'/posts/' + search_string"
                         icon
                         class="white--text"
                         color="green lighten-2"
@@ -31,7 +29,6 @@
                     >
                         <v-icon>mdi-magnify</v-icon>
                     </v-btn>
-                </router-link>
             </template>
             <!-- 未ログイン時のみ表示 -->
             <v-toolbar-items >
@@ -84,7 +81,7 @@ export default {
                 {
                     name: "よつばとは？",
                     icon: "mdi-clover",
-                    link: "/introduction"
+                    link: "/"
                 },
                 {
                     name: "ユーザー登録",

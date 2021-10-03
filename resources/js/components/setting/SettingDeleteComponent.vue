@@ -103,7 +103,7 @@ export default {
                     } else {
                         localStorage.removeItem("auth");
                         if (confirm('アカウントを削除しました。ご利用ありがとうございました。')) {
-                            this.$router.go({path: "/login", force: true});
+                            this.$router.go({path: "/", force: true});
                         }
                     }
                 })

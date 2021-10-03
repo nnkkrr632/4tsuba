@@ -64,7 +64,6 @@ class Post extends Model
         return $this->hasMany(like::class);
     }
 
-    //呼び出しメソッド
     public function returnMaxDisplayedPostId($thread_id)
     {
         return $this->where('thread_id', $thread_id)->withTrashed()->count();

@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('icon_name', 100)->comment('アイコン')->default('no_image.png');
             $table->unsignedInteger('icon_size')->comment('アイコンサイズ')->default(0);
-            $table->string('role')->default('guest');
+            $table->string('role')->default('normal');
             $table->rememberToken();
         });
     }
