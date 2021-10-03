@@ -1,0 +1,80 @@
+xdebug.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/xdebug.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/xdebug.c -o xdebug.lo 
+src/base/base.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/base/base.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/base/base.c -o src/base/base.lo 
+src/base/filter.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/base/filter.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/base/filter.c -o src/base/filter.lo 
+src/lib/usefulstuff.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/usefulstuff.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/usefulstuff.c -o src/lib/usefulstuff.lo 
+src/lib/compat.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/compat.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/compat.c -o src/lib/compat.lo 
+src/lib/crc32.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/crc32.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/crc32.c -o src/lib/crc32.lo 
+src/lib/hash.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/hash.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/hash.c -o src/lib/hash.lo 
+src/lib/headers.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/headers.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/headers.c -o src/lib/headers.lo 
+src/lib/lib.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/lib.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/lib.c -o src/lib/lib.lo 
+src/lib/llist.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/llist.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/llist.c -o src/lib/llist.lo 
+src/lib/log.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/log.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/log.c -o src/lib/log.lo 
+src/lib/set.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/set.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/set.c -o src/lib/set.lo 
+src/lib/str.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/str.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/str.c -o src/lib/str.lo 
+src/lib/timing.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/timing.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/timing.c -o src/lib/timing.lo 
+src/lib/var.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var.c -o src/lib/var.lo 
+src/lib/var_export_html.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_html.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_html.c -o src/lib/var_export_html.lo 
+src/lib/var_export_line.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_line.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_line.c -o src/lib/var_export_line.lo 
+src/lib/var_export_text.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_text.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_text.c -o src/lib/var_export_text.lo 
+src/lib/var_export_xml.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_xml.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/var_export_xml.c -o src/lib/var_export_xml.lo 
+src/lib/xml.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/xml.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/lib/xml.c -o src/lib/xml.lo 
+src/coverage/branch_info.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/coverage/branch_info.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/coverage/branch_info.c -o src/coverage/branch_info.lo 
+src/coverage/code_coverage.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/coverage/code_coverage.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/coverage/code_coverage.c -o src/coverage/code_coverage.lo 
+src/debugger/com.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/com.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/com.c -o src/debugger/com.lo 
+src/debugger/debugger.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/debugger.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/debugger.c -o src/debugger/debugger.lo 
+src/debugger/handler_dbgp.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/handler_dbgp.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/handler_dbgp.c -o src/debugger/handler_dbgp.lo 
+src/debugger/handlers.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/handlers.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/debugger/handlers.c -o src/debugger/handlers.lo 
+src/develop/develop.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/develop.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/develop.c -o src/develop/develop.lo 
+src/develop/monitor.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/monitor.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/monitor.c -o src/develop/monitor.lo 
+src/develop/php_functions.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/php_functions.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/php_functions.c -o src/develop/php_functions.lo 
+src/develop/stack.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/stack.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/stack.c -o src/develop/stack.lo 
+src/develop/superglobals.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/superglobals.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/develop/superglobals.c -o src/develop/superglobals.lo 
+src/gcstats/gc_stats.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/gcstats/gc_stats.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/gcstats/gc_stats.c -o src/gcstats/gc_stats.lo 
+src/profiler/profiler.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/profiler/profiler.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/profiler/profiler.c -o src/profiler/profiler.lo 
+src/tracing/trace_computerized.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_computerized.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_computerized.c -o src/tracing/trace_computerized.lo 
+src/tracing/trace_html.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_html.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_html.c -o src/tracing/trace_html.lo 
+src/tracing/trace_textual.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_textual.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/trace_textual.c -o src/tracing/trace_textual.lo 
+src/tracing/tracing.lo: /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/tracing.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4 $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)    -c /Applications/MAMP/htdocs/4tsuba/xdebug-3.0.4/src/tracing/tracing.c -o src/tracing/tracing.lo 
+$(phplibdir)/xdebug.la: ./xdebug.la
+	$(LIBTOOL) --mode=install cp ./xdebug.la $(phplibdir)
+
+./xdebug.la: $(shared_objects_xdebug) $(XDEBUG_SHARED_DEPENDENCIES)
+	$(LIBTOOL) --mode=link $(CC) -shared $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_xdebug) $(XDEBUG_SHARED_LIBADD)
+
