@@ -22,7 +22,7 @@
                     <v-text-field
                         outlined
                         label="メールアドレス"
-                        placeholder="example_4tsuba@4tsuba.site"
+                        placeholder="example@4tsuba.site"
                         color="green lightten-3"
                         name="email"
                         prepend-icon="email"
@@ -40,8 +40,8 @@
                         name="password"
                         prepend-icon="lock"
                         type="password"
-                        :counter="word_counts[0]"
-                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
+                        :counter="word_counts[2]"
+                        :hint="'必須 & 最低' + word_counts[3] + '文字 & 半角英字と数字を含む'"
                         v-model="password"
                     />
                     <v-text-field
@@ -53,8 +53,8 @@
                         color="green lightten-3"
                         prepend-icon="lock"
                         type="password"
-                        :counter="word_counts[0]"
-                        :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
+                        :counter="word_counts[2]"
+                        :hint="'必須 & 最低' + word_counts[3] + '文字 & 半角英字と数字を含む'"
                         v-model="password_confirm"
                     />
                 </v-form>
@@ -97,7 +97,7 @@ export default {
             email: null,
             password: null,
             password_confirm: null,
-            word_counts:[20, 100, 8],
+            word_counts:[20, 100, 24, 8],
             title: ["ログイン", "ユーザー登録"],
             link: ["register", "login"]
         };
@@ -116,8 +116,8 @@ export default {
                         .then(response => {
                             console.log(response);
                             localStorage.setItem("auth", "ture");
-                            //this.$router.push("/threads");
-                            //this.$router.go({ path: "/threads", force: true });
+                            this.$router.push("/threads");
+                            this.$router.go({ path: "/threads", force: true });
                         })
                     .catch(error => {
                         console.log(error.response);

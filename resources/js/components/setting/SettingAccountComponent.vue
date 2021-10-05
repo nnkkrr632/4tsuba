@@ -23,7 +23,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
+                :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
                 v-model="current_password"
                 
             />
@@ -36,7 +36,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
+                :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
                 v-model="password"
                 
             />
@@ -47,7 +47,7 @@
                 prepend-icon="lock"
                 type="password"
                 :counter="word_counts[1]"
-                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"
+                :hint="'必須 & 最低' + word_counts[2] + '文字 & 半角英字と数字を含む'"
                 v-model="password_confirm"
             />
         </v-form>
@@ -97,7 +97,7 @@ export default {
             link_delete_account: '/setting/account/delete',
             message: 'メールアドレス/パスワードを変更する',
             message_for_guest: 'ゲストユーザーは変更できません',
-            word_counts:[100, 8],
+            word_counts:[100, 24, 8],
         };
     },
     components: {
@@ -138,6 +138,12 @@ export default {
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
                         alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
+                    if(error.response.status === 403) {
+                        let error_message = error.response.data.message;
+                        if(error_message == 'This action is unauthorized.') {
+                            alert('ゲストユーザーはメールアドレス/パスワードを変更できません。');
+                        }
                     }
                 });
         },

@@ -241,7 +241,7 @@ router.beforeEach((to, from, next) => {
    else if (to.matched.some(record => record.meta.forGuest)) {
        if (isLoggedIn()) {
            alert('すでにログイン済みです。');
-           next("/threads");
+           next("/logout");
        } else {
            next();
        }

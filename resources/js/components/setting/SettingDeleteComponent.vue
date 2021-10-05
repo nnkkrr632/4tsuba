@@ -31,8 +31,8 @@
                 name="password"
                 prepend-icon="lock"
                 type="password"
-                :counter="word_count"
-                :hint="'必須 & 最低' + word_count + '文字 & 半角英字と数字を含む'"               
+                :counter="word_counts[0]"
+                :hint="'必須 & 最低' + word_counts[1] + '文字 & 半角英字と数字を含む'"               
                 v-model="password"
             />
         </v-form>
@@ -73,7 +73,7 @@ export default {
             message: 'アカウントを削除する',
             message_for_guest: 'ゲストユーザーは削除できません',
             link_threads: '/threads',
-            word_count: 8,
+            word_counts: [24, 8],
         };
     },
     components: {
@@ -112,6 +112,12 @@ export default {
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
                         alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
+                    if(error.response.status === 403) {
+                        let error_message = error.response.data.message;
+                        if(error_message == 'This action is unauthorized.') {
+                            alert('ゲストユーザーはアカウントを削除できません。');
+                        }
                     }
                 });
                 

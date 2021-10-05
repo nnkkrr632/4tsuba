@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 
 //Laravel８式書き方
-use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\PostController;
@@ -46,7 +45,7 @@ Route::get('/check/login', LoginCheckController::class);
 
 //認証 Laravel Sanctum
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    //me
+    //auth
     Route::get('/users/me', [AuthController::class, 'returnMyId']);
     Route::get('/users/me/info', [AuthController::class, 'returnMyInfo']);
     Route::patch('/users/me', [AuthController::class, 'editAccount']);
@@ -100,6 +99,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/like', [LikeController::class, 'store']);
     Route::delete('/like', [LikeController::class, 'destroy']);
 });
+
+
+
+
+
+
+
+
+
+
+
 
 //404
 Route::any('{any}', function () {

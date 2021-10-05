@@ -18,7 +18,7 @@ class CookieAuthenticationController extends Controller
         $credentials = $login_request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $login_request->session()->regenerate();
+            //$login_request->session()->regenerate();
             return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);
         }
         //↓のHTTP422エラーが出るときはフォームリクエストのバリデーションを突破している
