@@ -3,10 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\TasksTableSeeder;
 //ファクトリーを使うためにインポート (modelのfactory()メソッドを使う)
 use App\Models\Thread;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\MuteWord;
+use App\Models\Like;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,8 +19,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
-        $this->call(TasksTableSeeder::class);
-        Thread::factory()->count(10)->create();
+        //(1)guestユーザー作成
+        $this->call(UsersSeeder::class);
+        //他のユーザーをfactoryで作成
+        User::factory()->count(5)->create();
+
+        //seederから作成
+        //$this->call(ThreadsSeeder::class);
+
+        //Thread::factory()->count(10)->create();
+        //Post::factory()->count(20)->create();
+        //MuteWOrd
+        MuteWord::factory()->count(20)->create();
+        //Like::factory()->count(100)->create();
     }
 }

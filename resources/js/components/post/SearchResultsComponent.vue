@@ -62,16 +62,17 @@ export default {
             });
         },
         getSearchedPosts() {
-            if(Boolean(this.search_string)) {
+            if(this.search_string) {
                 console.log("this is getSearchedPosts");
                 console.log(this.search_string);
-                //const trimed_search_string = this.search_string.trim()
+                console.log(typeof this.search_string);
                 const search_word_list = this.search_string.trim().split(/[(\s)|(\t)]+/);
                 console.log(search_word_list);
                 //重複削除
                 const set_word_list = new Set(search_word_list);
                 this.unique_word_list = Array.from(set_word_list);
                 console.log(this.unique_word_list);
+                if(this.unique_word_list != null) {
                 axios
                     .get("/api/posts/", {
                         params: {
@@ -91,6 +92,7 @@ export default {
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
                         }
                     });
+                }
             }   
         },
         highlightSearchWord() {
