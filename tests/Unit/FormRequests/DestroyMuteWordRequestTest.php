@@ -22,7 +22,7 @@ class DestroyMuteWordRequestTest extends TestCase
      * @test
      *
      * @param テーブルカラム名
-     * @param 値
+     * @param 入力値
      * @param 期待結果(true or false)
      * @param エラーメッセージkey(不合格データ時のみ)
      * @param エラーメッセージ(不合格データ時のみ)
@@ -40,7 +40,7 @@ class DestroyMuteWordRequestTest extends TestCase
             'mute_word' => 'XXX',
         ]);
         //factoryで他の人のミュートワード作成
-        $other_mute_words = MuteWord::factory(2)->create();
+        MuteWord::factory(2)->create();
 
         $destroy_mute_word_request  = new DestroyMuteWordRequest();
         $rules = $destroy_mute_word_request->rules();
@@ -52,6 +52,7 @@ class DestroyMuteWordRequestTest extends TestCase
         $fails = $validator->fails();
 
         $this->assertSame($expect, $fails);
+        //バリデーションエラー時はメッセージも確認
         if ($fails) {
             $this->assertSame($messages[$error_key], $error_message);
         }
