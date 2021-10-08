@@ -50,6 +50,8 @@ class UsersSeeder extends Seeder
                 'name' => 'PHPUnitテストユーザー1',
                 'email' => 'p1@4tsuba.site',
                 'password' => bcrypt('PHPUnit1'),
+                'icon_name' => 'guest_user_4.png',
+                'role' => 'normal',
             ],
             [
                 'created_at' => Carbon::now(),
@@ -57,6 +59,7 @@ class UsersSeeder extends Seeder
                 'name' => 'PHPUnitテストユーザー2',
                 'email' => 'p2@4tsuba.site',
                 'password' => bcrypt('PHPUnit2'),
+                'icon_name' => 'guest_user_5.png',
                 'role' => 'guest',
             ],
         ]);

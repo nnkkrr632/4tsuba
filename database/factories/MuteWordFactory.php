@@ -23,8 +23,8 @@ class MuteWordFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::all()->random()->id,
-            'mute_word' => $this->faker->lexify('?????'),
+            'user_id' => User::factory()->create()->id,
+            'mute_word' => $this->faker->realText(10),
         ];
     }
 }

@@ -28,6 +28,7 @@ export default {
         checkLogin() {
             console.log('this is checkLogin');
             axios.get("/api/check/login").then(res => {
+                console.log(res);
                 if(!res.data == false)
                 this.getMyInfo();
             });
