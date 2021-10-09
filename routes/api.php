@@ -49,10 +49,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/users/me', [AuthController::class, 'returnMyId']);
     Route::get('/users/me/info', [AuthController::class, 'returnMyInfo']);
     Route::patch('/users/me', [AuthController::class, 'editAccount']);
-    Route::post('/users/me/profile', [UserController::class, 'editProfile']);
+    Route::post('/users/me/profile', [AuthController::class, 'editProfile']);
     Route::delete('/users/me', [AuthController::class, 'destroy']);
     //ゲスト用初期化
-    Route::get('/users/me/profile', [UserController::class, 'resetGuestProfile']);
+    Route::get('/users/me/profile', [AuthController::class, 'resetGuestProfile']);
 
     //users
     Route::get('/users/{user_id}', [UserController::class, 'returnUserInfo'])->whereNumber('user_id');

@@ -8,6 +8,7 @@ use App\Models\User;
 //フォームリクエスト
 use App\Http\Requests\EditAccountRequest;
 use App\Http\Requests\DestroyAccountRequest;
+use App\Http\Requests\EditProfileRequest;
 
 
 class AuthController extends Controller
@@ -33,6 +34,33 @@ class AuthController extends Controller
             return User::find(Auth::id())->makeVisible(['email']);
         } else {
             return null;
+        }
+    }
+
+    public function editProfile(EditProfileRequest $edit_profile_request)
+    {
+        User::find(Auth::id())->update(['name' => $edit_profile_request->name,]);
+
+        if ($edit_profile_request->file('icon')) {
+            $uploaded_icon = $edit_profile_request->file('icon');
+            $uploaded_icon->store('public/icons');
+            User::find(Auth::id())->update([
+                'icon_name' => $uploaded_icon->hashName(),
+                'icon_size' => $uploaded_icon->getSize(),
+            ]);
+        }
+    }
+
+    public function resetGuestProfile()
+    {
+        $guest_user = User::find(Auth::id());
+        if ($guest_user['role'] === 'guest') {
+            User::find(Auth::id())->update([
+                'name' => 'ゲストユーザー' . Auth::id(),
+                'icon_name' => 'guest_user_' . Auth::id() . '.png',
+            ]);
+        } else {
+            return 'for_guest_only.';
         }
     }
 

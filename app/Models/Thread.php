@@ -48,6 +48,4 @@ class Thread extends Model
     {
         return $this->hasMany(Response::class);
     }
-
-    //呼び出しメソッド
 }

@@ -61,6 +61,19 @@ class MuteWordControllerTest extends TestCase
         ]);
     }
     /**
+     * データプロバイダ(Store成功)
+     * [key,value]
+     */
+    public function storeMuteWordDataProvider(): array
+    {
+        return [
+            'ミュートワード登録' => ['mute_word', 'store'],
+            'ミュートワード登録(1文字)' => ['mute_word', '🤔'],
+            'ミュートワード登録(10文字)' => ['mute_word', '1234567890'],
+        ];
+    }
+
+    /**
      * @test
      * @dataProvider notStoreMuteWordDataProvider
      */
@@ -81,18 +94,6 @@ class MuteWordControllerTest extends TestCase
 
         $response = $this->json('POST', $url, [$key => $value]);
         $response->assertStatus(422);
-    }
-    /**
-     * データプロバイダ(Store成功)
-     * [key,value]
-     */
-    public function storeMuteWordDataProvider(): array
-    {
-        return [
-            'ミュートワード登録' => ['mute_word', 'store'],
-            'ミュートワード登録(1文字)' => ['mute_word', 'a'],
-            'ミュートワード登録(10文字)' => ['mute_word', '1234567890'],
-        ];
     }
     /**
      * データプロバイダ(Store失敗)
@@ -166,7 +167,7 @@ class MuteWordControllerTest extends TestCase
     public function notDestroyMuteWordDataProvider(): array
     {
         return [
-            'ミュートワード削除(null)' => ['id', 1],
+            'ミュートワード削除(null)' => ['id', null],
             'ミュートワード削除(空文字)' => ['id', ''],
             'ミュートワード削除(not数字)' => ['id', 'aa'],
             //teardown()でテーブルをtruncateするから最初に作られるレコードのidは1になる

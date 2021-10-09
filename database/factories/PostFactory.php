@@ -18,7 +18,9 @@ class PostFactory extends Factory
      * @var string
      */
     protected $model = Post::class;
-    private static $d_p_id = [1, 1, 1, 1];
+    private static $thread_id = 1;
+    private static $displayed_post_id = 1;
+
 
     /**
      * Define the model's default state.
@@ -27,16 +29,32 @@ class PostFactory extends Factory
      */
     public function definition()
     {
-        // $post = new Post();
-        // $thread_id = Thread::all()->random()->id;
-        // $inserting_displayed_post_id = $post->returnMaxDisplayedPostId($thread_id) + 1;
-
         return [
             'user_id' => User::all()->random()->id,
-            'thread_id' => Thread::all()->random()->id,
-            'displayed_post_id' => self::$d_p_id[0]++,
+            'thread_id' => self::$thread_id,
+            'displayed_post_id' => self::$displayed_post_id++,
             'body' => $this->faker->realText(30),
             'is_edited' => 0,
         ];
+    }
+    /**
+     * スレッドを指定する
+     */
+    public function setThreadId(int $thread_id)
+    {
+        //displayed_post_id初期化してまた1から開始
+        self::$displayed_post_id = 1;
+        return $this->state(fn () => [
+            'thread_id' => $thread_id,
+        ]);
+    }
+    /**
+     * ユーザーを指定する
+     */
+    public function setUserId(int $user_id)
+    {
+        return $this->state(fn () => [
+            'user_id' => $user_id,
+        ]);
     }
 }

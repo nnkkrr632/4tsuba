@@ -29,4 +29,13 @@ class LikeFactory extends Factory
             'post_id' => Post::all()->random()->id,
         ];
     }
+    /**
+     * 対象ユーザーを指定する
+     */
+    public function setUserId(int $user_id)
+    {
+        return $this->state(fn () => [
+            'user_id' => $user_id,
+        ]);
+    }
 }
