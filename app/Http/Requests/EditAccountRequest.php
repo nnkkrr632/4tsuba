@@ -35,7 +35,7 @@ class EditAccountRequest extends FormRequest
                 'not_in:"null"',
                 'email:strict,dns,spoof',
                 Rule::unique('users')->ignore(Auth::id()),
-                'between:1,100',
+                'between:1,50',
             ],
             'current_password' => [
                 'required',
@@ -65,7 +65,7 @@ class EditAccountRequest extends FormRequest
             'email.not_in' => $form_request_message->not_in($heads[0]),
             'email.email' => $form_request_message->email($heads[0]),
             'email.unique' => $form_request_message->emailAlreadyRegistered($heads[0]),
-            'email.between' => $form_request_message->between(1, 100, $heads[0]),
+            'email.between' => $form_request_message->between(1, 50, $heads[0]),
             'current_password.required' => $form_request_message->required($heads[1]),
             'current_password.not_in' => $form_request_message->not_in($heads[1]),
             'current_password.regex' => $form_request_message->passwordRule($heads[1]),

@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
                 'not_in:"null"',
                 'email:strict,dns,spoof',
                 'exists:users,email',
-                'between:1,100',
+                'between:1,50',
             ],
             'password' => [
                 'required',
@@ -53,7 +53,7 @@ class LoginRequest extends FormRequest
             'email.not_in' => $form_request_message->not_in($heads[0]),
             'email.email' => $form_request_message->email($heads[0]),
             'email.exists' => $form_request_message->emailNotRegistered($heads[0]),
-            'email.between' => $form_request_message->between(1, 100, $heads[0]),
+            'email.between' => $form_request_message->between(1, 50, $heads[0]),
             'password.required' => $form_request_message->required($heads[1]),
             'password.not_in' => $form_request_message->not_in($heads[1]),
             'password.regex' => $form_request_message->passwordRule($heads[1]),

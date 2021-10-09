@@ -39,7 +39,7 @@ class RegisterRequest extends FormRequest
                 'not_in:"null"',
                 'email:strict,dns,spoof',
                 'unique:users,email',
-                'between:1,100',
+                'between:1,50',
             ],
             'password' => [
                 'required',
@@ -67,7 +67,7 @@ class RegisterRequest extends FormRequest
             'email.not_in' => $form_request_message->not_in($heads[1]),
             'email.email' => $form_request_message->email($heads[1]),
             'email.unique' => $form_request_message->emailAlreadyRegistered($heads[1]),
-            'email.between' => $form_request_message->between(1, 100, $heads[1]),
+            'email.between' => $form_request_message->between(1, 50, $heads[1]),
             'password.required' => $form_request_message->required($heads[2]),
             'password.not_in' => $form_request_message->not_in($heads[2]),
             'password.regex' => $form_request_message->passwordRule($heads[2]),

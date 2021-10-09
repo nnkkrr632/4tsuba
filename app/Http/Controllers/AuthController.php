@@ -21,20 +21,12 @@ class AuthController extends Controller
 
     public function returnMyId()
     {
-        if (Auth::id()) {
-            return Auth::id();
-        } else {
-            return null;
-        }
+        return Auth::id();
     }
 
     public function returnMyInfo()
     {
-        if (Auth::check()) {
-            return User::find(Auth::id())->makeVisible(['email']);
-        } else {
-            return null;
-        }
+        return User::find(Auth::id())->makeVisible(['email']);
     }
 
     public function editProfile(EditProfileRequest $edit_profile_request)

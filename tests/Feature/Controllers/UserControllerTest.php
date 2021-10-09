@@ -69,6 +69,18 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertSame(0, $response->original);
     }
+    /** @test */
+    public function ページ遷移前ユーザー存在確認失敗：文字列【exists】()
+    {
+        //ユーザーをfactoryで作成
+        $users = User::factory(1)->create();
+        $acting_user = $users[0];
+        $this->actingAs($acting_user);
+
+        $response = $this->json('GET', '/api/exists/users/aaa');
+        $response->assertStatus(200);
+        $this->assertSame(0, $response->original);
+    }
 
     public function teardown(): void
     {

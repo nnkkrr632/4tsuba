@@ -97,7 +97,7 @@ export default {
             email: null,
             password: null,
             password_confirm: null,
-            word_counts:[20, 100, 24, 8],
+            word_counts:[20, 50, 24, 8],
             title: ["ログイン", "ユーザー登録"],
             link: ["register", "login"]
         };
