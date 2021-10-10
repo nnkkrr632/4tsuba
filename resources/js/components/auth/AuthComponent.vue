@@ -137,9 +137,11 @@ export default {
                             console.log(response.data.message)
                             if(response.data.message === 'login_success') {
                                 localStorage.setItem("auth", "ture");
+                                this.$router.push("/threads");
+                                this.$router.go({ path: "/threads", force: true });
+                            } else if(response.data.message === 'you_have_already_logged_in_another_account') {
+                                this.$router.go({ path: "/logout", force: true });
                             }
-                            this.$router.push("/threads");
-                            this.$router.go({ path: "/threads", force: true });
                         })
                     .catch(error => {
                         console.log(error.response);

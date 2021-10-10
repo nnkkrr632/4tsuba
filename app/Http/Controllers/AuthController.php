@@ -13,12 +13,6 @@ use App\Http\Requests\EditProfileRequest;
 
 class AuthController extends Controller
 {
-
-    public function checkLoginOrNot()
-    {
-        return Auth::check();
-    }
-
     public function returnMyId()
     {
         return Auth::id();

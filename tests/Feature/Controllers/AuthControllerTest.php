@@ -17,23 +17,6 @@ class AuthControllerTest extends TestCase
     //use RefreshDatabase;
 
     /** @test */
-    public function ログインチェック：ログインしていない場合【CheckNotLoginOrNot】()
-    {
-        $response = $this->json('GET', '/api/check');
-        $response->assertStatus(200);
-        $this->assertFalse($response->original);
-    }
-    /** @test */
-    public function ログインチェック：ログインしている場合【CheckLoginOrNot】()
-    {
-        $user = User::factory(1)->create()->first();
-        $this->actingAs($user);
-
-        $response = $this->json('GET', 'api/check');
-        $response->assertStatus(200);
-        $this->assertTrue($response->original);
-    }
-    /** @test */
     public function 自分のユーザーid確認成功：ログインしている【returnMyId】()
     {
         $user = User::factory(10)->create()->pop();

@@ -36,24 +36,31 @@ export default {
         AuthComponent
     },
     methods: {
-        loginAsGuest($user_id) {
+        loginAsGuest(guest_user_id) {
             console.log("this is loginAsGuest");
-            console.log($user_id);
+            console.log(guest_user_id);
             axios
-                .get("/login/guest/" + $user_id)
+                .post("/api/login/guest", {
+                    user_id: guest_user_id
+                })
                 .then(response => {
                     console.log(response);
-                    localStorage.setItem("auth", "ture");
-                    this.$router.push("/threads");
-                    this.$router.go({ path: "/threads", force: true });
+                    console.log(response.data.message)
+                    if(response.data.message === 'guest_login_success') {
+                        localStorage.setItem("auth", "ture");
+                        this.$router.push("/threads");
+                        this.$router.go({ path: "/threads", force: true });
+                    } else if(response.data.message === 'you_have_already_logged_in_another_account') {
+                        this.$router.go({ path: "/logout", force: true });
+                    }
                 })
-            .catch(error => {
-                console.log(error.response);
-                if(error.response.status === 422) {
-                    let alert_array = Object.values(error.response.data.errors);
-                    alert(alert_array.flat().join().replace(/,/g, '\n'));
-                }
-            });
+                .catch(error => {
+                    console.log(error.response);
+                    if(error.response.status === 422) {
+                        let alert_array = Object.values(error.response.data.errors);
+                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    }
+                });
         }
     }
 };

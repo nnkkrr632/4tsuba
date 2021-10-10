@@ -14,9 +14,8 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MuteWordController;
 use App\Http\Controllers\MuteUserController;
 use App\Http\Controllers\LoginCheckController;
-
-
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GuestAuthController;
 
 
 /*
@@ -33,15 +32,10 @@ use App\Http\Controllers\AuthController;
 Route::get('/test', [MuteWordController::class, 'addHasMuteWordKeyToPosts']);
 
 
-//検証用 ConfirmLoginComponent
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::get('/check', [AuthController::class, 'checkLoginOrNot']);
-
 //ログインチェック
 Route::get('/check/login', LoginCheckController::class);
-
+//ゲストログイン
+Route::post('/login/guest', [GuestAuthController::class, 'guestLogin']);
 
 //認証 Laravel Sanctum
 Route::group(['middleware' => ['auth:sanctum']], function () {

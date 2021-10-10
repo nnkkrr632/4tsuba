@@ -30,6 +30,15 @@ class UserFactory extends Factory
             'icon_name' => 'no_image.png'
         ];
     }
+    /**
+     * メールアドレスを指定する
+     */
+    public function setEmail(string $email)
+    {
+        return $this->state(fn () => [
+            'email' => $email,
+        ]);
+    }
 
     /**
      * パスワードをデフォルトの「password」から変更する
@@ -38,6 +47,15 @@ class UserFactory extends Factory
     {
         return $this->state(fn () => [
             'password' => bcrypt($password),
+        ]);
+    }
+    /**
+     * roleをゲストにする
+     */
+    public function setRoleGuest()
+    {
+        return $this->state(fn () => [
+            'role' => 'guest',
         ]);
     }
 }
