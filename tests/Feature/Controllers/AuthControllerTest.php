@@ -83,12 +83,18 @@ class AuthControllerTest extends TestCase
      */
     public function editProfileDataProvider(): array
     {
-        $uploaded_image = UploadedFile::fake()->image('icon.jpg', 500, 500)->size(3000);
+        $uploaded_image_1 = UploadedFile::fake()->image('icon.jpg', 500, 500)->size(3000);
+        $uploaded_image_2 = UploadedFile::fake()->image('icon.jpeg', 500, 500)->size(3000);
+        $uploaded_image_3 = UploadedFile::fake()->image('icon.png', 500, 500)->size(3000);
+        $uploaded_image_4 = UploadedFile::fake()->image('icon.gif', 500, 500)->size(3000);
 
         return [
-            '名前' => ['新しい名前', $uploaded_image],
-            '名前(1文字)' => ['🤔', $uploaded_image],
-            '名前(20文字)' => ['12345678901234567890', $uploaded_image],
+            '名前(1文字)' => ['🤔', $uploaded_image_1],
+            '名前(20文字)' => ['12345678901234567890', $uploaded_image_1],
+            '画像(3MBjpg)' => ['新しい名前', $uploaded_image_1],
+            '画像(3MBjpeg)' => ['新しい名前', $uploaded_image_2],
+            '画像(3MBpng)' => ['新しい名前', $uploaded_image_3],
+            '画像(3MBgif)' => ['新しい名前', $uploaded_image_4],
         ];
     }
 
@@ -144,10 +150,9 @@ class AuthControllerTest extends TestCase
         //DB確認
         $this->assertDatabaseMissing('users', [
             'name' => $new_name,
-            'icon_name' => $new_icon->hashName(),
+            //nullにhashName()はエラー
+            //'icon_name' => $new_icon->hashName(),
         ]);
-        //ストレージ確認
-        Storage::disk('local')->assertMissing('public/icons/' . $new_icon->hashName());
     }
     /**
      * データプロバイダ
@@ -159,9 +164,10 @@ class AuthControllerTest extends TestCase
         $uploaded_image_2 = UploadedFile::fake()->image('icon.svg', 500, 500)->size(1000);
         $uploaded_image_3 = UploadedFile::fake()->image('icon.psd', 500, 500)->size(1000);
         return [
-            '画像サイズ3001' => ['新しい名前', $uploaded_image_1],
-            '未対応画像mime' => ['新しい名前', $uploaded_image_2],
-            'そもそも画像ファイルじゃない' => ['新しい名前', $uploaded_image_3],
+            '画像(3MB以上)' => ['新しい名前', $uploaded_image_1],
+            '画像(未対応画像mime)' => ['新しい名前', $uploaded_image_2],
+            '画像(画像ファイルではない)' => ['新しい名前', $uploaded_image_3],
+            '画像(null)' => ['新しい名前', null],
         ];
     }
     /** @test */

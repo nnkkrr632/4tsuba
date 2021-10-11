@@ -22,10 +22,10 @@ class ThreadController extends Controller
     public function index(ThreadsOrderByRequest $threads_order_by_request)
     {
         $image = new Image();
-        $thread_image_table = $image->returnThreadImageTable();
+        $thread_images_table = $image->returnThreadImagesTable();
 
-        return Thread::leftJoinSub($thread_image_table, 'thread_image_table', function ($join) {
-            $join->on('threads.id', '=', 'thread_image_table.thread_id');
+        return Thread::leftJoinSub($thread_images_table, 'thread_images_table', function ($join) {
+            $join->on('threads.id', '=', 'thread_images_table.thread_id');
         })
             ->orderBy('threads.' . $threads_order_by_request->column, $threads_order_by_request->desc_asc)->get()
             ->makeVisible(['created_at', 'updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
@@ -35,11 +35,11 @@ class ThreadController extends Controller
     public function show($thread_id)
     {
         $image = new Image();
-        $thread_image_table = $image->returnThreadImageTable();
+        $thread_images_table = $image->returnThreadImagesTable();
 
         return Thread
-            ::leftJoinSub($thread_image_table, 'thread_image_table', function ($join) {
-                $join->on('threads.id', '=', 'thread_image_table.thread_id');
+            ::leftJoinSub($thread_images_table, 'thread_images_table', function ($join) {
+                $join->on('threads.id', '=', 'thread_images_table.thread_id');
             })
             ->find((int)$thread_id)
             //findからThreadModelクラス。(それまではEloquentBuilderクラス)

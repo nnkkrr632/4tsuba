@@ -33,9 +33,19 @@ class ThreadFactory extends Factory
         ];
     }
     /**
-     * 対象ユーザーを指定する
+     * ポスト数&いいね数を設定する
      */
-    public function setPostCountAndLikeCount(int $thread_id)
+    public function setPostCountAndLikeCount(int $post_count, int $like_count)
+    {
+        return $this->state(fn () => [
+            'post_count' => $post_count,
+            'like_count' => $like_count,
+        ]);
+    }
+    /**
+     * ポスト数&いいね数を実際の状態にあわせる
+     */
+    public function calculatePostCountAndLikeCount(int $thread_id)
     {
         $post_count = Post::where('thread_id', $thread_id)->count();
         $like_count = Like::whereIn('post_id', function ($query) use ($thread_id) {

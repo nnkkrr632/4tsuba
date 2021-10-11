@@ -45,20 +45,36 @@ class StoreTPIRequest extends FormRequest
                 'not_in:"null"',
                 $regular_expression_rule->forbidHtmlTag(),
             ],
+            'title' => [
+                'sometimes',
+                'between:1,20',
+                'required',
+                //vueでやるとき、requiredが効かないようで、not_in:"null"で代用する
+                'not_in:"null"',
+                $regular_expression_rule->forbidHtmlTag(),
+            ],
+            'image' => [
+                'sometimes',
+                'required',
+                'not_in:"null"',
+                'image',
+                'mimes:jpeg,jpg,png,gif',
+                'max:3000',
+            ],
         ];
     }
-    public function withValidator(Validator $validator)
-    {
-        $regular_expression_rule = new RegularExpressionRule();
-        //画像用
-        $validator->sometimes('image', 'image|mimes:jpeg,jpg,png,gif|max:3000', function ($input) {
-            return $input->image;
-        });
-        //スレッド用
-        $validator->sometimes('title', 'required|not_in:"null"|between:1,20|' . $regular_expression_rule->forbidHtmlTag(), function ($input) {
-            return $input->title;
-        });
-    }
+    // public function withValidator(Validator $validator)
+    // {
+    //     $regular_expression_rule = new RegularExpressionRule();
+    //     //画像用
+    //     $validator->sometimes('image', 'image|mimes:jpeg,jpg,png,gif|max:3000|required', function ($input) {
+    //         return $input->image;
+    //     });
+    //     //スレッド用
+    //     $validator->sometimes('title', 'not_in:"null"|required|between:1,20|' . $regular_expression_rule->forbidHtmlTag(), function ($input) {
+    //         return $input->title;
+    //     });
+    // }
 
 
     public function messages()
@@ -74,9 +90,12 @@ class StoreTPIRequest extends FormRequest
             'body.not_in' => $form_request_message->not_in($heads[1]),
             'body.between' => $form_request_message->between(1, 200, $heads[1]),
             'body.regex' => $form_request_message->forbidHtmlTag($heads[1]),
+            'image.required' => $form_request_message->required($heads[2]),
+            'image.not_in' => $form_request_message->not_in($heads[2]),
             'image.image' => $form_request_message->image($heads[2]),
             'image.mimes' => $form_request_message->imageMime($heads[2]),
             'image.max' => $form_request_message->imageMaxSize($heads[2]),
+            'image.required' => $form_request_message->required($heads[2]),
         ];
     }
 }

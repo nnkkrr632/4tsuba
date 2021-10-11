@@ -38,4 +38,15 @@ class ImageFactory extends Factory
             'image_size' => $uploaded_image->getSize(),
         ];
     }
+    /**
+     * スレッドを指定する
+     */
+    public function setThreadId(int $thread_id)
+    {
+        //post_id初期化してまた1から開始
+        self::$post_id = 1;
+        return $this->state(fn () => [
+            'thread_id' => $thread_id,
+        ]);
+    }
 }

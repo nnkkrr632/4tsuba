@@ -27,7 +27,7 @@ class Image extends Model
     }
 
     //呼び出しメソッド
-    public function returnThreadImageTable()
+    public function returnThreadImagesTable()
     {
         return $this->select(
             'id as image_id',
