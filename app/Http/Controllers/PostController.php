@@ -26,10 +26,6 @@ class PostController extends Controller
     //クエリパラメータで値を渡す api/posts?where=thread_id&value=2
     public function index(GetPostsRequest $get_posts_request)
     {
-        // $temp_post = new Post();
-        // $login_user_post_table = $temp_post->returnLoginUserPostTable($thread_id);
-
-
         //select(*)ないと外部結合した列がでなくなるので注意
         $query = Post::query();
         $query->select('*')->with(['thread', 'image', 'user',])

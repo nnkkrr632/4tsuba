@@ -32,7 +32,7 @@ class StoreTPIRequest extends FormRequest
         $regular_expression_rule = new RegularExpressionRule();
         return [
             'thread_id' => [
-                'exclude_unless:title,""',
+                'sometimes',
                 'required',
                 'not_in:"null"',
                 'numeric',
