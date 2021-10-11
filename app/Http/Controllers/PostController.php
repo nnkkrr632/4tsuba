@@ -8,7 +8,7 @@ use App\Models\Response;
 use App\Models\Like;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
-use App\Models\Gatekeeper;
+use App\Models\Monitor;
 //authを使用する
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
@@ -135,8 +135,8 @@ class PostController extends Controller
         }
 
         //NGワード置換
-        $gate_keeper = new GateKeeper();
-        //$checked_body = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->body);
+        $monitor = new Monitor();
+        //$checked_body = $monitor->convertNgWordsIfExist($store_t_p_i_request->body);
 
         $post = Post::create([
             'user_id' => Auth::id(),
@@ -168,8 +168,8 @@ class PostController extends Controller
 
         if ($response->allowed()) {
             //NGワード置換
-            $gate_keeper = new GateKeeper();
-            $checked_body = $gate_keeper->convertNgWordsIfExist($edit_pi_request->body);
+            $monitor = new Monitor();
+            $checked_body = $monitor->convertNgWordsIfExist($edit_pi_request->body);
 
             $target_post->update([
                 'body' => $checked_body,

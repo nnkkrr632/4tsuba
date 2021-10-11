@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GateKeeper extends Model
+class Monitor extends Model
 {
     //use HasFactory;
     public function returnDestinationDisplayedPostIdList($body)

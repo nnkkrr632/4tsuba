@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Thread;
 use App\Models\Image;
-use App\Models\Gatekeeper;
+use App\Models\Monitor;
 
 //authを使用する
 use Illuminate\Support\Facades\Auth;
@@ -51,8 +51,8 @@ class ThreadController extends Controller
     public function store(StoreTPIRequest $store_t_p_i_request)
     {
         //NGワード置換
-        $gate_keeper = new GateKeeper();
-        $checked_title = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->title);
+        $monitor = new Monitor();
+        $checked_title = $monitor->convertNgWordsIfExist($store_t_p_i_request->title);
 
         $thread = Thread::create([
             'user_id' => Auth::id(),
