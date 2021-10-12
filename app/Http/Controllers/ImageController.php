@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Image;
 use App\Models\Like;
-
+use Illuminate\Support\Facades\Storage;
 //フォームリクエスト
 use App\Http\Requests\StoreTPIRequest;
 use App\Http\Requests\EditPIRequest;
@@ -30,24 +30,41 @@ class ImageController extends Controller
     public function edit(EditPIRequest $edit_pi_request)
     {
         $uploaded_image = $edit_pi_request->file('image');
+        //新しい画像ストレージ保存
         $uploaded_image->store('public/images');
 
-        Image::where('post_id', $edit_pi_request->id)
-            ->updateOrCreate(
-                [
-                    'post_id' => $edit_pi_request->id
-                ],
-                [
-                    'thread_id' => $edit_pi_request->thread_id,
-                    'image_name' => $uploaded_image->hashName(),
-                    'image_size' => $uploaded_image->getSize(),
-                ]
-            );
+        $image = Image::where('post_id', $edit_pi_request->id)->first();
+        if ($image) {
+            //ファイル削除処理  storage/app/public/images の意味 app配下から記述する
+            Storage::delete('public/images/' . $image->image_name);
+            //DB更新
+            $image->update([
+                'image_name' => $uploaded_image->hashName(),
+                'image_size' => $uploaded_image->getSize(),
+            ]);
+        } else {
+            Image::create([
+                'thread_id' => $edit_pi_request->thread_id,
+                'post_id' => $edit_pi_request->id,
+                'image_name' => $uploaded_image->hashName(),
+                'image_size' => $uploaded_image->getSize(),
+            ]);
+        }
     }
 
     public function destroy($post_id)
     {
-        Image::where('post_id', $post_id)->delete();
+        //ない場合はnullが返る
+        $del_image = Image::where('post_id', $post_id)->first();
+
+        if ($del_image) {
+            //ファイル削除処理  storage/app/public/images の意味 app配下から記述する
+            Storage::delete('public/images/' . $del_image->image_name);
+            //テーブルから削除
+            $del_image->delete();
+        } else {
+            //画像編集画面から、既存の投稿に画像ないのに「画像を削除する」にチェックしたときここに入ってくる
+        }
     }
 
     //以下LightBoxのAPI

@@ -132,13 +132,13 @@ class PostController extends Controller
 
         //NGワード置換
         $monitor = new Monitor();
-        //$checked_body = $monitor->convertNgWordsIfExist($store_t_p_i_request->body);
+        $checked_body = $monitor->convertNgWordsIfExist($store_t_p_i_request->body);
 
         $post = Post::create([
             'user_id' => Auth::id(),
             'thread_id' => $store_t_p_i_request->thread_id,
             'displayed_post_id' => $store_t_p_i_request->displayed_post_id,
-            'body' => $store_t_p_i_request->body,
+            'body' => $checked_body,
         ]);
 
         //スレッドのpost_countをインクリメント
@@ -180,8 +180,8 @@ class PostController extends Controller
                 $response_controller->store($edit_pi_request);
             }
 
-            //画像があれば
-            if ($edit_pi_request->hasFile('image')) {
+            //画像がある かつ 画像を削除するにチェックが付いていない
+            if ($edit_pi_request->hasFile('image') && !($edit_pi_request->delete_image)) {
                 $image_controller = new ImageController();
                 $image_controller->edit($edit_pi_request);
             }

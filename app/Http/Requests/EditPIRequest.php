@@ -53,22 +53,33 @@ class EditPIRequest extends FormRequest
                 'between:1,200',
                 $regular_expression_rule->forbidHtmlTag(),
             ],
+            'image' => [
+                'sometimes',
+                'required',
+                'not_in:"null"',
+                'max:3000',
+            ],
+            'delete_image' => [
+                'sometimes',
+                'required',
+                'in:"true","false"',
+            ],
         ];
     }
 
-    public function withValidator(Validator $validator)
-    {
-        //画像用
-        //'image','mimes:~としたいところだが、画像の変更がない場合objectでくるため諦め
-        $validator->sometimes('image', 'max:3000', function ($input) {
-            return $input->image;
-        });
-        //画像削除用
-        //in: "true", "false"ではなくbooleanを使いたかったが、案の定stringで評価されたのでinを使用
-        $validator->sometimes('delete_image', 'in: "true", "false"', function ($input) {
-            return $input->delete_image;
-        });
-    }
+    // public function withValidator(Validator $validator)
+    // {
+    //     // //画像用
+    //     //'image','mimes:~としたいところだが、画像の変更がない場合objectでくるため諦め
+    //     $validator->sometimes('image', 'max:3000', function ($input) {
+    //         return $input->image;
+    //     });
+    //     //画像削除用
+    //     //in: "true", "false"ではなくbooleanを使いたかったが、案の定stringで評価されたのでinを使用
+    //     $validator->sometimes('delete_image', 'in: "true", "false"', function ($input) {
+    //         return $input->delete_image;
+    //     });
+    // }
 
 
     public function messages()
@@ -86,8 +97,8 @@ class EditPIRequest extends FormRequest
             'body.not_in' => $form_request_message->not_in($heads[0]),
             'body.between' => $form_request_message->between(1, 200, $heads[0]),
             'body.regex' => $form_request_message->forbidHtmlTag($heads[0]),
-            'image.image' => $form_request_message->image($heads[1]),
-            'image.mimes' => $form_request_message->imageMime($heads[1]),
+            'image.required' => $form_request_message->required($heads[1]),
+            'image.not_in' => $form_request_message->not_in($heads[1]),
             'image.max' => $form_request_message->imageMaxSize($heads[1]),
             'delete_image.in' => $form_request_message->cancel($heads[0]),
         ];
