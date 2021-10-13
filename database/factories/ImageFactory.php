@@ -28,6 +28,7 @@ class ImageFactory extends Factory
      */
     public function definition()
     {
+        //factoryで実際のファイルも生成できちゃう
         $uploaded_image = UploadedFile::fake()->image('item.jpg');
         $path = $uploaded_image->store('public/images');
 

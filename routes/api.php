@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/posts', [PostController::class, 'destroy']);
 
     //responses
-    Route::get('/threads/{thread_id}/responses', [ResponseController::class, 'returnResponseMapForTheThread']);
+    // Route::get('/threads/{thread_id}/responses', [ResponseController::class, 'returnResponseMapForTheThread']);
     Route::get('/exists/threads/{thread_id}/responses/{displayed_post_id}', [ResponseController::class, 'exists']);
 
     //images

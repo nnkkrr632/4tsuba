@@ -47,6 +47,16 @@ class EditPIRequest extends FormRequest
                 'numeric',
                 'exists:threads,id'
             ],
+            'displayed_post_id' => [
+                'required',
+                'not_in:"null"',
+                'numeric',
+                //$thisで取り出すことができる。コントローラーでは$edit_pi_request->thread_idで
+                //取り出しているが、それと同じ。自らのインスタンス(staticではない)では$thisで指せる。
+                Rule::exists('posts')->where(function ($query) {
+                    return $query->where('thread_id', $this->thread_id);
+                })
+            ],
             'body' => [
                 'required',
                 'not_in:"null"',
@@ -93,6 +103,14 @@ class EditPIRequest extends FormRequest
             'id.not_in' => $form_request_message->cancel($heads[0]),
             'id.numeric' => $form_request_message->cancel($heads[0]),
             'id.exists' => $form_request_message->OnlyOwnerCanEdit($heads[0]),
+            'thread_id.required' => $form_request_message->cancel($heads[0]),
+            'thread_id.not_in' => $form_request_message->cancel($heads[0]),
+            'thread_id.numeric' => $form_request_message->cancel($heads[0]),
+            'thread_id.exists' => $form_request_message->OnlyOwnerCanEdit($heads[0]),
+            'displayed_post_id.required' => $form_request_message->cancel($heads[0]),
+            'displayed_post_id.not_in' => $form_request_message->cancel($heads[0]),
+            'displayed_post_id.numeric' => $form_request_message->cancel($heads[0]),
+            'displayed_post_id.exists' => $form_request_message->OnlyOwnerCanEdit($heads[0]),
             'body.required' => $form_request_message->required($heads[0]),
             'body.not_in' => $form_request_message->not_in($heads[0]),
             'body.between' => $form_request_message->between(1, 200, $heads[0]),

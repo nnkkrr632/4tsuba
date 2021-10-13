@@ -18,6 +18,7 @@ class PostFactory extends Factory
      * @var string
      */
     protected $model = Post::class;
+    private static $user_id = 1;
     private static $thread_id = 1;
     private static $displayed_post_id = 1;
 
@@ -30,7 +31,7 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::all()->random()->id,
+            'user_id' => self::$user_id,
             'thread_id' => self::$thread_id,
             'displayed_post_id' => self::$displayed_post_id++,
             'body' => $this->faker->realText(30),
