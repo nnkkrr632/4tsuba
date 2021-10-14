@@ -27,4 +27,13 @@ class MuteWordFactory extends Factory
             'mute_word' => $this->faker->realText(10),
         ];
     }
+    /**
+     * ユーザーidを指定する
+     */
+    public function setUserId(int $user_id)
+    {
+        return $this->state(fn () => [
+            'user_id' => $user_id,
+        ]);
+    }
 }

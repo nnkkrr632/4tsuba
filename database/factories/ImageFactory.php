@@ -19,7 +19,13 @@ class ImageFactory extends Factory
     private static $thread_id = 1;
     private static $post_id = 1;
 
-    private static $displayed_post_id = 1;
+    //クラス変数$displayed_post_idはテーブルがtruncateされても増分はされたまま。
+    //テスト時にこれを呼び出してdisplayed_post_idをリセットする
+    public static function initializePostId()
+    {
+        self::$post_id = 1;
+    }
+
 
     /**
      * Define the model's default state.
@@ -48,6 +54,15 @@ class ImageFactory extends Factory
         self::$post_id = 1;
         return $this->state(fn () => [
             'thread_id' => $thread_id,
+        ]);
+    }
+    /**
+     * ポストidを指定する
+     */
+    public function setPostId(int $post_id)
+    {
+        return $this->state(fn () => [
+            'post_id' => $post_id,
         ]);
     }
 }

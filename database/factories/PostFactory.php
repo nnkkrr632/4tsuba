@@ -22,6 +22,12 @@ class PostFactory extends Factory
     private static $thread_id = 1;
     private static $displayed_post_id = 1;
 
+    //クラス変数$displayed_post_idはテーブルがtruncateされても増分はされたまま。
+    //テスト時にこれを呼び出してdisplayed_post_idをリセットする
+    public static function initializeDisplayedPostId()
+    {
+        self::$displayed_post_id = 1;
+    }
 
     /**
      * Define the model's default state.

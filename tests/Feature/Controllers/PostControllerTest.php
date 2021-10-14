@@ -88,7 +88,6 @@ class PostControllerTest extends TestCase
     }
     /**
      * @test
-     * @group miss
      */
     public function ポスト作成成功：返信関係登録失敗(): void
     {

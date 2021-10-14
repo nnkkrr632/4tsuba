@@ -97,7 +97,7 @@ class PostController extends Controller
 
         $lightbox_index = 0;
         foreach ($posts as $post) {
-            //削除済み書込の見せたくないプロパティをマスク
+            //削除済みなら下記のプロパティをマスク
             if ($post['deleted_at'] != null) {
                 $post->makeHidden([
                     'created_at', 'updated_at', 'user_id', 'body',
@@ -105,7 +105,7 @@ class PostController extends Controller
                     'image', 'user', 'has_mute_words'
                 ]);
             }
-            //lightboxのためのインデックスを付与
+            //画像持ちポストに、lightboxのためのインデックスを付与
             else if ($post['image']) {
                 $post['lightbox_index'] = $lightbox_index;
                 $lightbox_index++;
@@ -197,15 +197,15 @@ class PostController extends Controller
 
 
     //ポスト削除
-    public function destroy(DestroyPIRequest $destroy_pi_request)
+    public function destroy(DestroyPIRequest $destroy_p_i_request)
     {
-        $target_post = Post::find($destroy_pi_request->id);
+        $target_post = Post::find($destroy_p_i_request->id);
         $response = Gate::inspect('delete', $target_post);
 
         if ($response->allowed()) {
             $target_post->delete();
             $image_controller = new ImageController();
-            $image_controller->destroy($destroy_pi_request->id);
+            $image_controller->destroy($destroy_p_i_request->id);
         } else {
             return $response->message();
         }

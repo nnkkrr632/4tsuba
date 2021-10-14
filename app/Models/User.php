@@ -68,7 +68,7 @@ class User extends Authenticatable
     }
     public function mute_users()
     {
-        return $this->hasMany(MuteUser::class);
+        return $this->hasMany(MuteUser::class, 'muting_user_id');
     }
 
     public function checkPassword(String $typed_password)

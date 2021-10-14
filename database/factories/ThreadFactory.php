@@ -33,6 +33,16 @@ class ThreadFactory extends Factory
         ];
     }
     /**
+     * ユーザーidを指定する
+     */
+    public function setUserId(int $user_id)
+    {
+        return $this->state(fn () => [
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
      * ポスト数&いいね数を設定する
      */
     public function setPostCountAndLikeCount(int $post_count, int $like_count)

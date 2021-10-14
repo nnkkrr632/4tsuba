@@ -46,6 +46,38 @@ class ResponseControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertSame(0, $response->original);
     }
+    /**
+     * @test
+     */
+    public function 表示ポスト個別遷移前返信先ポスト存在確認：スレッドid文字列(): void
+    {
+        $user = User::factory()->count(1)->create()->first();
+        $this->actingAs($user);
+
+        $threads = Thread::factory()->count(1)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/exists/threads/1a/responses/1';
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200);
+        $this->assertSame(0, $response->original);
+    }
+    /**
+     * @test
+     */
+    public function 表示ポスト個別遷移前返信先ポスト存在確認：displayed_post_id文字列(): void
+    {
+        $user = User::factory()->count(1)->create()->first();
+        $this->actingAs($user);
+
+        $threads = Thread::factory()->count(1)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/exists/threads/1/responses/1aaa';
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200);
+        $this->assertSame(0, $response->original);
+    }
     public function teardown(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
