@@ -12,6 +12,9 @@ use App\Models\Image;
 use App\Models\Like;
 use App\Models\MuteUser;
 use App\Models\MuteWord;
+use Database\Factories\LikeFactory;
+use Database\Factories\PostFactory;
+use Database\Factories\MuteUserFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -21,21 +24,100 @@ class PostControllerIndexMethodTest extends TestCase
     /**
      * @test
      */
-    public function ポスト取得：スレッド個別(): void
+    public function ポスト取得：スレッド個別「スレッドの書込が取得できること」(): void
     {
         $user = User::factory()->count(1)->create()->first();
         $this->actingAs($user);
         $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
         $posts = Post::factory()->count(10)->create();
 
         $url = '/api/posts';
         $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
         $response->assertStatus(200)->assertJsonCount(10);
         $array = $response->json();
-        $posts_thread_id = array_column($array, 'displayed_post_id');
-        // $type =  (string)gettype($response[0]);
-        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $posts_thread_id);
+        $posts_displayed_post_id_list = array_column($array, 'displayed_post_id');
+        $posts_thread_id_list = array_column($array, 'thread_id');
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $posts_displayed_post_id_list);
+        $this->assertSame([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], $posts_thread_id_list);
     }
+    /**
+     * @test
+     */
+    public function ポスト取得：スレッド個別「取得した書込にいいね数と自分のいいねが反映されていること」(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $posts = Post::factory()->count(10)->create();
+        LikeFactory::initializePostId();
+        $likes = Like::factory()->count(5)->create();
+        LikeFactory::initializePostId();
+        $another_likes = Like::factory()->setUserId($another_user->id)->count(5)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
+        $response->assertStatus(200)->assertJsonCount(10);
+        $array = $response->json();
+        $posts_likes_count_list = array_column($array, 'likes_count');
+        $posts_login_user_liked_list = array_column($array, 'login_user_liked');
+        $this->assertSame([2, 2, 2, 2, 2, 0, 0, 0, 0, 0], $posts_likes_count_list);
+        $this->assertSame([1, 1, 1, 1, 1, 0, 0, 0, 0, 0], $posts_login_user_liked_list);
+    }
+    /**
+     * @test
+     */
+    public function ポスト取得：スレッド個別「ミュートワード含む書込がマスクされていること」(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        $mute_word = MuteWord::factory()->setUserId($user->id)->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $posts_with_mute_word = Post::factory()->state([
+            'body' => $mute_word->mute_word,
+        ])->count(5)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
+        $response->assertStatus(200)->assertJsonCount(10);
+        $array = $response->json();
+        $posts_has_mute_words_list = array_column($array, 'has_mute_words');
+        $this->assertSame([true, true, true, true, true, false, false, false, false, false], $posts_has_mute_words_list);
+    }
+    /**
+     * @test
+     */
+    public function ポスト取得：スレッド個別「ミュートユーザーの書込がマスクされていること」(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        MuteUserFactory::initializeUserId();
+        $mute_user = MuteUser::factory()->state([
+            'muting_user_id' => $user->id,
+            'user_id' => $another_user->id,
+        ])->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $posts_by_mute_user = Post::factory()->setUserId($another_user->id)->count(5)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
+        $response->assertStatus(200)->assertJsonCount(10);
+        $array = $response->json();
+        $posts_posted_by_mute_users_list = array_column($array, 'posted_by_mute_users');
+        $this->assertSame([true, true, true, true, true, false, false, false, false, false], $posts_posted_by_mute_users_list);
+    }
+
     /**
      * データプロバイダ
      * [$thread_id, $body]
@@ -55,6 +137,9 @@ class PostControllerIndexMethodTest extends TestCase
         DB::table('posts')->truncate();
         DB::table('images')->truncate();
         DB::table('responses')->truncate();
+        DB::table('likes')->truncate();
+        DB::table('mute_users')->truncate();
+        DB::table('mute_words')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         parent::tearDown();
