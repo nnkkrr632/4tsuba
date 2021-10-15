@@ -13,6 +13,8 @@ use App\Models\Response;
 use App\Models\Like;
 use Database\Factories\PostFactory;
 use Database\Factories\ImageFactory;
+use Database\Factories\LikeFactory;
+use Database\Factories\ResponseFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -32,6 +34,7 @@ class ImageControllerTest extends TestCase
 
         $thread = Thread::factory()->count(1)->create()->first();
         $posts = Post::factory()->count(3)->create();
+        ImageFactory::initializePostId();
         $images = Image::factory()->count(3)->create();
 
         $url = '/api/images/threads/' . $thread->id;
@@ -76,6 +79,7 @@ class ImageControllerTest extends TestCase
         //画像のpost_id初期化
         ImageFactory::initializePostId();
         $images = Image::factory()->count(2)->create();
+        ResponseFactory::initializeOriginDPostId();
         $responses = Response::factory()->count(3)->create();
 
 
@@ -155,6 +159,7 @@ class ImageControllerTest extends TestCase
         //画像のpost_id初期化
         ImageFactory::initializePostId();
         $images = Image::factory()->count(2)->create();
+        LikeFactory::initializePostId();
         $first_like = Like::factory()->count(1)->create();
         $second_like = Like::factory()->count(1)->create();
 

@@ -18,7 +18,7 @@ class ResponseFactory extends Factory
 
     //クラス変数$origin_d_post_idはテーブルがtruncateされても増分はされたまま。
     //テスト時にこれを呼び出して$origin_d_post_idをリセットする
-    public static function initializePostId()
+    public static function initializeOriginDPostId()
     {
         self::$origin_d_post_id = 1;
     }

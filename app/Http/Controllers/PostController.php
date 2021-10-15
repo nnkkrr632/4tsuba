@@ -160,7 +160,7 @@ class PostController extends Controller
     public function edit(EditPIRequest $edit_pi_request)
     {
         $target_post = Post::find($edit_pi_request->id);
-        $response = Gate::inspect('delete', $target_post);
+        $response = Gate::inspect('update', $target_post);
 
         if ($response->allowed()) {
             //NGワード置換

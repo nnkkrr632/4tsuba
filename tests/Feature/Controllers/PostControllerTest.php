@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Image;
+use Database\Factories\PostFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -48,7 +49,6 @@ class PostControllerTest extends TestCase
     }
     /**
      * @test
-     * @group miss
      */
     public function ポスト作成成功：返信関係登録成功(): void
     {
@@ -275,6 +275,7 @@ class PostControllerTest extends TestCase
         $this->actingAs($user);
         $thread = Thread::factory()->count(1)->create()->first();
 
+        PostFactory::initializeDisplayedPostId();
         //編集されるポストを投稿
         $url = '/api/posts';
         $this->json('POST', $url, ['thread_id' => $thread->id, 'body' => '編集前']);
@@ -284,7 +285,7 @@ class PostControllerTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('posts', [
-            'id' => 1,
+            'id' => $id,
             'body' => $body,
             'user_id' => $user->id,
             'thread_id' => $thread->id,
@@ -305,7 +306,6 @@ class PostControllerTest extends TestCase
 
     /**
      * @test
-     * @group miss
      */
     public function ポスト編集成功：返信関係再登録成功(): void
     {
@@ -373,6 +373,7 @@ class PostControllerTest extends TestCase
         $user = User::factory()->count(1)->create()->first();
         $this->actingAs($user);
         $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
         $post = Post::factory()->setUserId($user->id)->count(1)->create()->first();
 
         //編集されるポストを投稿
@@ -484,13 +485,18 @@ class PostControllerTest extends TestCase
         $another_user = $users[1];
         $this->actingAs($user);
         $thread = Thread::factory()->count(1)->create()->first();
-        //編集されるポストを投稿
-        $url = '/api/posts';
-        $this->json('POST', $url, ['thread_id' => $thread->id, 'body' => '編集前']);
 
         //フェイクのストレージを指定
         Storage::fake('local');
 
+        //編集されるポストを投稿
+        $url = '/api/posts';
+        $before_edit_image = UploadedFile::fake()->image('before_edit_image.jpg', 500, 500)->size(3000);
+        $this->json('POST', $url, ['thread_id' => $thread->id, 'body' => '編集前', 'image' => $before_edit_image]);
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $before_edit_image->hashName());
+
+        //編集
         $url = '/api/posts/edit';
         $response = $this->json('POST', $url, ['id' => $id, 'thread_id' => $thread_id, 'displayed_post_id' => $displayed_post_id, 'body' => $body, 'image' => $image]);
         $response->assertStatus(200);
@@ -501,12 +507,17 @@ class PostControllerTest extends TestCase
             'user_id' => $user->id,
             'thread_id' => $thread->id,
             'is_edited' => 1,
+        ])->assertDatabaseMissing('images', [
+            'thread_id' => $thread->id,
+            'post_id' => $id,
+            'image_name' => $before_edit_image->hashName(),
         ])->assertDatabaseHas('images', [
             'thread_id' => $thread->id,
             'post_id' => $id,
             'image_name' => $image->hashName(),
         ]);
         //ストレージ確認
+        Storage::disk('local')->assertMissing('public/images/' . $before_edit_image->hashName());
         Storage::disk('local')->assertExists('public/images/' . $image->hashName());
     }
     /**

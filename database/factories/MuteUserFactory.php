@@ -16,6 +16,13 @@ class MuteUserFactory extends Factory
     protected $model = MuteUser::class;
     private static $user_id = 1;
 
+    //クラス変数$origin_d_post_idはテーブルがtruncateされても増分はされたまま。
+    //テスト時にこれを呼び出して$origin_d_post_idをリセットする
+    public static function initializeUserId()
+    {
+        self::$user_id = 1;
+    }
+
     /**
      * Define the model's default state.
      *
