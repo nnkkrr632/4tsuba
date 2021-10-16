@@ -9,10 +9,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\Image;
 use App\Models\Like;
 use App\Models\Response;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
+use Database\Factories\ImageFactory;
 //DBのtruncateに使用
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
@@ -62,6 +64,23 @@ class ThreadTest extends TestCase
         $posts = $post_model->factory()->count($count)->create();
         //ユーザーからスレッドを取得して件数を確認
         $this->assertSame($count, $thread->posts()->count());
+    }
+    /**
+     * @test
+     */
+    public function リレーションの確認【スレッドは画像を復数持つ】()
+    {
+        $count = 5;
+        $thread_model = app(Thread::class);
+        $image_model = app(Image::class);
+
+        $user = User::factory()->count(1)->create()->first();
+        $thread = $thread_model->factory()->setUserId($user->id)->create()->first();
+        $posts = Post::factory()->count(5)->create();
+        ImageFactory::initializePostId();
+        $images = $image_model->factory()->count($count)->create();
+        //ユーザーからスレッドを取得して件数を確認
+        $this->assertSame($count, $thread->images()->count());
     }
     /**
      * @test

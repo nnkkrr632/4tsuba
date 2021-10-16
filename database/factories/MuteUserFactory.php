@@ -38,10 +38,10 @@ class MuteUserFactory extends Factory
     /**
      * ミューティングユーザーidを指定する
      */
-    public function setMutingUserId(int $user_id)
+    public function setUserId(int $user_id)
     {
         return $this->state(fn () => [
-            'muting_user_id' => $user_id,
+            'user_id' => $user_id,
         ]);
     }
 }

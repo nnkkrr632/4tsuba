@@ -106,7 +106,7 @@ class UserTest extends TestCase
 
         $user = $user_model->factory()->create()->first();
         $other_user = User::factory()->count(10)->create();
-        $mute_users = $mute_user_model->factory()->setMutingUserId($user->id)->count($count)->create();
+        $mute_users = $mute_user_model->factory()->setUserId($user->id)->count($count)->create();
         //ユーザーからスレッドを取得して件数を確認
         $this->assertSame($count, $user->mute_users()->count());
     }

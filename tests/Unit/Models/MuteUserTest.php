@@ -49,7 +49,7 @@ class MuteUserTest extends TestCase
         $user_model = app(User::class);
         $user = $user_model->factory()->create()->first();
         MuteUserFactory::initializeUserId();
-        $mute_user = $mute_user_model->factory()->setMutingUserId($user->id)->count(1)->create()->first();
+        $mute_user = $mute_user_model->factory()->setUserId($user->id)->count(1)->create()->first();
         //ミュートユーザーからユーザーを取得してidを確認
         $this->assertSame($user->id, $mute_user->user()->first()->id);
     }
