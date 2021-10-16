@@ -91,7 +91,7 @@ export default {
             input: {title: null, body: null, image: null},
             //バリデーション関連
             limit: { title: 20, body: 200 },
-            hint: ["", "スレッドのサムネイル(※)を設定できます。 ※スレッド内で最も若い番号(書き込み順)の画像が自動登録"],
+            hint: ["", "スレッドのサムネイル(※)を設定できます。 ※スレッド内で最も若い番号(書込順)の画像が自動登録"],
             button_message: ["書き込む", "スレッドを作成する"],
             body_label: ["書き込む", "本文"],
             created_thread_id: null,

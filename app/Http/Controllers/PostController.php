@@ -99,11 +99,7 @@ class PostController extends Controller
         foreach ($posts as $post) {
             //削除済みなら下記のプロパティをマスク
             if ($post['deleted_at'] != null) {
-                $post->makeHidden([
-                    'created_at', 'updated_at', 'user_id', 'body',
-                    'is_edited', 'like_count', 'posted_by_mute_users', 'thread',
-                    'image', 'user', 'has_mute_words'
-                ]);
+                $post->HiddenColumnsForDeletedPost();
             }
             //画像持ちポストに、lightboxのためのインデックスを付与
             else if ($post['image']) {
@@ -141,9 +137,9 @@ class PostController extends Controller
             'body' => $checked_body,
         ]);
 
-        //スレッドのpost_countをインクリメント
+        //スレッドのposts_countをインクリメント
         //modelにリレーションを定義しているからできること
-        $post->thread()->increment('post_count');
+        $post->thread()->increment('posts_count');
 
         //画像があれば
         if ($store_t_p_i_request->image) {

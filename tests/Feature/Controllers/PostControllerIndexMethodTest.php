@@ -12,12 +12,15 @@ use App\Models\Image;
 use App\Models\Like;
 use App\Models\MuteUser;
 use App\Models\MuteWord;
+use Database\Factories\ImageFactory;
 use Database\Factories\LikeFactory;
 use Database\Factories\PostFactory;
 use Database\Factories\MuteUserFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Faker\Provider\DateTime;
 
 class PostControllerIndexMethodTest extends TestCase
 {
@@ -31,6 +34,8 @@ class PostControllerIndexMethodTest extends TestCase
         $thread = Thread::factory()->count(1)->create()->first();
         PostFactory::initializeDisplayedPostId();
         $posts = Post::factory()->count(10)->create();
+        ImageFactory::initializePostId();
+        $images = Image::factory()->count(5)->create();
 
         $url = '/api/posts';
         $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
@@ -116,6 +121,55 @@ class PostControllerIndexMethodTest extends TestCase
         $array = $response->json();
         $posts_posted_by_mute_users_list = array_column($array, 'posted_by_mute_users');
         $this->assertSame([true, true, true, true, true, false, false, false, false, false], $posts_posted_by_mute_users_list);
+    }
+    /**
+     * @test
+     */
+    public function ポスト取得：スレッド個別「編集済みの書込が編集済みになっていること」(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $edited_posts = Post::factory()->state([
+            'is_edited' => 1,
+        ])->count(5)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
+        $response->assertStatus(200)->assertJsonCount(10);
+        $array = $response->json();
+        $edited_posts_list = array_column($array, 'is_edited');
+        $this->assertSame([1, 1, 1, 1, 1, 0, 0, 0, 0, 0], $edited_posts_list);
+    }
+    /**
+     * @test
+     */
+    public function ポスト取得：スレッド個別「削除済みの書込が削除済みになっていること」(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $deleted_posts = Post::factory()->state([
+            'deleted_at' => DateTime::dateTimeThisDecade(),
+        ])->count(5)->create();
+        $posts = Post::factory()->count(5)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('GET', $url, ['where' => 'thread_id', 'value' => '1']);
+        $response->assertStatus(200)->assertJsonCount(10);
+        $array = $response->json();
+        $deleted_posts_list = array_column($array, 'deleted_at');
+        $this->assertSame([
+            $deleted_posts[0]->deleted_at, $deleted_posts[1]->deleted_at, $deleted_posts[2]->deleted_at,
+            $deleted_posts[3]->deleted_at, $deleted_posts[4]->deleted_at, null, null, null, null, null
+        ], $deleted_posts_list);
     }
 
     /**

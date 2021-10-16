@@ -262,8 +262,8 @@ class ThreadControllerTest extends TestCase
                 'image_name' => $images[0]->image_name,
                 'image_size' => $images[0]->image_size,
                 'is_edited' => 0,
-                'like_count' => $threads[$thread_id - 1]->like_count,
-                'post_count' => $threads[$thread_id - 1]->post_count,
+                'likes_count' => $threads[$thread_id - 1]->likes_count,
+                'posts_count' => $threads[$thread_id - 1]->posts_count,
                 'thread_id' => $threads[$thread_id - 1]->id,
                 'title' => $threads[$thread_id - 1]->title,
                 'user_id' => $threads[$thread_id - 1]->user_id,
@@ -320,10 +320,10 @@ class ThreadControllerTest extends TestCase
             // '最終更新：desc' => ['updated_at', 'desc'],
             // '作成日時：asc' => ['created_at', 'asc'],
             // '作成日時：desc' => ['created_at', 'desc'],
-            '書込数：asc' => ['post_count', 'asc'],
-            '書込数：desc' => ['post_count', 'desc'],
-            'いいね数：asc' => ['like_count', 'asc'],
-            'いいね数：desc' => ['like_count', 'desc'],
+            '書込数：asc' => ['posts_count', 'asc'],
+            '書込数：desc' => ['posts_count', 'desc'],
+            'いいね数：asc' => ['likes_count', 'asc'],
+            'いいね数：desc' => ['likes_count', 'desc'],
         ];
     }
     /**

@@ -31,13 +31,18 @@
 export default {
     data() {
         return {
-            columns: {'updated_at':'最終更新', 'created_at':'作成日時', 'post_count':'書込数', 'like_count':'いいね数'},
+            columns: {
+                updated_at: "最終更新",
+                created_at: "作成日時",
+                posts_count: "書込数",
+                likes_count: "いいね数"
+            },
             //バインドする変数
             selected_column: "最終更新",
             true_false: true,
             desc_asc: ["desc", "asc"],
             //メソッドでAPIとして送信する変数
-            order_by: {'column':null, 'desc_asc':null},
+            order_by: { column: null, desc_asc: null }
         };
     },
     methods: {
@@ -46,14 +51,17 @@ export default {
             console.log(this.desc_asc);
         },
         changeSort() {
-            this.order_by['column'] = this.getKeyByValue(this.columns,this.selected_column);
-            this.order_by['desc_asc'] = this.desc_asc[0];
+            this.order_by["column"] = this.getKeyByValue(
+                this.columns,
+                this.selected_column
+            );
+            this.order_by["desc_asc"] = this.desc_asc[0];
             console.log(this.order_by);
 
             //親コンポーネントへのemit  第一引数は親コンポーネントで受け取るためのイベント名
             this.$emit("update_order_by", this.order_by);
         },
-        getKeyByValue(object,value) {
+        getKeyByValue(object, value) {
             return Object.keys(object).find(key => object[key] === value);
         }
     }

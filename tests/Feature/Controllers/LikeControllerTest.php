@@ -22,7 +22,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];
@@ -37,7 +37,7 @@ class LikeControllerTest extends TestCase
             'post_id' => $post->id,
         ])->assertDatabaseHas('threads', [
             'id' => $post->thread_id,
-            'like_count' => $like_count + 1,
+            'likes_count' => $likes_count + 1,
         ]);
     }
     /**
@@ -49,7 +49,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];
@@ -84,7 +84,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];
@@ -111,7 +111,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];
@@ -128,7 +128,7 @@ class LikeControllerTest extends TestCase
             'post_id' => $post->id,
         ])->assertDatabaseHas('threads', [
             'id' => $post->thread_id,
-            'like_count' => $like_count,
+            'likes_count' => $likes_count,
         ]);
     }
     /**
@@ -140,7 +140,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];
@@ -178,7 +178,7 @@ class LikeControllerTest extends TestCase
         $users = User::factory()->count(10)->create();
         $user = $users->random(1)[0];
         $thread = Thread::factory()->count(1)->create()->first();
-        $like_count = $thread->like_count;
+        $likes_count = $thread->likes_count;
         //ポストfactoryはスレッドid 1固定 ユーザーランダム
         $posts = Post::factory(10)->create();
         $post = $posts->random(1)[0];

@@ -28,7 +28,7 @@ class ThreadController extends Controller
             $join->on('threads.id', '=', 'thread_images_table.thread_id');
         })
             ->orderBy('threads.' . $threads_order_by_request->column, $threads_order_by_request->desc_asc)->get()
-            ->makeVisible(['created_at', 'updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
+            ->makeVisible(['created_at', 'updated_at', 'user_id', 'posts_count', 'likes_count', 'is_edited']);
     }
 
     //★個別スレッド show
@@ -44,7 +44,7 @@ class ThreadController extends Controller
             ->find((int)$thread_id)
             //findからThreadModelクラス。(それまではEloquentBuilderクラス)
             //故に、findより後にThreadModelのメソッドであるmakeVisibleをする必要がある。この順番は重要。
-            ->makeVisible(['updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
+            ->makeVisible(['updated_at', 'user_id', 'posts_count', 'likes_count', 'is_edited']);
     }
 
     //スレッド store

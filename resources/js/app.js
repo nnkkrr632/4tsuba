@@ -9,8 +9,7 @@ require('./bootstrap');
 import router from './router';
 import vuetify from './vuetify';
 import vueLazyLoad from './vueLazyLoad';
-
-
+// import jaconv from './jaconv';
 import './../sass/app.scss'
 
 import FrameComponent from "./components/layouts/FrameComponent";
@@ -51,4 +50,5 @@ const app = new Vue({
     router,
     vuetify,
     vueLazyLoad,
+    // jaconv,
 });

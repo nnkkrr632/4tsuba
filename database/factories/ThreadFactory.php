@@ -28,8 +28,8 @@ class ThreadFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => $this->faker->realText(20),
-            'post_count' => 0,
-            'like_count' => 0,
+            'posts_count' => 0,
+            'likes_count' => 0,
         ];
     }
     /**
@@ -45,11 +45,11 @@ class ThreadFactory extends Factory
     /**
      * ポスト数&いいね数を設定する
      */
-    public function setPostCountAndLikeCount(int $post_count, int $like_count)
+    public function setPostCountAndLikeCount(int $posts_count, int $likes_count)
     {
         return $this->state(fn () => [
-            'post_count' => $post_count,
-            'like_count' => $like_count,
+            'posts_count' => $posts_count,
+            'likes_count' => $likes_count,
         ]);
     }
     /**
@@ -57,13 +57,13 @@ class ThreadFactory extends Factory
      */
     public function calculatePostCountAndLikeCount(int $thread_id)
     {
-        $post_count = Post::where('thread_id', $thread_id)->count();
-        $like_count = Like::whereIn('post_id', function ($query) use ($thread_id) {
+        $posts_count = Post::where('thread_id', $thread_id)->count();
+        $likes_count = Like::whereIn('post_id', function ($query) use ($thread_id) {
             $query->select('id')->from('posts')->where('thread_id', $thread_id);
         })->count();
         return $this->state(fn () => [
-            'post_count' => $post_count,
-            'like_count' => $like_count,
+            'posts_count' => $posts_count,
+            'likes_count' => $likes_count,
         ]);
     }
 }
