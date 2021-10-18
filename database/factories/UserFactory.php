@@ -58,4 +58,13 @@ class UserFactory extends Factory
             'role' => 'guest',
         ]);
     }
+    /**
+     * roleをスタッフにする
+     */
+    public function setRoleStaff()
+    {
+        return $this->state(fn () => [
+            'role' => 'staff',
+        ]);
+    }
 }

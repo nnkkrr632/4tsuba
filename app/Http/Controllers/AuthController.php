@@ -36,9 +36,9 @@ class AuthController extends Controller
             //新しいアイコンを保存
             $uploaded_icon = $edit_profile_request->file('icon');
             $uploaded_icon->store('public/icons');
-            //古いアイコンを削除(ただしゲスト用アイコン以外)
+            //古いアイコンを削除(ただし初期アイコンとゲスト用アイコン以外)
             $my_icon = Auth::user()->icon_name;
-            if (!preg_match('/guest_user/', $my_icon)) {
+            if (!preg_match('/no_image|guest_user/', $my_icon)) {
                 Storage::disk('public')->delete('icons/' . $my_icon);
             }
             //DB更新
@@ -92,6 +92,11 @@ class AuthController extends Controller
         $this->authorize('checkUserIsNotGuest', $user);
 
         if ($user->checkPassword($destroy_account_request->password)) {
+            //アイコンを削除(ただし初期アイコンとゲスト用アイコン以外)
+            $my_icon = Auth::user()->icon_name;
+            if (!preg_match('/no_image|guest_user/', $my_icon)) {
+                Storage::disk('public')->delete('icons/' . $my_icon);
+            }
             $user->delete();
         } else {
             return 'bad_password';

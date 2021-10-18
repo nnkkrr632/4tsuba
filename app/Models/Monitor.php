@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Monitor extends Model
 {
     //use HasFactory;
-    public function returnDestinationDisplayedPostIdList($body)
+    public function returnDestinationDisplayedPostIdList(string $body)
     {
         $regular_expression = "/>>[1-9][0-9]{0,3}( |　|\n|\r|\r\n|\t)+/";
         $regular_expression_for_sentence = "/^>>[1-9][0-9]{0,3}$/";
@@ -74,7 +74,7 @@ class Monitor extends Model
         $regular_expression = '/' . $ng_word_list . '/iu';
         return $regular_expression;
     }
-    public function convertNgWordsIfExist($body)
+    public function convertNgWordsIfExist(string $body)
     {
         $re = $this->returnNgWordsRegularExpression();
         $replace = '🍀🍀🍀';

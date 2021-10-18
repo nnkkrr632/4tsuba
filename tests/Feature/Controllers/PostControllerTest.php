@@ -45,6 +45,7 @@ class PostControllerTest extends TestCase
         return [
             'スレッドid(1)' => [1, '書込'],
             '書込(200文字)' => [1, str_repeat("a", 200)],
+            '悪意ある>>' => [1, '>>' . str_repeat("a", 198)],
         ];
     }
     /**
@@ -84,6 +85,34 @@ class PostControllerTest extends TestCase
             'thread_id' => $thread->id,
             'origin_d_post_id' => 2,
             'dest_d_post_id' => 4,
+        ]);
+    }
+    /**
+     * @test
+     */
+    public function ポスト作成成功：返信関係登録成功1語の場合(): void
+    {
+        $user = User::factory()->count(1)->create()->first();
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $post = Post::factory()->setUserId($user->id)->count(1)->create()->first();
+
+        $url = '/api/posts';
+        //返信関係登録(過去投稿宛含む 自分宛て含む 未来宛含む 重複含む 区切り文字：半角スペース全角スペース改行タブ)
+        $body = '>>3';
+        $response = $this->json('POST', $url, ['thread_id' => $thread->id, 'body' => $body]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('posts', [
+            'id' => 2,
+            'body' => $body,
+            'user_id' => $user->id,
+            'thread_id' => $thread->id,
+        ])->assertDatabaseHas('responses', [
+            'thread_id' => $thread->id,
+            'origin_d_post_id' => 2,
+            'dest_d_post_id' => 3,
         ]);
     }
     /**
@@ -425,6 +454,54 @@ class PostControllerTest extends TestCase
     }
     /**
      * @test
+     * @dataProvider editPostDataProvider_4
+     */
+    public function ポスト編集成功：画像なし→あり($id, $thread_id, $displayed_post_id, $body, $image): void
+    {
+        $users = User::factory()->count(2)->create();
+        $user = $users[0];
+        $another_user = $users[1];
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+
+        //フェイクのストレージを指定
+        Storage::fake('local');
+        //1回目のポスト(作成)
+        $url = '/api/posts';
+        $this->json('POST', $url, ['thread_id' => $thread_id, 'body' => $body]);
+
+        $url = '/api/posts/edit';
+        $response = $this->json('POST', $url, ['id' => $id, 'thread_id' => $thread_id, 'displayed_post_id' => $displayed_post_id, 'body' => $body, 'image' => $image]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('posts', [
+            'id' => $id,
+            'body' => $body,
+            'user_id' => $user->id,
+            'thread_id' => $thread_id,
+            'is_edited' => 1,
+        ])->assertDatabaseHas('images', [
+            'thread_id' => $thread_id,
+            'post_id' => $id,
+            'image_name' => $image->hashName(),
+        ]);
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $image->hashName());
+    }
+    /**
+     * データプロバイダ
+     * [$id, $thread_id, $displayed_post_id, $body]
+     */
+    public function editPostDataProvider_4(): array
+    {
+        $uploaded_image_1 = UploadedFile::fake()->image('image.jpg', 500, 500)->size(3000);
+
+        return [
+            'ポスト編集画像なし→あり' => [1, 1, 1, '編集後', $uploaded_image_1],
+        ];
+    }
+    /**
+     * @test
      * @dataProvider editPostDataProvider_3
      */
     public function ポスト編集成功：画像削除チェック「画像既にあり時」($id, $thread_id, $displayed_post_id, $body, $delete_image): void
@@ -465,7 +542,7 @@ class PostControllerTest extends TestCase
     }
     /**
      * データプロバイダ
-     * [$id, $thread_id, $displayed_post_id, $body]
+     * [$id, $thread_id, $displayed_post_id, $body, $delete_image]
      */
     public function editPostDataProvider_3(): array
     {
@@ -675,6 +752,7 @@ class PostControllerTest extends TestCase
     }
     /**
      * @test
+     * @group miss
      */
     public function ポスト削除成功：画像あり(): void
     {
@@ -709,6 +787,30 @@ class PostControllerTest extends TestCase
         ]);
         //ストレージ確認
         Storage::disk('local')->assertMissing('public/images/' . $uploaded_image_1->hashName());
+    }
+    /**
+     * @test
+     */
+    public function 【スタッフ】ポスト削除成功：画像あり(): void
+    {
+        $user = User::factory()->count(1)->setRoleStaff()->create()->first();
+        $another_user = User::factory()->count(1)->create()->first();
+        $this->actingAs($user);
+        $thread = Thread::factory()->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $post = Post::factory()->count(1)->setUserId($another_user->id)->create();
+
+        $url = '/api/posts';
+        $response = $this->json('DELETE', $url, ['id' => 1]);
+        $response->assertStatus(200);
+
+        //ソフトデリートなのでid列でMissingはできない。deleted_atを確認する
+        $this->assertDatabaseHas('posts', [
+            'id' => 1,
+        ])->assertDatabaseMissing('posts', [
+            'id' => 1,
+            'deleted_at' => null,
+        ]);
     }
 
     /**

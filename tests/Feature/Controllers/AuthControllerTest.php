@@ -308,6 +308,16 @@ class AuthControllerTest extends TestCase
         $user = User::factory()->count(1)->create()->first();
         $this->actingAs($user);
 
+        //フェイクのストレージを指定
+        Storage::fake('local');
+        //ストレージ保存
+        $icon = UploadedFile::fake()->image('icon.jpg', 500, 500)->size(3000);
+        $icon->storeAs('public/icons/', 'no_image.png', ['disk' => 'local']);
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/icons/no_image.png');
+
+
+
         $response = $this->json('DELETE', 'api/users/me', [
             'password' => 'p@ssw0rd',
         ]);
@@ -316,6 +326,9 @@ class AuthControllerTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
         ]);
+
+        //ストレージ確認(no_image.pngのときは消さない)
+        Storage::disk('local')->assertExists('public/icons/no_image.png');
     }
     /** @test */
     public function アカウント削除失敗【destroy】()

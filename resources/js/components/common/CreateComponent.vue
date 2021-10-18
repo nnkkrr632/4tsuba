@@ -80,10 +80,6 @@ export default {
             type:Number,
             default: null,
         },
-        anchor: {
-            type: String,
-            default: null
-        },
     },
     data: function() {
         return {
@@ -167,14 +163,10 @@ export default {
                 this.body_label = this.body_label.reverse();
             }
         },
-        writeAnchor() {
-            this.input.body = this.anchor;
-            this.$refs.focusBody.focus();
-        }
-    },
-    watch: {
-        anchor: function() {
-            this.writeAnchor();
+        writeAnchor(anchor) {
+                console.log('this is writeAchor');
+                this.input.body = anchor;
+                this.$refs.focusBody.focus();
         }
     },
     mounted() {

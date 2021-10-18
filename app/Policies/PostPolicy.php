@@ -20,7 +20,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        return ($user->id === $post->user_id || $user->role === 'staff')
+        return ($user->id === $post->user_id)
             ? Response::allow()
             : Response::deny('bad_user');
     }
@@ -34,7 +34,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        return ($user->id === $post->user_id || $user->role === 'staff')
+        return ($user->id === $post->user_id)
             ? Response::allow()
             : Response::deny('bad_user');
     }
