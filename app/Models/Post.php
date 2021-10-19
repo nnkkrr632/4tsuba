@@ -68,11 +68,12 @@ class Post extends Model
     {
         return $this->where('thread_id', $thread_id)->withTrashed()->count();
     }
-
-    public function returnLoginUserPostTable($thread_id)
+    public function HiddenColumnsForDeletedPost()
     {
-        return $this->select('id as login_user_posted_post_id', DB::raw('1 as is_login_user_posted'))
-            ->where('thread_id', $thread_id)->where('user_id', Auth::id())
-            ->whereNotNull('user_id');
+        return $this->makeHidden([
+            'created_at', 'updated_at', 'user_id', 'body',
+            'is_edited', 'likes_count', 'posted_by_mute_users', 'thread',
+            'image', 'user', 'has_mute_words'
+        ]);
     }
 }

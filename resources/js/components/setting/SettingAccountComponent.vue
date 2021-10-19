@@ -97,7 +97,7 @@ export default {
             link_delete_account: '/setting/account/delete',
             message: 'メールアドレス/パスワードを変更する',
             message_for_guest: 'ゲストユーザーは変更できません',
-            word_counts:[100, 24, 8],
+            word_counts:[50, 24, 8],
         };
     },
     components: {

@@ -3,11 +3,13 @@
         <div class="d-flex">
             <v-avatar class="ma-3" size="80" tile>
                 <!-- vueのルート publicディレクトリからの相対パスを記入する この場合 public/storage/images/example.png -->
-                <img v-if="thread.image_name"
+                <img
+                    v-if="thread.image_name"
                     :src="'/storage/images/' + thread.image_name"
                     style="object-fit: cover;"
                 />
-                <img v-else
+                <img
+                    v-else
                     src="/storage/images/noimage.jpg"
                     style="object-fit: cover;"
                 />
@@ -16,17 +18,19 @@
                 <v-card-title v-html="thread.title"></v-card-title>
                 <v-card-text>
                     <v-icon>mdi-comment</v-icon>
-                    <span v-html="thread.post_count"></span>
+                    <span v-html="thread.posts_count"></span>
                     <v-icon>mdi-heart</v-icon>
-                    <span v-html="thread.like_count"></span>
+                    <span v-html="thread.likes_count"></span>
                     <span class="d-flex d-sm-inline">
                         <v-icon>mdi-update</v-icon>
                         <span v-html="thread.updated_at"></span>
                     </span>
-                    <span v-if="my_info.role === 'staff'" class="d-flex d-sm-inline">
+                    <span
+                        v-if="my_info.role === 'staff'"
+                        class="d-flex d-sm-inline"
+                    >
                         <v-icon @click="deleteThread">mdi-delete</v-icon>
                     </span>
-
                 </v-card-text>
             </div>
         </div>
@@ -42,9 +46,9 @@ export default {
             required: true
         },
         my_info: {
-            type:Object,
-            require  : true,
-            'default': () => ({ count: 0 })             
+            type: Object,
+            require: true,
+            default: () => ({ count: 0 })
         }
     },
     methods: {
@@ -61,23 +65,21 @@ export default {
                 axios
                     .delete("/api/threads", {
                         data: {
-                            id: this.thread.id,
+                            id: this.thread.id
                         }
                     })
                     .then(response => {
                         console.log(response.data);
-                        if(response.data === 'bad_user') {
-                            alert('スタッフ以外は削除できません。');
+                        if (response.data === "bad_user") {
+                            alert("スタッフ以外は削除できません。");
                         } else {
-                            alert('削除しました。');
-
+                            alert("削除しました。");
                         }
                     })
                     .catch(error => {
                         console.log(error.response.data);
                     });
             }
-
         }
     }
 };

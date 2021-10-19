@@ -15,22 +15,31 @@ class CookieAuthenticationController extends Controller
 {
     public function login(LoginRequest $login_request)
     {
-        $credentials = $login_request->only('email', 'password');
+        //ログインしていないor自分への再度ログインなら許可
+        if (!Auth::check() || Auth::user()->email == $login_request->email) {
+            $credentials = $login_request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            //$login_request->session()->regenerate();
-            return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);
+            if (Auth::attempt($credentials)) {
+                //$login_request->session()->regenerate();
+                return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);
+            }
+            //↓のHTTP422エラーが出るときはフォームリクエストのバリデーションを突破している
+            throw ValidationException::withMessages([
+                'email_password' => 'メールアドレスもしくはパスワードが正しくありません。'
+            ]);
+        } else {
+            return response()->json(['message' => 'you_have_already_logged_in_another_account'], 200);
         }
-        //↓のHTTP422エラーが出るときはフォームリクエストのバリデーションを突破している
-        throw ValidationException::withMessages([
-            'email_password' => 'メールアドレスもしくはパスワードが正しくありません。'
-        ]);
     }
 
     public function logout()
     {
-        Auth::logout();
-        return response()->json(['message' => 'logout_success'], 200);
+        if (Auth::check()) {
+            Auth::logout();
+            return response()->json(['message' => 'logout_success'], 200);
+        } else {
+            return response()->json(['message' => 'you_are_not_login'], 200);
+        }
     }
 
     //登録

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Gatekeeper;
+use App\Models\Monitor;
 use App\Models\Response;
 
 
@@ -11,8 +11,8 @@ class ResponseController extends Controller
 {
     public function store(Request $request)
     {
-        $gate_keeper = new Gatekeeper();
-        $dest_displayed_post_id_list = $gate_keeper->returnDestinationDisplayedPostIdList($request->body);
+        $monitor = new Monitor();
+        $dest_displayed_post_id_list = $monitor->returnDestinationDisplayedPostIdList($request->body);
 
         if ($dest_displayed_post_id_list) {
             for ($i = 0; $i < count($dest_displayed_post_id_list); $i++) {
@@ -46,12 +46,12 @@ class ResponseController extends Controller
                 ->where('dest_d_post_id', $converted_displayed_post_id)->count();
         }
     }
-    public function returnResponseMapForTheThread($thread_id)
-    {
-        return Response::leftJoin('posts', function ($join) {
-            $join->on('posts.thread_id', '=', 'responses.thread_id');
-            $join->on('posts.displayed_post_id', '=', 'responses.dest_d_post_id');
-        })->where('responses.thread_id', $thread_id)->orderBy('origin_d_post_id', 'asc')
-            ->select('origin_d_post_id as from', 'dest_d_post_id as to', 'body as to_body')->get();
-    }
+    // public function returnResponseMapForTheThread($thread_id)
+    // {
+    //     return Response::leftJoin('posts', function ($join) {
+    //         $join->on('posts.thread_id', '=', 'responses.thread_id');
+    //         $join->on('posts.displayed_post_id', '=', 'responses.dest_d_post_id');
+    //     })->where('responses.thread_id', $thread_id)->orderBy('origin_d_post_id', 'asc')
+    //         ->select('origin_d_post_id as from', 'dest_d_post_id as to', 'body as to_body')->get();
+    // }
 }

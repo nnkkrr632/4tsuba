@@ -23,9 +23,9 @@ class LikeController extends Controller
             'post_id' => $store_like_request->post_id,
         ]);
 
-        //threadsテーブルのlike_countインクリメント
+        //threadsテーブルのlikes_countインクリメント
         $thread = new Thread();
-        $thread->find($store_like_request->thread_id)->increment('like_count');
+        $thread->find($store_like_request->thread_id)->increment('likes_count');
     }
 
     public function destroy(DestroyLikeRequest $destroy_like_request)
@@ -35,8 +35,8 @@ class LikeController extends Controller
         $this->authorize('delete', $target_like);
         $target_like->delete();
 
-        //threadsテーブルのlike_countデクリメント
+        //threadsテーブルのlikes_countデクリメント
         $thread = new Thread();
-        $thread->find($destroy_like_request->thread_id)->decrement('like_count');
+        $thread->find($destroy_like_request->thread_id)->decrement('likes_count');
     }
 }

@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CookieAuthenticationController;
-use App\Http\Controllers\GuestAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +18,6 @@ use App\Http\Controllers\GuestAuthController;
 Route::post('/register', [CookieAuthenticationController::class, 'register'])->name('register');
 Route::post('/login', [CookieAuthenticationController::class, 'login'])->name('login');
 Route::post('/logout', [CookieAuthenticationController::class, 'logout'])->name('logout');
-//ゲストユーザーログイン用
-Route::get('/login/guest/{user_id}', [GuestAuthController::class, 'guestLogin'])->where(['user_id' => '1|2|3']);;
 
 Route::get('/{any}', function () {
     return view('app');

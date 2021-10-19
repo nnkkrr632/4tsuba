@@ -26,20 +26,45 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => bcrypt('p@ssw0rd'),
+            'role' => 'normal',
+            'icon_name' => 'no_image.png'
         ];
+    }
+    /**
+     * メールアドレスを指定する
+     */
+    public function setEmail(string $email)
+    {
+        return $this->state(fn () => [
+            'email' => $email,
+        ]);
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * パスワードをデフォルトの「password」から変更する
      */
-    public function unverified()
+    public function setPassword(string $password)
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        return $this->state(fn () => [
+            'password' => bcrypt($password),
+        ]);
+    }
+    /**
+     * roleをゲストにする
+     */
+    public function setRoleGuest()
+    {
+        return $this->state(fn () => [
+            'role' => 'guest',
+        ]);
+    }
+    /**
+     * roleをスタッフにする
+     */
+    public function setRoleStaff()
+    {
+        return $this->state(fn () => [
+            'role' => 'staff',
+        ]);
     }
 }

@@ -14,9 +14,8 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MuteWordController;
 use App\Http\Controllers\MuteUserController;
 use App\Http\Controllers\LoginCheckController;
-
-
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GuestAuthController;
 
 
 /*
@@ -33,15 +32,10 @@ use App\Http\Controllers\AuthController;
 Route::get('/test', [MuteWordController::class, 'addHasMuteWordKeyToPosts']);
 
 
-//検証用 ConfirmLoginComponent
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::get('/check', [AuthController::class, 'checkLoginOrNot']);
-
 //ログインチェック
 Route::get('/check/login', LoginCheckController::class);
-
+//ゲストログイン
+Route::post('/login/guest', [GuestAuthController::class, 'guestLogin']);
 
 //認証 Laravel Sanctum
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -49,10 +43,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/users/me', [AuthController::class, 'returnMyId']);
     Route::get('/users/me/info', [AuthController::class, 'returnMyInfo']);
     Route::patch('/users/me', [AuthController::class, 'editAccount']);
-    Route::post('/users/me/profile', [UserController::class, 'editProfile']);
+    Route::post('/users/me/profile', [AuthController::class, 'editProfile']);
     Route::delete('/users/me', [AuthController::class, 'destroy']);
     //ゲスト用初期化
-    Route::get('/users/me/profile', [UserController::class, 'resetGuestProfile']);
+    Route::get('/users/me/profile', [AuthController::class, 'resetGuestProfile']);
 
     //users
     Route::get('/users/{user_id}', [UserController::class, 'returnUserInfo'])->whereNumber('user_id');
@@ -72,7 +66,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/posts', [PostController::class, 'destroy']);
 
     //responses
-    Route::get('/threads/{thread_id}/responses', [ResponseController::class, 'returnResponseMapForTheThread']);
+    // Route::get('/threads/{thread_id}/responses', [ResponseController::class, 'returnResponseMapForTheThread']);
     Route::get('/exists/threads/{thread_id}/responses/{displayed_post_id}', [ResponseController::class, 'exists']);
 
     //images

@@ -8,7 +8,7 @@ use App\Models\Response;
 use App\Models\Like;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
-use App\Models\Gatekeeper;
+use App\Models\Monitor;
 //authを使用する
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
@@ -26,10 +26,6 @@ class PostController extends Controller
     //クエリパラメータで値を渡す api/posts?where=thread_id&value=2
     public function index(GetPostsRequest $get_posts_request)
     {
-        // $temp_post = new Post();
-        // $login_user_post_table = $temp_post->returnLoginUserPostTable($thread_id);
-
-
         //select(*)ないと外部結合した列がでなくなるので注意
         $query = Post::query();
         $query->select('*')->with(['thread', 'image', 'user',])
@@ -101,15 +97,11 @@ class PostController extends Controller
 
         $lightbox_index = 0;
         foreach ($posts as $post) {
-            //削除済み書込の見せたくないプロパティをマスク
+            //削除済みなら下記のプロパティをマスク
             if ($post['deleted_at'] != null) {
-                $post->makeHidden([
-                    'created_at', 'updated_at', 'user_id', 'body',
-                    'is_edited', 'like_count', 'posted_by_mute_users', 'thread',
-                    'image', 'user', 'has_mute_words'
-                ]);
+                $post->HiddenColumnsForDeletedPost();
             }
-            //lightboxのためのインデックスを付与
+            //画像持ちポストに、lightboxのためのインデックスを付与
             else if ($post['image']) {
                 $post['lightbox_index'] = $lightbox_index;
                 $lightbox_index++;
@@ -135,19 +127,19 @@ class PostController extends Controller
         }
 
         //NGワード置換
-        $gate_keeper = new GateKeeper();
-        //$checked_body = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->body);
+        $monitor = new Monitor();
+        $checked_body = $monitor->convertNgWordsIfExist($store_t_p_i_request->body);
 
         $post = Post::create([
             'user_id' => Auth::id(),
             'thread_id' => $store_t_p_i_request->thread_id,
             'displayed_post_id' => $store_t_p_i_request->displayed_post_id,
-            'body' => $store_t_p_i_request->body,
+            'body' => $checked_body,
         ]);
 
-        //スレッドのpost_countをインクリメント
+        //スレッドのposts_countをインクリメント
         //modelにリレーションを定義しているからできること
-        $post->thread()->increment('post_count');
+        $post->thread()->increment('posts_count');
 
         //画像があれば
         if ($store_t_p_i_request->image) {
@@ -164,12 +156,12 @@ class PostController extends Controller
     public function edit(EditPIRequest $edit_pi_request)
     {
         $target_post = Post::find($edit_pi_request->id);
-        $response = Gate::inspect('delete', $target_post);
+        $response = Gate::inspect('update', $target_post);
 
         if ($response->allowed()) {
             //NGワード置換
-            $gate_keeper = new GateKeeper();
-            $checked_body = $gate_keeper->convertNgWordsIfExist($edit_pi_request->body);
+            $monitor = new Monitor();
+            $checked_body = $monitor->convertNgWordsIfExist($edit_pi_request->body);
 
             $target_post->update([
                 'body' => $checked_body,
@@ -184,8 +176,8 @@ class PostController extends Controller
                 $response_controller->store($edit_pi_request);
             }
 
-            //画像があれば
-            if ($edit_pi_request->hasFile('image')) {
+            //画像がある かつ 画像を削除するにチェックが付いていない
+            if ($edit_pi_request->hasFile('image') && !($edit_pi_request->delete_image)) {
                 $image_controller = new ImageController();
                 $image_controller->edit($edit_pi_request);
             }
@@ -201,15 +193,15 @@ class PostController extends Controller
 
 
     //ポスト削除
-    public function destroy(DestroyPIRequest $destroy_pi_request)
+    public function destroy(DestroyPIRequest $destroy_p_i_request)
     {
-        $target_post = Post::find($destroy_pi_request->id);
+        $target_post = Post::find($destroy_p_i_request->id);
         $response = Gate::inspect('delete', $target_post);
 
         if ($response->allowed()) {
             $target_post->delete();
             $image_controller = new ImageController();
-            $image_controller->destroy($destroy_pi_request->id);
+            $image_controller->destroy($destroy_p_i_request->id);
         } else {
             return $response->message();
         }

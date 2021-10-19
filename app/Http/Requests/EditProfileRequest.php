@@ -34,16 +34,25 @@ class EditProfileRequest extends FormRequest
                 'between:1,20',
                 $regular_expression_rule->forbidHtmlTag(),
             ],
+            'icon' => [
+                'sometimes',
+                'required',
+                'not_in:"null"',
+                'image',
+                'mimes:jpeg,jpg,png,gif',
+                'max:3000',
+            ],
+
         ];
     }
 
-    public function withValidator(Validator $validator)
-    {
-        //画像用
-        $validator->sometimes('icon', 'image|mimes:jpeg,jpg,png,gif|max:3000', function ($input) {
-            return $input->icon;
-        });
-    }
+    // public function withValidator(Validator $validator)
+    // {
+    //     //画像用
+    //     $validator->sometimes('icon', 'image|mimes:jpeg,jpg,png,gif|max:3000', function ($input) {
+    //         return $input->icon;
+    //     });
+    // }
 
 
     public function messages()
@@ -55,6 +64,8 @@ class EditProfileRequest extends FormRequest
             'name.not_in' => $form_request_message->not_in($heads[0]),
             'name.between' => $form_request_message->between(1, 20, $heads[0]),
             'name.regex' => $form_request_message->forbidHtmlTag($heads[0]),
+            'icon.required' => $form_request_message->required($heads[1]),
+            'icon.not_in' => $form_request_message->not_in($heads[1]),
             'icon.image' => $form_request_message->image($heads[1]),
             'icon.mimes' => $form_request_message->imageMime($heads[1]),
             'icon.max' => $form_request_message->imageMaxSize($heads[1]),

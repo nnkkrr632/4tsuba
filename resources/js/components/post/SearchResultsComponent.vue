@@ -13,7 +13,6 @@
             :show-caption="true"
         ></light-box>
 
-
         <!-- ポスト部分 -->
         <div v-for="(post, index) in posts" :key="post.id">
             <post-object-component
@@ -36,6 +35,7 @@
 import HeadlineComponent from "../common/HeadlineComponent.vue";
 import PostObjectComponent from "./PostObjectComponent.vue";
 import LightBox from 'vue-image-lightbox';
+import jaconv from 'jaconv';
 
 export default {
     //このpropsは親コンポーネントではなく、router-linkのparam
@@ -97,7 +97,8 @@ export default {
         },
         highlightSearchWord() {
             console.log("this is highlightSearchWord");
-            const unique_word_string = this.unique_word_list.join('|');
+            let unique_all_kana_list = this.exchangeUniqueWordListIntoAllKanaList(this.unique_word_list);
+            const unique_word_string = unique_all_kana_list.join('|');
             let regular_expressiion = new RegExp('(' + unique_word_string + ')', 'gi');
             console.log(regular_expressiion);
 
@@ -119,7 +120,27 @@ export default {
         },
         showImages(emitted_lightbox_index) {
             this.$refs.lightbox.showImage(emitted_lightbox_index);
-        }
+        },
+        exchangeUniqueWordListIntoAllKanaList(unique_word_list) {
+            console.log('this is exchangeUniqueWordListIntoAllKanaList');
+            let all_kana_list = [];
+            unique_word_list.forEach( function (unique_word) {
+                let hiragana = jaconv.toHiragana(unique_word);
+                let katakana = jaconv.toKatakana(unique_word);
+                let han_katakana = jaconv.toHanKana(unique_word);
+                let han_katakana_2 = jaconv.toHanKana(jaconv.toKatakana(unique_word));
+                let array = [hiragana, katakana, han_katakana, han_katakana_2];
+                console.log(array);
+                all_kana_list.push(array);
+            });
+            all_kana_list = all_kana_list.flat();
+            console.log(all_kana_list);
+            //重複削除
+                let set_list = new Set(all_kana_list);
+                let unique_all_kana_list = Array.from(set_list);
+                console.log(unique_all_kana_list);
+                return unique_all_kana_list;
+        },
     },
     watch: {
         search_string: function() {

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Thread;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Image;
 use App\Models\MuteWord;
 use App\Models\Like;
 
@@ -25,10 +26,12 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(5)->create();
 
         //seederから作成
-        //$this->call(ThreadsSeeder::class);
+        $this->call(ThreadsSeeder::class);
 
         //Thread::factory()->count(10)->create();
-        //Post::factory()->count(20)->create();
+        Post::factory()->count(10)->create();
+        Post::factory()->count(10)->setUserId(3)->create();
+        Image::factory()->count(10)->create();
         //MuteWOrd
         MuteWord::factory()->count(20)->create();
         //Like::factory()->count(100)->create();

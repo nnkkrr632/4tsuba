@@ -22,7 +22,7 @@
                 v-bind:my_info="my_info"
                 @re_get_mainly_posts="updateEntry('update_or_destroy')"
                 @receiveForResponses="getResponses"
-                @receiveForAnchor="transferAnchor"
+                @receiveForAnchor="callWriteAnchor"
                 @igniteLightBox="showImages"
             >
             </post-object-component>
@@ -31,8 +31,8 @@
         <v-divider></v-divider>
         <!-- 書き込み部分 -->
         <create-component
+            ref="create"
             @re_get_mainly_posts="updateEntry('post')"
-            v-bind:anchor="anchor"
             v-bind:thread_id="thread_id"
         ></create-component>
         <span ref="bottom"></span>
@@ -122,9 +122,10 @@ export default {
                     this.getResponseImagesForLightBox(emitted_displayed_post_id);
                 });
         },
-        transferAnchor(emitted_displayed_post_id) {
-            console.log("this is transferAnchor");
+        callWriteAnchor(emitted_displayed_post_id) {
+            console.log("this is callWriteAnchor");
             this.anchor = '>>' + emitted_displayed_post_id + " ";
+            this.$refs.create.writeAnchor(this.anchor);
         },
         updateEntry(driver) {
             console.log('this is updateEntry');

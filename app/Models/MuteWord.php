@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Post;
 
 
@@ -27,7 +28,7 @@ class MuteWord extends Model
     }
 
     //modelメソッド
-    public function addHasMuteWordsKeyToPosts($posts)
+    public function addHasMuteWordsKeyToPosts(Collection $posts)
     {
         $mute_words = MuteWord::where('user_id', Auth::id())->pluck('mute_word')->toArray();
         if ($mute_words) {

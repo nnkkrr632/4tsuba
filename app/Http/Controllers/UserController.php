@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-//フォームリクエスト
-use App\Http\Requests\EditProfileRequest;
 
 class UserController extends Controller
 {
@@ -31,31 +29,6 @@ class UserController extends Controller
         } else {
             $converted_user_id = (int)$user_id;
             return User::where('id', $converted_user_id)->count();
-        }
-    }
-
-    public function editProfile(EditProfileRequest $edit_profile_request)
-    {
-        User::find(Auth::id())->update(['name' => $edit_profile_request->name,]);
-
-        if ($edit_profile_request->file('icon')) {
-            $uploaded_icon = $edit_profile_request->file('icon');
-            $uploaded_icon->store('public/icons');
-            User::find(Auth::id())->update([
-                'icon_name' => $uploaded_icon->hashName(),
-                'icon_size' => $uploaded_icon->getSize(),
-            ]);
-        }
-    }
-
-    public function resetGuestProfile()
-    {
-        $guest_user = User::find(Auth::id());
-        if ($guest_user['role'] === 'guest') {
-            User::find(Auth::id())->update([
-                'name' => 'ゲストユーザー' . Auth::id(),
-                'icon_name' => 'guest_user_' . Auth::id() . '.png',
-            ]);
         }
     }
 }

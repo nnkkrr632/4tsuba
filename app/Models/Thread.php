@@ -14,8 +14,8 @@ class Thread extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'post_count', 'like_count'];
-    protected $hidden = ['created_at', 'updated_at', 'user_id', 'is_edited', 'post_count', 'like_count'];
+    protected $fillable = ['user_id', 'title', 'posts_count', 'likes_count'];
+    protected $hidden = ['created_at', 'updated_at', 'user_id', 'is_edited', 'posts_count', 'likes_count'];
 
     //日付のキャスト Threadモデルを使うとき、下記を整形する
     public function getCreatedAtAttribute($value)
@@ -48,6 +48,4 @@ class Thread extends Model
     {
         return $this->hasMany(Response::class);
     }
-
-    //呼び出しメソッド
 }

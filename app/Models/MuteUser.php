@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
 
 class MuteUser extends Model
 {
@@ -24,7 +25,7 @@ class MuteUser extends Model
     }
 
     //modelメソッド
-    public function addPostedByMuteUsersKeyToPosts($posts)
+    public function addPostedByMuteUsersKeyToPosts(Collection $posts)
     {
         $mute_user_id_list = MuteUser::where('muting_user_id', Auth::id())->pluck('user_id')->toArray();
 

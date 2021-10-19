@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Thread;
 use App\Models\Image;
-use App\Models\Gatekeeper;
+use App\Models\Monitor;
 
 //authを使用する
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 //フォームリクエスト
 use App\Http\Requests\StoreTPIRequest;
 use App\Http\Requests\ThreadsOrderByRequest;
+use App\Http\Requests\DestroyThreadRequest;
 
 
 class ThreadController extends Controller
@@ -22,37 +23,37 @@ class ThreadController extends Controller
     public function index(ThreadsOrderByRequest $threads_order_by_request)
     {
         $image = new Image();
-        $thread_image_table = $image->returnThreadImageTable();
+        $thread_images_table = $image->returnThreadImagesTable();
 
-        return Thread::leftJoinSub($thread_image_table, 'thread_image_table', function ($join) {
-            $join->on('threads.id', '=', 'thread_image_table.thread_id');
+        return Thread::leftJoinSub($thread_images_table, 'thread_images_table', function ($join) {
+            $join->on('threads.id', '=', 'thread_images_table.thread_id');
         })
             ->orderBy('threads.' . $threads_order_by_request->column, $threads_order_by_request->desc_asc)->get()
-            ->makeVisible(['created_at', 'updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
+            ->makeVisible(['created_at', 'updated_at', 'user_id', 'posts_count', 'likes_count', 'is_edited']);
     }
 
     //★個別スレッド show
     public function show($thread_id)
     {
         $image = new Image();
-        $thread_image_table = $image->returnThreadImageTable();
+        $thread_images_table = $image->returnThreadImagesTable();
 
         return Thread
-            ::leftJoinSub($thread_image_table, 'thread_image_table', function ($join) {
-                $join->on('threads.id', '=', 'thread_image_table.thread_id');
+            ::leftJoinSub($thread_images_table, 'thread_images_table', function ($join) {
+                $join->on('threads.id', '=', 'thread_images_table.thread_id');
             })
             ->find((int)$thread_id)
             //findからThreadModelクラス。(それまではEloquentBuilderクラス)
             //故に、findより後にThreadModelのメソッドであるmakeVisibleをする必要がある。この順番は重要。
-            ->makeVisible(['updated_at', 'user_id', 'post_count', 'like_count', 'is_edited']);
+            ->makeVisible(['updated_at', 'user_id', 'posts_count', 'likes_count', 'is_edited']);
     }
 
     //スレッド store
     public function store(StoreTPIRequest $store_t_p_i_request)
     {
         //NGワード置換
-        $gate_keeper = new GateKeeper();
-        $checked_title = $gate_keeper->convertNgWordsIfExist($store_t_p_i_request->title);
+        $monitor = new Monitor();
+        $checked_title = $monitor->convertNgWordsIfExist($store_t_p_i_request->title);
 
         $thread = Thread::create([
             'user_id' => Auth::id(),
@@ -85,12 +86,14 @@ class ThreadController extends Controller
     }
 
     //スレッド削除(スタッフ用)
-    public function destroy(Request $request)
+    public function destroy(DestroyThreadRequest $destroy_thread_request)
     {
-        $target_thread = Thread::find($request->id);
+        $target_thread = Thread::find($destroy_thread_request->id);
         $response = Gate::inspect('delete', $target_thread);
 
         if ($response->allowed()) {
+            $image_controller = new ImageController();
+            $image_controller->destroyOnlyFiles($target_thread->id);
             $target_thread->delete();
         } else {
             return $response->message();

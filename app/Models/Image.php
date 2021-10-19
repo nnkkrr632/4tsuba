@@ -27,7 +27,7 @@ class Image extends Model
     }
 
     //呼び出しメソッド
-    public function returnThreadImageTable()
+    public function returnThreadImagesTable()
     {
         return $this->select(
             'id as image_id',
@@ -41,7 +41,7 @@ class Image extends Model
 
     //以下LightBox用
     //スレッド
-    public function returnImagesForTheThread($thread_id)
+    public function returnImagesForTheThread(int $thread_id)
     {
         $images = DB::table('images')->leftJoin('posts', 'images.post_id', '=', 'posts.id')
             ->leftJoin('users', 'posts.user_id', '=', 'users.id')->select(
@@ -54,7 +54,7 @@ class Image extends Model
         return $images;
     }
     //返信
-    public function returnImagesForTheResponses($thread_id, $displayed_post_id)
+    public function returnImagesForTheResponses(int $thread_id, int $displayed_post_id)
     {
         $images = DB::table('images')->leftJoin('posts', 'images.post_id', '=', 'posts.id')
             ->leftJoin('users', 'posts.user_id', '=', 'users.id')
@@ -74,7 +74,7 @@ class Image extends Model
         return $images;
     }
     //ユーザープロフィール(書込)
-    public function returnImagesTheUserPosted($user_id)
+    public function returnImagesTheUserPosted(int $user_id)
     {
         $images = DB::table('images')->leftJoin('posts', 'images.post_id', '=', 'posts.id')
             ->leftJoin('threads', 'images.thread_id', '=', 'threads.id')
@@ -88,7 +88,7 @@ class Image extends Model
         return $images;
     }
     //ユーザープロフィール(いいね)
-    public function returnImagesTheUserLiked($user_id)
+    public function returnImagesTheUserLiked(int $user_id)
     {
         $like = new Like();
         $liked_posts_table = $like->returnLikedPostsTable($user_id);
@@ -108,7 +108,7 @@ class Image extends Model
         return $images;
     }
     //語句検索
-    public function returnImagesForTheSearch($search_word_list)
+    public function returnImagesForTheSearch(array $search_word_list)
     {
         $images = DB::table('images')->leftJoin('posts', 'images.post_id', '=', 'posts.id')
             ->leftJoin('threads', 'images.thread_id', '=', 'threads.id')->select(
