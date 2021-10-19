@@ -10,13 +10,13 @@ class UserPolicy
     use HandlesAuthorization;
 
 
-    /**
-     * @param  \App\Models\User  $model
-     */
-    public function checkUserIsGuest(User $user)
-    {
-        return $user->role === 'guest';
-    }
+    // /**
+    //  * @param  \App\Models\User  $model
+    //  */
+    // public function checkUserIsGuest(User $user)
+    // {
+    //     return $user->role === 'guest';
+    // }
     /**
      * @param  \App\Models\User  $model
      */
