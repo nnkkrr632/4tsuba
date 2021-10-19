@@ -788,30 +788,6 @@ class PostControllerTest extends TestCase
         //ストレージ確認
         Storage::disk('local')->assertMissing('public/images/' . $uploaded_image_1->hashName());
     }
-    /**
-     * @test
-     */
-    public function 【スタッフ】ポスト削除成功：画像あり(): void
-    {
-        $user = User::factory()->count(1)->setRoleStaff()->create()->first();
-        $another_user = User::factory()->count(1)->create()->first();
-        $this->actingAs($user);
-        $thread = Thread::factory()->count(1)->create()->first();
-        PostFactory::initializeDisplayedPostId();
-        $post = Post::factory()->count(1)->setUserId($another_user->id)->create();
-
-        $url = '/api/posts';
-        $response = $this->json('DELETE', $url, ['id' => 1]);
-        $response->assertStatus(200);
-
-        //ソフトデリートなのでid列でMissingはできない。deleted_atを確認する
-        $this->assertDatabaseHas('posts', [
-            'id' => 1,
-        ])->assertDatabaseMissing('posts', [
-            'id' => 1,
-            'deleted_at' => null,
-        ]);
-    }
 
     /**
      * @test

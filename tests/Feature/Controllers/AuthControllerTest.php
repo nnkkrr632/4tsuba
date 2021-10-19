@@ -6,6 +6,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Thread;
+use App\Models\Post;
+use App\Models\Image;
+use App\Models\Like;
+use App\Models\MuteUser;
+use App\Models\MuteWord;
+use App\Models\Response;
+use Database\Factories\PostFactory;
+use Database\Factories\LikeFactory;
+use Database\Factories\ResponseFactory;
+use Database\Factories\ImageFactory;
+use Database\Factories\MuteUserFactory;
+use Database\Factories\MuteWordFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -302,7 +315,10 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group m
+     */
     public function アカウント削除成功【destroy】()
     {
         $user = User::factory()->count(1)->create()->first();
@@ -316,7 +332,22 @@ class AuthControllerTest extends TestCase
         //ストレージ確認
         Storage::disk('local')->assertExists('public/icons/no_image.png');
 
+        $thread = Thread::factory()->setUserId($user->id)->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $post = Post::factory()->setUserId($user->id)->count(1)->create()->first();
 
+        ImageFactory::initializePostId();
+        $image = Image::factory()->count(1)->create()->first();
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $image->image_name);
+
+        LikeFactory::initializePostId();
+        $like = Like::factory()->setUserId($user->id)->count(1)->create()->first();
+        ResponseFactory::initializeOriginDPostId();
+        $respon = Response::factory()->count(1)->create()->first();
+        MuteUserFactory::initializeUserId();
+        $mute_user = MuteUser::factory()->count(1)->create()->first();
+        $mute_word = MuteWord::factory()->setUserId($user->id)->count(1)->create()->first();
 
         $response = $this->json('DELETE', 'api/users/me', [
             'password' => 'p@ssw0rd',
@@ -325,10 +356,26 @@ class AuthControllerTest extends TestCase
         //DB確認
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
+        ])->assertDatabaseHas('threads', [
+            'id' => $thread->id,
+        ])->assertDatabaseHas('posts', [
+            'id' => $post->id,
+        ])->assertDatabaseHas('images', [
+            'id' => $image->id,
+        ])->assertDatabaseMissing('likes', [
+            'id' => $like->id,
+        ])->assertDatabaseHas('responses', [
+            'id' => $respon->id,
+        ])->assertDatabaseMissing('mute_users', [
+            'id' => $mute_user->id,
+        ])->assertDatabaseMissing('mute_words', [
+            'id' => $mute_word->id,
         ]);
 
         //ストレージ確認(no_image.pngのときは消さない)
         Storage::disk('local')->assertExists('public/icons/no_image.png');
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $image->image_name);
     }
     /** @test */
     public function アカウント削除失敗【destroy】()
@@ -364,6 +411,15 @@ class AuthControllerTest extends TestCase
     public function teardown(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('users')->truncate();
+        DB::table('threads')->truncate();
+        DB::table('posts')->truncate();
+        DB::table('images')->truncate();
+        DB::table('likes')->truncate();
+        DB::table('responses')->truncate();
+        DB::table('mute_users')->truncate();
+        DB::table('mute_words')->truncate();
+        DB::table('users')->truncate();
         DB::table('users')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 

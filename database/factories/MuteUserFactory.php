@@ -36,12 +36,21 @@ class MuteUserFactory extends Factory
         ];
     }
     /**
-     * ミューティングユーザーidを指定する
+     * ユーザーidを指定する
      */
     public function setUserId(int $user_id)
     {
         return $this->state(fn () => [
             'user_id' => $user_id,
+        ]);
+    }
+    /**
+     * ミューティングユーザーidを指定する
+     */
+    public function setMutingUserId(int $muting_user_id)
+    {
+        return $this->state(fn () => [
+            'muting_user_id' => $muting_user_id,
         ]);
     }
 }

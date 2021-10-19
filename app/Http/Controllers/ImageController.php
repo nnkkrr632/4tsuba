@@ -66,6 +66,18 @@ class ImageController extends Controller
             //画像編集画面から、既存の投稿に画像ないのに「画像を削除する」にチェックしたときここに入ってくる
         }
     }
+    public function destroyOnlyFiles(int $thread_id)
+    {
+        //ない場合はnullが返る
+        $del_image_name_list = Image::where('thread_id', $thread_id)->get()->pluck('image_name');
+
+        if (count($del_image_name_list)) {
+            for ($i = 0; $i < count($del_image_name_list); $i++) {
+                //ファイル削除処理  storage/app/public/images の意味 app配下から記述する
+                Storage::delete('public/images/' . $del_image_name_list[$i]);
+            }
+        }
+    }
 
     //以下LightBoxのAPI
     public function returnImagesForTheThread(int $thread_id)

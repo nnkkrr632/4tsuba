@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 //フォームリクエスト
 use App\Http\Requests\StoreTPIRequest;
 use App\Http\Requests\ThreadsOrderByRequest;
+use App\Http\Requests\DestroyThreadRequest;
 
 
 class ThreadController extends Controller
@@ -85,12 +86,14 @@ class ThreadController extends Controller
     }
 
     //スレッド削除(スタッフ用)
-    public function destroy(Request $request)
+    public function destroy(DestroyThreadRequest $destroy_thread_request)
     {
-        $target_thread = Thread::find($request->id);
+        $target_thread = Thread::find($destroy_thread_request->id);
         $response = Gate::inspect('delete', $target_thread);
 
         if ($response->allowed()) {
+            $image_controller = new ImageController();
+            $image_controller->destroyOnlyFiles($target_thread->id);
             $target_thread->delete();
         } else {
             return $response->message();

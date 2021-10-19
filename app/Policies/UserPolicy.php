@@ -11,23 +11,31 @@ class UserPolicy
 
 
     /**
-     * Determine whether the user can update the model.
-     *
      * @param  \App\Models\User  $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function checkUserIsGuest(User $user)
     {
         return $user->role === 'guest';
     }
     /**
-     * Determine whether the user can update the model.
-     *
      * @param  \App\Models\User  $model
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function checkUserIsNotGuest(User $user)
     {
         return $user->role !== 'guest';
     }
+    // /**
+    //  * @param  \App\Models\User  $model
+    //  */
+    // public function checkUserIsStaff(User $user)
+    // {
+    //     return $user->role === 'staff';
+    // }
+    // /**
+    //  * @param  \App\Models\User  $model
+    //  */
+    // public function checkUserIsNotStaff(User $user)
+    // {
+    //     return $user->role !== 'staff';
+    // }
 }

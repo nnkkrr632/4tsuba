@@ -9,6 +9,13 @@ use App\Models\User;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Image;
+use App\Models\Like;
+use App\Models\Response;
+use Database\Factories\ImageFactory;
+use Database\Factories\PostFactory;
+use Database\Factories\LikeFactory;
+use Database\Factories\ResponseFactory;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -360,6 +367,85 @@ class ThreadControllerTest extends TestCase
             'asc_desc(in以外)' => ['created_at', 'aaa'],
         ];
     }
+    /**
+     * @test
+     */
+    public function 【スタッフ】スレッド削除成功：画像あり(): void
+    {
+        $user = User::factory()->count(1)->setRoleStaff()->create()->first();
+        $another_user = User::factory()->count(1)->create()->first();
+        $this->actingAs($user);
+        $thread = Thread::factory()->setUserId($another_user->id)->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $posts = Post::factory()->count(2)->create();
+
+        ImageFactory::initializePostId();
+        //フェイクのストレージを指定
+        Storage::fake('local');
+        $image = Image::factory()->count(1)->create()->first();
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $image->image_name);
+
+        LikeFactory::initializePostId();
+        $likes = Like::factory()->count(2)->create();
+        ResponseFactory::initializeOriginDPostId();
+        $responses = Response::factory()->count(2)->create();
+
+        $url = '/api/threads';
+        $response = $this->json('DELETE', $url, ['id' => 1]);
+        $response->assertStatus(200);
+
+        //ソフトデリートなのでid列でMissingはできない。deleted_atを確認する
+        $this->assertDatabaseMissing('threads', [
+            'id' => 1,
+        ])->assertDatabaseMissing('posts', [
+            'id' => 1,
+        ])->assertDatabaseMissing('posts', [
+            'id' => 2,
+        ])->assertDatabaseMissing('images', [
+            'id' => 1,
+        ])->assertDatabaseMissing('likes', [
+            'id' => 1,
+        ])->assertDatabaseMissing('likes', [
+            'id' => 2,
+        ])->assertDatabaseMissing('responses', [
+            'id' => 1,
+        ])->assertDatabaseMissing('responses', [
+            'id' => 2,
+        ]);
+        //ストレージ確認
+        Storage::disk('local')->assertMissing('public/images/' . $image->image_name);
+    }
+    /**
+     * @test
+     * @group m
+     */
+    public function 【スタッフ以外】スレッド削除失敗：画像あり(): void
+    {
+        $user = User::factory()->count(1)->setRoleStaff()->create()->first();
+        $another_user = User::factory()->count(1)->create()->first();
+        $this->actingAs($another_user);
+        $thread = Thread::factory()->setUserId($another_user->id)->count(1)->create()->first();
+        PostFactory::initializeDisplayedPostId();
+        $posts = Post::factory()->count(2)->create();
+
+        ImageFactory::initializePostId();
+        //フェイクのストレージを指定
+        Storage::fake('local');
+        $image = Image::factory()->count(1)->create()->first();
+        //ストレージ確認
+        Storage::disk('local')->assertExists('public/images/' . $image->image_name);
+
+        LikeFactory::initializePostId();
+        $likes = Like::factory()->count(2)->create();
+        ResponseFactory::initializeOriginDPostId();
+        $responses = Response::factory()->count(2)->create();
+
+        $url = '/api/threads';
+        $response = $this->json('DELETE', $url, ['id' => 1]);
+        $response->assertStatus(200);
+        $this->assertSame('bad_user', $response->original);
+    }
 
     public function teardown(): void
     {
@@ -368,6 +454,8 @@ class ThreadControllerTest extends TestCase
         DB::table('threads')->truncate();
         DB::table('posts')->truncate();
         DB::table('images')->truncate();
+        DB::table('likes')->truncate();
+        DB::table('responses')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         parent::tearDown();
