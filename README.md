@@ -1,51 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="https://4tsuba.site" target="_blank"><img src="./images_for_README/4tsuba_er_diagram.jpg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## よつば
 
-## About Laravel
+#### URL: [https://4tsuba.site](https://4tsuba.site)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+#### twitter ぽくに使える掲示板です。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+twitter や他の掲示板を参考に、こんな機能の掲示板があればと思いつくりました。  
+よろしければ、書込をしていただけると嬉しいです(ゲストユーザーをご使用いただけます)。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 使用技術
 
-## Learning Laravel
+-   #### フロントエンド
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    -   **言語**
+        -   HTML5
+        -   CSS3
+        -   JavaScript (Vue.js)
+    -   **フレームワークと主要パッケージ**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+        | フレームワーク / パッケージ | バージョン | 用途                              |
+        | --------------------------- | ---------: | --------------------------------- |
+        | Vue.js                      |     2.6.14 | -                                 |
+        | vuetify                     |     2.5.10 | UI                                |
+        | vue-router                  |      3.5.2 | ルーティング                      |
+        | vue-image-lightbox          |      7.2.0 | 画像クリック時の拡大表示          |
+        | jaconv                      |      1.0.4 | ひらがな ⇔ カタカナ ⇔ ｶﾀｶﾅ の変換 |
 
-## Laravel Sponsors
+-   #### バックエンド
+
+    -   **言語**
+        -   PHP (8.0.11)
+    -   **フレームワークと主要パッケージ**
+
+        | フレームワーク / パッケージ | バージョン | 用途                                 |
+        | --------------------------- | ---------: | ------------------------------------ |
+        | Laravel                     |     8.62.0 | -                                    |
+        | sanctum                     |     2.11.2 | SPA 認証                             |
+        | PHPUnit                     |     9.5.10 | テスト                               |
+        | telescope                   |      4.6.4 | デバッグ / sql の確認 (開発環境のみ) |
+
+## ER 図
+
+![ER図](https://user-images.githubusercontent.com/91203083/137972958-d213afd9-bb60-4648-b978-e3fb46a4a9d3.jpg)
+
+## モデルの CRUD 対応表
+
+| モデル           | 作成 | 読取 | 更新 | 削除 |
+| ---------------- | :--: | :--: | :--: | :--: |
+| ユーザー         |  ○   |  ○   |  ○   |  ○   |
+| (ゲストユーザー) |  ×   |  ○   |  △   |  ×   |
+| スレッド         |  ○   |  ○   |  ×   |  ×   |
+| 書込             |  ○   |  ○   |  ○   |  ○   |
+| 画像             |  ○   |  ○   |  ○   |  ○   |
+| 返信             |  ○   |  ○   |  ○   |  ○   |
+| いいね           |  ○   |  ○   |  -   |  ○   |
+| ワードミュート   |  ○   |  ○   |  -   |  ○   |
+| ユーザーミュート |  ○   |  ○   |  -   |  ○   |
+
+## 使用例と GIF
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+-   **[Vehikl](https://vehikl.com/)**
+-   **[Tighten Co.](https://tighten.co)**
+-   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+-   **[64 Robots](https://64robots.com)**
+-   **[Cubet Techno Labs](https://cubettech.com)**
+-   **[Cyber-Duck](https://cyber-duck.co.uk)**
+-   **[Many](https://www.many.co.uk)**
+-   **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+-   **[DevSquad](https://devsquad.com)**
+-   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+-   **[OP.GG](https://op.gg)**
 
-## Contributing
+## 工夫したところ
+
+1.  **SQL の確認**
+    1. Eloquent からどのような SQL ができるかを確認した。
+        1. Eloquent:`leftjoin` <br>↓<br>SQL: `aaaaaaaaa`
+        1. CSS3
+        1. JavaScript (Vue.js)
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
