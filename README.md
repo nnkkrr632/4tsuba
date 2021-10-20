@@ -62,38 +62,58 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Premium Partners
-
--   **[Vehikl](https://vehikl.com/)**
--   **[Tighten Co.](https://tighten.co)**
--   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
--   **[64 Robots](https://64robots.com)**
--   **[Cubet Techno Labs](https://cubettech.com)**
--   **[Cyber-Duck](https://cyber-duck.co.uk)**
--   **[Many](https://www.many.co.uk)**
--   **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
--   **[DevSquad](https://devsquad.com)**
--   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
--   **[OP.GG](https://op.gg)**
-
 ## 工夫したところ
 
-1.  **SQL の確認**
-    1. Eloquent からどのような SQL ができるかを確認した。
-        1. Eloquent:`leftjoin` <br>↓<br>SQL: `aaaaaaaaa`
-        1. CSS3
-        1. JavaScript (Vue.js)
+1.  **Laravel によって生成される SQL を確認した**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    1. **Eloquent**  
+       使用するメソッドにより SQL が異なる。
 
-## Code of Conduct
+        - leftJoin の場合  
+           Eloquent:`Image::leftJoin('posts', 'images.post_id', '=', 'posts.id')->get();` <br>↓<br>
+          SQL: `select * from images left join posts on images.post_id = posts.id;`
+        - with の場合  
+           Eloquent:`Image::with('post')->get();` <br>↓<br>
+          SQL1: `select * from images;`  
+           SQL2: `select * from posts where posts.id in (1, 2, 3);`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    1. **FormRequest**
+        - likes テーブルのユニーク制約  
+          StoreLikeRequest:  
+          `Rule::unique('likes')->where(function ($query) { return $query->where('user_id', Auth::id());})`
+          <br>↓<br>
+          SQL: `select count(*) as aggregate from likes where post_id = 1 and (user_id = 1);`
 
-## Security Vulnerabilities
+1.  **頻度の高いリクエストで生成される SQL が軽くなるテーブル設計を考えた**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    1. **正規化されていないカラムを用意した**
+        - images テーブルの thread_id カラム  
+          スレッドのサムネイル画像取得や、スレッドの LightBox 用画像取得で使用される。  
+          正規化し毎度 posts テーブルと結合やサブクエリするのは書込件数が多くなるほど重くなると考え、カラムとして用意した。
+    1. **カウント用カラムをつくった**
+        - threads テーブルの posts_count カラム  
+          スレッドの書込数を求めたいとき、2 種類の方法がある。  
+          <span>　</span>(1)書込数カラムをつくり、書込送信(post)時にインクリメントする  
+          <span>　</span>(2)書込数カラムをつくらず、書込取得(get)時にレコード数をカウントする  
+          リクエストの頻度として、書込送信 < 書込取得 であると思い、  
+          頻度の高い書込取得の SQL が軽くなるよう、(1)を採用した。
 
-## License
+1.  **PHPUnit を使用した**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    1. **通常発生しないリクエストをテストし、条件分岐やバリデーションの不足に気がついた**
+
+        - 既にログインした状態でログインリクエストを送信する  
+           → ログイン状態と既ログインユーザーの id を確認する条件を加え、  
+           <span>　</span>未ログイン時・同一ユーザー時のみログインできるよう変更した
+
+        - 画像ファイルとして null を送信する  
+           → フォームリクエストにバリデーションを追加した
+
+    1. **型の理解が深まった**
+        - factory の使用や テスト時のデータ取得を通して下記を学んだ  
+          ・返り値は Model or Collection どちらか  
+          ・Model や Collection はどのよ うなメソッドやパラメータを持っているか  
+          ・Collection にできて Array にできないことは何か
+    1. **カバレッジ結果**  
+       ![ER図](https://user-images.githubusercontent.com/91203083/138064094-6c3ce972-c55a-4358-b92c-8bf8ad33b7d7.png)
+       ![ER図](https://user-images.githubusercontent.com/91203083/138063913-e9140bc6-7d13-4d01-b244-fb9132aa5674.png)

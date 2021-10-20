@@ -28,9 +28,6 @@ use App\Http\Controllers\GuestAuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//検証
-Route::get('/test', [MuteWordController::class, 'addHasMuteWordKeyToPosts']);
-
 
 //ログインチェック
 Route::get('/check/login', LoginCheckController::class);
