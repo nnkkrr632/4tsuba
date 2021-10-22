@@ -1,4 +1,4 @@
-<p align="center"><a href="https://4tsuba.site" target="_blank"><img src="./images_for_README/4tsuba_er_diagram.jpg" width="400"></a></p>
+<p align="center"><a href="https://4tsuba.site" target="_blank"><img src="https://user-images.githubusercontent.com/91203083/138402737-41a2df1a-4719-4218-87b8-0ca53f91c09e.png" width="400"></a></p>
 
 ## よつば
 
@@ -38,7 +38,7 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
         | Laravel                     |     8.62.0 | -                                    |
         | sanctum                     |     2.11.2 | SPA 認証                             |
         | PHPUnit                     |     9.5.10 | テスト                               |
-        | telescope                   |      4.6.4 | デバッグ / sql の確認 (開発環境のみ) |
+        | telescope                   |      4.6.4 | デバッグ / SQL の確認 (開発環境のみ) |
 
 ## ER 図
 
@@ -58,21 +58,21 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
 | ワードミュート   |  ○   |  ○   |  -   |  ○   |
 | ユーザーミュート |  ○   |  ○   |  -   |  ○   |
 
-## 使用例と GIF
+## 使用例
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
 ## 工夫したところ
 
-1.  **Laravel によって生成される SQL を確認した**
+1.  **Laravel が生成する SQL を確認した**
 
     1. **Eloquent**  
        使用するメソッドにより SQL が異なる。
 
-        - leftJoin の場合  
+        - leftJoin() の場合  
            Eloquent:`Image::leftJoin('posts', 'images.post_id', '=', 'posts.id')->get();` <br>↓<br>
           SQL: `select * from images left join posts on images.post_id = posts.id;`
-        - with の場合  
+        - with() の場合  
            Eloquent:`Image::with('post')->get();` <br>↓<br>
           SQL1: `select * from images;`  
            SQL2: `select * from posts where posts.id in (1, 2, 3);`
@@ -88,8 +88,8 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
     1. **正規化されていないカラムを用意した**
         - images テーブルの thread_id カラム  
-          スレッドのサムネイル画像取得や、スレッドの LightBox 用画像取得で使用される。  
-          正規化し毎度 posts テーブルと結合やサブクエリするのは書込件数が多くなるほど重くなると考え、カラムとして用意した。
+          スレッドのサムネイル画像や LightBox 用画像の取得時に使用される。  
+          正規化し毎度 posts テーブルと結合(or サブクエリ)することは、書込件数が多くなるほど重くなると考え、カラムとして用意した。
     1. **カウント用カラムをつくった**
         - threads テーブルの posts_count カラム  
           スレッドの書込数を求めたいとき、2 種類の方法がある。  
@@ -109,11 +109,6 @@ We would like to extend our thanks to the following sponsors for funding Laravel
         - 画像ファイルとして null を送信する  
            → フォームリクエストにバリデーションを追加した
 
-    1. **型の理解が深まった**
-        - factory の使用や テスト時のデータ取得を通して下記を学んだ  
-          ・返り値は Model or Collection どちらか  
-          ・Model や Collection はどのよ うなメソッドやパラメータを持っているか  
-          ・Collection にできて Array にできないことは何か
     1. **カバレッジ結果**  
        ![ER図](https://user-images.githubusercontent.com/91203083/138064094-6c3ce972-c55a-4358-b92c-8bf8ad33b7d7.png)
        ![ER図](https://user-images.githubusercontent.com/91203083/138063913-e9140bc6-7d13-4d01-b244-fb9132aa5674.png)

@@ -4,10 +4,17 @@
     flat
     max-width="700"
   >
+  <v-layout justify-center>
+  <v-avatar size="400" tile class="mx-auto">
+    <img
+      src="/storage/materials/4tsuba_logo.png"
+    />
+  </v-avatar>
+  </v-layout>
     <v-card-text class="text-center">
-      <p class="text-h2 green--text text--lighten-2">
+      <!-- <p class="text-h2 green--text text--lighten-2">
         よつばとは
-      </p>
+      </p> -->
       <div class="text-h3 my-6">
         twitterぽく使える掲示板です。
       </div>
