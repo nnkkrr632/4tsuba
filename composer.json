@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "ext-intl": "*",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.4",
