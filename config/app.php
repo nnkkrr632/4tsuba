@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         //localでのみ使用する(本番環境で使用しない)ためコメントアウト
-        //App\Providers\TelescopeServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
 
         //laravel-log-viewer
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
