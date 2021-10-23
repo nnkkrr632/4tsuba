@@ -15,6 +15,7 @@
       <div class="text-h3 my-6">
         twitterぽく使える掲示板です。
       </div>
+      <!-- test -->
       <div class="text-subtitle-1 mt-6">
           twitterや他の掲示板を参考に、こんな機能の掲示板があればと思いつくりました。<br>
           よろしければ、書込をしていただけると嬉しいです！
