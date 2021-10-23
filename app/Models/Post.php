@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
 use Carbon\Carbon;
 
 class Post extends Model
@@ -61,7 +62,7 @@ class Post extends Model
     }
     public function likes()
     {
-        return $this->hasMany(like::class);
+        return $this->hasMany(Like::class);
     }
 
     public function returnMaxDisplayedPostId($thread_id)

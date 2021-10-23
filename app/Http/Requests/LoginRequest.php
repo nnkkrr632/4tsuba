@@ -31,7 +31,7 @@ class LoginRequest extends FormRequest
             'email' => [
                 'required',
                 'not_in:"null"',
-                'email:strict,dns,spoof',
+                'email',
                 'exists:users,email',
                 'between:1,50',
             ],

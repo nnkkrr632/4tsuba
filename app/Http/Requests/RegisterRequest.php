@@ -37,7 +37,7 @@ class RegisterRequest extends FormRequest
             'email' => [
                 'required',
                 'not_in:"null"',
-                'email:strict,dns,spoof',
+                'email',
                 'unique:users,email',
                 'between:1,50',
             ],

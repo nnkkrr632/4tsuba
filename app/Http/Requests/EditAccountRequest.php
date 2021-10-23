@@ -33,7 +33,7 @@ class EditAccountRequest extends FormRequest
             'email' => [
                 'required',
                 'not_in:"null"',
-                'email:strict,dns,spoof',
+                'email',
                 Rule::unique('users')->ignore(Auth::id()),
                 'between:1,50',
             ],
