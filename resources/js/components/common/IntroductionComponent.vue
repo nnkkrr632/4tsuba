@@ -12,9 +12,6 @@
   </v-avatar>
   </v-layout>
     <v-card-text class="text-center">
-      <!-- <p class="text-h2 green--text text--lighten-2">
-        よつばとは
-      </p> -->
       <div class="text-h3 my-6">
         twitterぽく使える掲示板です。
       </div>
