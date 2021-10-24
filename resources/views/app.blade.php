@@ -11,9 +11,12 @@
      <title>{{ config('app.name', 'Vue Laravel SPA') }}</title>
 
      <!-- Styles -->
-     <!-- <link href="{{ asset('/css/app.css') }}" rel="stylesheet"> -->
+     @if(config('app.env') === 'production')
      <!-- HTTPS化対応 -->
      <link href="{{ asset('/css/app.css', true) }}" rel="stylesheet">
+     @else
+     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+     @endif
 
      <!-- Fonts -->
      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -34,9 +37,12 @@
          </v-app>
      </div>
      <!-- Scripts -->
-     <!-- <script src="{{ asset('/js/app.js') }}" defer></script> -->
+     @if(config('app.env') === 'production')
      <!-- HTTPS化対応 -->
      <script src="{{ asset('/js/app.js', true) }}" defer></script>
+     @else
+     <script src="{{ asset('/js/app.js') }}" defer></script>
+     @endif
  </body>
 
  </html>
