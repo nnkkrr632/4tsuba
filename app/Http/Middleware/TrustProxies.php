@@ -12,6 +12,7 @@ class TrustProxies extends Middleware
      *
      * @var array|string|null
      */
+    //AWSのHTTPS対応
     protected $proxies = '*';
 
     /**
