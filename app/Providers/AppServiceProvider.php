@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,14 +26,14 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(UrlGenerator $url)
+    public function boot()
     {
         //Carbonが使うタイムゾーンを設定
         date_default_timezone_set('Asia/Tokyo');
 
         //本番のHTTPS化
         if (env('APP_ENV') === 'production') {
-            $url->forceScheme('https');
+            URL::forceScheme('https');
         }
     }
 }
