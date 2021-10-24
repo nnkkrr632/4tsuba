@@ -199,7 +199,7 @@ export default {
         getUserPosts() {
             console.log("this is getUserPosts");
             axios
-                .get("/api/posts/", {
+                .get("/api/posts", {
                     params: {
                         where: "user_id",
                         value: this.user_id
@@ -213,7 +213,7 @@ export default {
         getUserLikePosts() {
             console.log("this is getUserLikePosts");
             axios
-                .get("/api/posts/", {
+                .get("/api/posts", {
                     params: {
                         where: "user_like",
                         value: this.user_id

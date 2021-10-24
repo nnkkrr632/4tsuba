@@ -74,7 +74,7 @@ export default {
                 console.log(this.unique_word_list);
                 if(this.unique_word_list != null) {
                 axios
-                    .get("/api/posts/", {
+                    .get("/api/posts", {
                         params: {
                             where: "search",
                             value: this.unique_word_list
@@ -109,7 +109,7 @@ export default {
         getImagesForLightBox() {
             console.log('this is getImagesForLightBox');
             axios
-                .get("/api/images/search/", {
+                .get("/api/images/search", {
                     params: {
                         unique_word_list: this.unique_word_list
                     }

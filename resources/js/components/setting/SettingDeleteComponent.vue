@@ -89,7 +89,7 @@ export default {
         deleteMyAccount() {
             console.log('this is deleteMyAccount');
             axios
-                .delete("/api/users/me/", {data:{
+                .delete("/api/users/me", {data:{
                     password: this.password,
                 }})
                 .then(response => {

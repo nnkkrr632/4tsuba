@@ -96,7 +96,7 @@ export default {
         getPosts() {
             console.log("this is getPosts");
             axios
-                .get("/api/posts/", {
+                .get("/api/posts", {
                     params: {
                         where: "thread_id",
                         value: this.thread_id
@@ -111,7 +111,7 @@ export default {
         getResponses(emitted_displayed_post_id) {
             console.log("this is getResponses");
             axios
-                .get("/api/posts/", {
+                .get("/api/posts", {
                     params: {
                         where: "responses",
                         value: [this.thread_id, emitted_displayed_post_id],
