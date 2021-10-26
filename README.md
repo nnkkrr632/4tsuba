@@ -121,6 +121,17 @@ We would like to extend our thanks to the following sponsors for funding Laravel
         - 画像ファイルとして null を送信する  
            → フォームリクエストにバリデーションを追加した
 
+        - API サーバーとしての  
+           → フォームリクエストにバリデーションを追加した
+
     1. **カバレッジ結果**  
-       ![ER図](https://user-images.githubusercontent.com/91203083/138064094-6c3ce972-c55a-4358-b92c-8bf8ad33b7d7.png)
-       ![ER図](https://user-images.githubusercontent.com/91203083/138063913-e9140bc6-7d13-4d01-b244-fb9132aa5674.png)
+       ![カバレッジ結果](https://user-images.githubusercontent.com/91203083/138064094-6c3ce972-c55a-4358-b92c-8bf8ad33b7d7.png)
+       ![カバレッジ結果](https://user-images.githubusercontent.com/91203083/138063913-e9140bc6-7d13-4d01-b244-fb9132aa5674.png)
+
+1.  **Vue を使用し SPA とした**
+
+    1. **axios による非同期通信**
+
+        - CRUD を意識したリクエストの発行  
+          使用したリクエスト：GET, POST, PUT, PATCH, DELETE
+          行いたい動作とモデルの CRUD を
