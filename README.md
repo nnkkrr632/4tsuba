@@ -24,7 +24,7 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
         | Vue.js                      |     2.6.14 | -                                 |
         | vuetify                     |     2.5.10 | UI                                |
         | vue-router                  |      3.5.2 | ルーティング                      |
-        | vue-image-lightbox          |      7.2.0 | 画像クリック時の拡大表示          |
+        | vue-image-lightbox          |      7.2.0 | 画像の拡大表示                    |
         | jaconv                      |      1.0.4 | ひらがな ⇔ カタカナ ⇔ ｶﾀｶﾅ の変換 |
 
 -   #### バックエンド
@@ -72,14 +72,15 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
 
 ## 使用例
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+qiita に使用例を GIF で紹介しました。  
+URL: [https://4tsuba.site](https://4tsuba.site)
 
 ## 工夫したところ
 
 1.  **Laravel が生成する SQL を確認した**
 
     1. **Eloquent**  
-       使用するメソッドにより SQL が異なる。
+       同じ目的であっても、使用するメソッドにより生成する SQL が異なる。
 
         - leftJoin() の場合  
            Eloquent:`Image::leftJoin('posts', 'images.post_id', '=', 'posts.id')->get();` <br>↓<br>
@@ -99,16 +100,15 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 1.  **頻度の高いリクエストで生成される SQL が軽くなるテーブル設計を考えた**
 
     1. **正規化されていないカラムを用意した**
-        - images テーブルの thread_id カラム  
-          スレッドのサムネイル画像や LightBox 用画像の取得時に使用される。  
-          正規化し毎度 posts テーブルと結合(or サブクエリ)することは、書込件数が多くなるほど重くなると考え、カラムとして用意した。
+        - `images` テーブルの `thread_id` カラム  
+          テーブルを正規化し毎度 `images`テーブルと`posts` テーブルと結合(or サブクエリ)することは、書込件数が多くなるほど重くなると考え、`images`テーブルに`thread_id`カラムを用意した。
     1. **カウント用カラムをつくった**
-        - threads テーブルの posts_count カラム  
-          スレッドの書込数を求めたいとき、2 種類の方法がある。  
+        - `threads` テーブルの `posts_count` カラム  
+          スレッドの書込数を取得するとき、2 種類の方法がある。  
           <span>　</span>(1)書込数カラムをつくり、書込送信(post)時にインクリメントする  
           <span>　</span>(2)書込数カラムをつくらず、書込取得(get)時にレコード数をカウントする  
-          リクエストの頻度として、書込送信 < 書込取得 であると思い、  
-          頻度の高い書込取得の SQL が軽くなるよう、(1)を採用した。
+          → スレッドの書込数取得では、(1)を採用した。  
+          <span>　</span>(リクエストの頻度は、書込送信 < 書込取得 であり、高頻度に発行される書込取得 SQL を軽くする。)
 
 1.  **PHPUnit を使用した**
 
@@ -116,13 +116,10 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
         - 既にログインした状態でログインリクエストを送信する  
            → ログイン状態と既ログインユーザーの id を確認する条件を加え、  
-           <span>　</span>未ログイン時・同一ユーザー時のみログインできるよう変更した
+           <span>　</span>未ログイン時・同一ユーザー時のみログインできるよう変更した。
 
         - 画像ファイルとして null を送信する  
-           → フォームリクエストにバリデーションを追加した
-
-        - API サーバーとしての  
-           → フォームリクエストにバリデーションを追加した
+           → フォームリクエストにバリデーションを追加した。
 
     1. **カバレッジ結果**  
        ![カバレッジ結果](https://user-images.githubusercontent.com/91203083/138064094-6c3ce972-c55a-4358-b92c-8bf8ad33b7d7.png)
@@ -130,8 +127,17 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 1.  **Vue を使用し SPA とした**
 
-    1. **axios による非同期通信**
+    1. **親子コンポーネントの役割から、各コンポーネントに定義するメソッドを考えた**
 
-        - CRUD を意識したリクエストの発行  
-          使用したリクエスト：GET, POST, PUT, PATCH, DELETE
-          行いたい動作とモデルの CRUD を
+        - スレッド一覧取得(親：`Threads`コンポーネント / 子：`Sort`コンポーネント)  
+          親子コンポーネント間で API 取得に必要なパラメータが跨るとき、２種類の方法がある  
+          <span>　</span>(1)子コンポーネントが API を叩く。その後、取得結果を親コンポーネントへ emit する  
+          <span>　</span>(2)親コンポーネントが API を叩く。先じて、子コンポーネントが親コンポーネントの欲するパラメータを emit する  
+          → スレッド一覧取得では、(2)を採用した。  
+          <span>　</span>(`Threads`コンポーネントがスレッドを取得する。 `Sort`コンポーネントは並び替えキーを emit する。)
+
+    1. **リソースの CRUD を意識し API を作成した**
+
+        - 使用した HTTP メソッド：`GET`, `POST`, `PUT`, `PATCH`, `DELETE`  
+           HTML フォームに縛られないため、`GET`, `POST`以外の HTTP メソッドを使用した。  
+           取得したいリソースの単数 or 複数に注意し、リターンを想像できる URL を定義した。
