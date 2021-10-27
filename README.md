@@ -72,8 +72,14 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
 
 ## 使用例
 
-qiita に使用例を GIF で紹介しました。  
-URL: [https://4tsuba.site](https://4tsuba.site)
+1.  **サイト概要**
+    <img src="https://user-images.githubusercontent.com/91203083/139062160-dc9ba72c-dbd6-457f-a248-15774860bff7.gif">
+
+1.  **書込・編集・削除**
+    <img src="https://user-images.githubusercontent.com/91203083/139062241-f8f5ae75-dfa7-45d8-982d-85cb49d20f67.gif">
+
+1.  **ユーザーミュート**
+    <img src="https://user-images.githubusercontent.com/91203083/139062294-b8ad2a56-3d0a-4ce5-aa3d-0f2c80918054.gif">
 
 ## 工夫したところ
 
@@ -99,9 +105,9 @@ URL: [https://4tsuba.site](https://4tsuba.site)
 
 1.  **頻度の高いリクエストで生成される SQL が軽くなるテーブル設計を考えた**
 
-    1. **正規化されていないカラムを用意した**
+    1. **正規化されていないカラムをつくった**
         - `images` テーブルの `thread_id` カラム  
-          テーブルを正規化し毎度 `images`テーブルと`posts` テーブルと結合(or サブクエリ)することは、書込件数が多くなるほど重くなると考え、`images`テーブルに`thread_id`カラムを用意した。
+          テーブルを正規化し毎度 `images`テーブルと`posts` テーブルと結合(or サブクエリ)することは、書込件数が多くなるほど重くなると考え、`images`テーブルに`thread_id`カラムをつくった。
     1. **カウント用カラムをつくった**
         - `threads` テーブルの `posts_count` カラム  
           スレッドの書込数を取得するとき、2 種類の方法がある。  
