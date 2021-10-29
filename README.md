@@ -81,6 +81,9 @@ twitter や他の掲示板を参考に、こんな機能の掲示板があれば
 1.  **ユーザーミュート**
     <img src="https://user-images.githubusercontent.com/91203083/139062294-b8ad2a56-3d0a-4ce5-aa3d-0f2c80918054.gif">
 
+1.  **書込検索**
+    <img src="https://user-images.githubusercontent.com/91203083/139379850-e4c0e9e5-d104-439b-9899-37ab719e432c.gif">
+
 ## 工夫したところ
 
 1.  **Laravel が生成する SQL を確認した**
