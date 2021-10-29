@@ -28,101 +28,120 @@
             </router-link>
 
             <!-- １行目 -->
-            <v-card-text class="d-flex">
-                <span v-text="post.displayed_post_id"></span>
-                <router-link
-                    v-if="post.user"
-                    style="text-decoration: none;"
-                    onMouseOut="this.style.textDecoration='none';"
-                    onMouseOver="this.style.textDecoration='underline';"
-                    class="green--text text--lighten-1"
-                    v-bind:to="{
-                        name: 'user.posts',
-                        params: { user_id: post.user_id }
-                    }"
-                >
-                    <span v-text="post.user.name" class="ml-3"></span>
-                </router-link>
-                <span v-else class="ml-3">退会済みユーザー</span>
+            <v-card-text class="d-block d-sm-flex">
+                <template>
+                    <span v-text="post.displayed_post_id"></span>
+                    <router-link
+                        v-if="post.user"
+                        style="text-decoration: none;"
+                        onMouseOut="this.style.textDecoration='none';"
+                        onMouseOver="this.style.textDecoration='underline';"
+                        class="green--text text--lighten-1"
+                        v-bind:to="{
+                            name: 'user.posts',
+                            params: { user_id: post.user_id }
+                        }"
+                    >
+                        <span
+                            v-text="post.user.name"
+                            class="ml-3"
+                        ></span>
+                    </router-link>
+                    <span v-else class="ml-3"
+                        >退会済みユーザー</span
+                    >
 
-                <span v-text="post.created_at" class="ml-3"></span>
-                <span v-if="post.is_edited" class=" ml-3 blue-grey--text"
-                    >(編集済み)</span
-                >
+                    <span
+                        v-text="post.created_at"
+                        class="d-none d-sm-inline ml-3"
+                    ></span>
+                    <span v-if="post.is_edited" class=" ml-3 blue-grey--text"
+                        >(編集済み)</span
+                    >
+                </template>
                 <v-spacer></v-spacer>
                 <!-- 1行目4アイコン -->
-                <template v-if="post.login_user_liked">
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-icon
-                                    class="ml-3 mt-n2"
-                                    color="green lighten-2"
-                                    @click="dislike()"
-                                    >mdi-heart</v-icon
-                                ></span
-                            >
-                        </template>
-                        <span>いいね解除</span>
-                    </v-tooltip>
-                </template>
-                <template v-else>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-icon class="ml-3 mt-n2" @click="like()"
-                                    >mdi-heart-outline</v-icon
-                                ></span
-                            >
-                        </template>
-                        <span>いいね</span>
-                    </v-tooltip>
-                </template>
-                <span class="mt-n1 ml-1">{{post.likes_count}}</span>
-                <template v-if="!need_thread">
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-icon class="ml-3 mt-n2" @click="emitForAnchor()"
-                                    >mdi-message-arrow-left-outline</v-icon
-                                ></span
-                            >
-                        </template>
-                        <span>返信</span>
-                    </v-tooltip>
-                </template>
-                <template
-                    v-if="
-                        post.user_id === my_info.id || my_info.role === 'staff'
-                    "
-                >
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-icon class="ml-3 mt-n2" @click="editBody"
-                                    >mdi-lead-pencil</v-icon
-                                ></span
-                            >
-                        </template>
-                        <span>編集</span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-icon class="ml-3 mt-n2" @click="deletePost"
-                                    >mdi-delete</v-icon
-                                ></span
-                            >
-                        </template>
-                        <span>削除</span>
-                    </v-tooltip>
+                <template class="d-inline">
+                    <template v-if="post.login_user_liked">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <span v-on="on"
+                                    ><v-icon
+                                        class="ml-2 mt-n2"
+                                        color="green lighten-2"
+                                        @click="dislike()"
+                                        >mdi-heart</v-icon
+                                    ></span
+                                >
+                            </template>
+                            <span>いいね解除</span>
+                        </v-tooltip>
+                    </template>
+                    <template v-else>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <span v-on="on"
+                                    ><v-icon class="ml-2 mt-n2" @click="like()"
+                                        >mdi-heart-outline</v-icon
+                                    ></span
+                                >
+                            </template>
+                            <span>いいね</span>
+                        </v-tooltip>
+                    </template>
+                    <span class="mt-n1 ml-1">{{ post.likes_count }}</span>
+                    <template v-if="!need_thread">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <span v-on="on"
+                                    ><v-icon
+                                        class="ml-2 mt-n2"
+                                        @click="emitForAnchor()"
+                                        >mdi-message-arrow-left-outline</v-icon
+                                    ></span
+                                >
+                            </template>
+                            <span>返信</span>
+                        </v-tooltip>
+                    </template>
+                    <template
+                        v-if="
+                            post.user_id === my_info.id ||
+                                my_info.role === 'staff'
+                        "
+                    >
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <span v-on="on"
+                                    ><v-icon
+                                        class="ml-2 mt-n2"
+                                        @click="editBody"
+                                        >mdi-lead-pencil</v-icon
+                                    ></span
+                                >
+                            </template>
+                            <span>編集</span>
+                        </v-tooltip>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <span v-on="on"
+                                    ><v-icon
+                                        class="ml-2 mt-n2"
+                                        @click="deletePost"
+                                        >mdi-delete</v-icon
+                                    ></span
+                                >
+                            </template>
+                            <span>削除</span>
+                        </v-tooltip>
+                    </template>
                 </template>
             </v-card-text>
 
             <!-- ２行目 -->
-            <div class="d-flex mt-n5">
+            <div class="d-block d-sm-flex mt-n5">
                 <template v-if="post.image">
-                    <v-avatar class="ma-3" size="250" tile>
+                    <v-avatar class="ma-3" size="170" tile>
                         <!-- vueのルート publicディレクトリからの相対パスを記入する この場合 public/storage/images/example.png -->
                         <img
                             :src="'/storage/images/' + post.image.image_name"
@@ -198,22 +217,6 @@
                             </v-btn>
                         </div>
                     </template>
-                    <!-- 宛先表示は一旦中止 -->
-                    <!-- <template v-if="post.to_list">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                                <span
-                                class="blue--text text--lighten-1"
-                                v-bind="attrs"
-                                v-on="on"
-                                >
-                                >>{{Object.keys(post.to_list).join(', >>')}}
-                                </span>
-                            </template>
-                            <span>{{Object.values(post.to_list).join()}}</span>
-                        </v-tooltip>
-                    </template>
-                    <br> -->
                     <template v-if="post.responded_count">
                         <v-icon>mdi-message-arrow-left</v-icon>
                         <router-link
@@ -242,7 +245,7 @@
         class="my-3"
     >
         <!-- 1行目 -->
-        <v-card-text class="d-flex">
+        <v-card-text class="d-block d-sm-flex">
             <span v-text="post.displayed_post_id"></span>
             <span class="ml-3">
                 <router-link
@@ -250,8 +253,8 @@
                         name: 'setting.mute_words'
                     }"
                 >
-                    <span>ミュートワード</span>
-                </router-link>が含まれています。
+                    <span>ミュートワード</span> </router-link
+                >が含まれています。
             </span>
             <v-btn
                 class="grey--text mt-n1"
@@ -295,7 +298,7 @@
         class="my-3"
     >
         <!-- 1行目 -->
-        <v-card-text class="d-flex">
+        <v-card-text class="d-block d-sm-flex">
             <span v-text="post.displayed_post_id"></span>
             <span class="ml-3">
                 <router-link
@@ -303,8 +306,8 @@
                         name: 'setting.mute_users'
                     }"
                 >
-                    <span>ミュートユーザー</span>
-                </router-link>による書き込みです。
+                    <span>ミュートユーザー</span> </router-link
+                >による書き込みです。
             </span>
             <v-btn
                 class="grey--text mt-n1"
@@ -415,7 +418,7 @@ export default {
         return {
             is_editing: false,
             before_edit: {},
-            limit: { body: 200 },
+            limit: { body: 200 }
         };
     },
     methods: {
@@ -431,14 +434,21 @@ export default {
                 .then(response => {
                     console.log(response);
                 })
-                    .catch(error => {
-                        console.log(error.response);
-                        if(error.response.status === 422) {
-                            let alert_array = Object.values(error.response.data.errors);
-                            alert(alert_array.flat().join().replace(/,/g, '\n'));
-                            this.$emit("re_get_mainly_posts");
-                        }
-                    });
+                .catch(error => {
+                    console.log(error.response);
+                    if (error.response.status === 422) {
+                        let alert_array = Object.values(
+                            error.response.data.errors
+                        );
+                        alert(
+                            alert_array
+                                .flat()
+                                .join()
+                                .replace(/,/g, "\n")
+                        );
+                        this.$emit("re_get_mainly_posts");
+                    }
+                });
         },
         dislike() {
             console.log("this is dislike");
@@ -455,14 +465,21 @@ export default {
                     console.log(response);
                     this.$emit("re_get_posts_at_my_profile_like");
                 })
-                    .catch(error => {
-                        console.log(error.response);
-                        if(error.response.status === 422) {
-                            let alert_array = Object.values(error.response.data.errors);
-                            alert(alert_array.flat().join().replace(/,/g, '\n'));
-                            this.$emit("re_get_mainly_posts");
-                        }
-                    });
+                .catch(error => {
+                    console.log(error.response);
+                    if (error.response.status === 422) {
+                        let alert_array = Object.values(
+                            error.response.data.errors
+                        );
+                        alert(
+                            alert_array
+                                .flat()
+                                .join()
+                                .replace(/,/g, "\n")
+                        );
+                        this.$emit("re_get_mainly_posts");
+                    }
+                });
         },
         editBody() {
             console.log("this is editBody");
@@ -499,9 +516,16 @@ export default {
                 })
                 .catch(error => {
                     console.log(error.response);
-                    if(error.response.status === 422) {
-                        let alert_array = Object.values(error.response.data.errors);
-                        alert(alert_array.flat().join().replace(/,/g, '\n'));
+                    if (error.response.status === 422) {
+                        let alert_array = Object.values(
+                            error.response.data.errors
+                        );
+                        alert(
+                            alert_array
+                                .flat()
+                                .join()
+                                .replace(/,/g, "\n")
+                        );
                     }
                 });
         },
@@ -527,19 +551,26 @@ export default {
                 axios
                     .delete("/api/posts", {
                         data: {
-                            id: this.post.id,
+                            id: this.post.id
                         }
                     })
                     .then(response => {
                         console.log(response.data);
-                            this.post.deleted_at = "deleted";
-                            this.$emit("re_get_mainly_posts");
+                        this.post.deleted_at = "deleted";
+                        this.$emit("re_get_mainly_posts");
                     })
                     .catch(error => {
                         console.log(error.response);
-                        if(error.response.status === 422) {
-                            let alert_array = Object.values(error.response.data.errors);
-                            alert(alert_array.flat().join().replace(/,/g, '\n'));
+                        if (error.response.status === 422) {
+                            let alert_array = Object.values(
+                                error.response.data.errors
+                            );
+                            alert(
+                                alert_array
+                                    .flat()
+                                    .join()
+                                    .replace(/,/g, "\n")
+                            );
                         }
                     });
             }

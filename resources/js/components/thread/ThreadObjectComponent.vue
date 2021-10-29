@@ -1,6 +1,6 @@
 <template>
     <v-card color="green lighten-4" outlined class="my-3">
-        <div class="d-flex">
+        <div class="d-block d-sm-flex">
             <v-avatar class="ma-3" size="80" tile>
                 <!-- vueのルート publicディレクトリからの相対パスを記入する この場合 public/storage/images/example.png -->
                 <img
