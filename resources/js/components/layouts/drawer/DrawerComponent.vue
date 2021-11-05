@@ -161,7 +161,7 @@ export default {
         },
         switchNavLists() {
             if(this.mini) {
-                console.log(this.mini);
+                //console.log(this.mini);
                 //delete this.nav_lists[2];
                 this.nav_lists.splice(2,2,
                     {
@@ -186,7 +186,7 @@ export default {
                     }
                 )
             } else {
-                console.log(this.mini);
+                //console.log(this.mini);
                 this.nav_lists.splice(2,4,
                     {
                         name: "設定",

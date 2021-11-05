@@ -105,13 +105,13 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         editAccount() {
-            console.log('this is editAccount');
+            //console.log('this is editAccount');
             axios
                 .patch("/api/users/me", {
                     email: this.my_info.email,
@@ -120,9 +120,9 @@ export default {
                     password_confirm: this.password_confirm,
                 })
                 .then(response => {
-                    console.log(response.data);
+                    //console.log(response.data);
                     if(response.message == "This action is unauthorized.") {
-                    console.log(response);
+                    //console.log(response);
                     alert('ゲストユーザーはメールアドレス/パスワードを変更できません。');
                     }
                     else if(response.data === 'bad_password'){
@@ -134,7 +134,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
                         alert(alert_array.flat().join().replace(/,/g, '\n'));

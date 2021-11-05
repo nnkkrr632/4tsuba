@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         checkLogin() {
-            console.log('this is checkLogin');
+            //console.log('this is checkLogin');
             axios.get("/api/check/login").then(res => {
                 if(res.data == false)
                 this.link = "/login"

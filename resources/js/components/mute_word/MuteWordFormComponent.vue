@@ -37,18 +37,18 @@ export default {
     },
     methods: {
         storeMuteWord() {
-            console.log('this is storeMuteWord');
+            //console.log('this is storeMuteWord');
             const form_data = new FormData();
             form_data.append('mute_word', this.mute_word);
             axios
             .post("/api/mute_words", form_data)
             .then(res => {
-                console.log(res);
+                //console.log(res);
                 this.$emit("receiveUpdate");
                 this.mute_word = null;
             })
             .catch(error => {
-                console.log(error.response);
+                //console.log(error.response);
                 if(error.response.status === 422) {
                     let alert_array = Object.values(error.response.data.errors);
                     alert(alert_array.flat().join().replace(/,/g, '\n'));

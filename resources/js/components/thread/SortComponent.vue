@@ -48,7 +48,7 @@ export default {
     methods: {
         switchHint() {
             this.desc_asc = this.desc_asc.reverse();
-            console.log(this.desc_asc);
+            //console.log(this.desc_asc);
         },
         changeSort() {
             this.order_by["column"] = this.getKeyByValue(
@@ -56,7 +56,7 @@ export default {
                 this.selected_column
             );
             this.order_by["desc_asc"] = this.desc_asc[0];
-            console.log(this.order_by);
+            //console.log(this.order_by);
 
             //親コンポーネントへのemit  第一引数は親コンポーネントで受け取るためのイベント名
             this.$emit("update_order_by", this.order_by);

@@ -31,13 +31,13 @@ export default {
         logout() {
             axios.post("/logout", {})
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 localStorage.removeItem("auth");
                 this.$router.push("/login");
                 this.$router.go({path: "/login", force: true});
             })
             .catch(error => {
-                console.log(error.response);
+                //console.log(error.response);
                 if(error.response.status === 422) {
                     let alert_array = Object.values(error.response.data.errors);
                     alert(alert_array.flat().join().replace(/,/g, '\n'));

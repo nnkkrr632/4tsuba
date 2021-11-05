@@ -114,13 +114,13 @@ export default {
                             password_confirm:this.password_confirm,
                         })
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                             localStorage.setItem("auth", "ture");
                             this.$router.push("/threads");
                             this.$router.go({ path: "/threads", force: true });
                         })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -133,8 +133,8 @@ export default {
                             password: this.password
                         })
                         .then(response => {
-                            console.log(response);
-                            console.log(response.data.message)
+                            //console.log(response);
+                            //console.log(response.data.message)
                             if(response.data.message === 'login_success') {
                                 localStorage.setItem("auth", "ture");
                                 this.$router.push("/threads");
@@ -144,7 +144,7 @@ export default {
                             }
                         })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));

@@ -77,48 +77,48 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         editProfile() {
-            console.log('this is editProfile');
+            //console.log('this is editProfile');
             const form_data = new FormData();
             form_data.append("name", this.my_info.name);
             if(this.icon !== null) {
             form_data.append("icon", this.icon);
             }
-            console.log(form_data);
+            //console.log(form_data);
             axios
                 .post("/api/users/me/profile", form_data, {
                     headers: { "content-type": "multipart/form-data" }
                 })
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.$router.push("/users/" + this.my_info.id + "/posts");
                     this.$router.go({path: "/users/" + this.my_info.id + "/posts", force: true});
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
-                        console.log(alert_array);
+                        //console.log(alert_array);
                         let flat_array = alert_array.flat();
-                        console.log(flat_array);
+                        //console.log(flat_array);
                         let alert_string = flat_array.join();
-                        console.log(alert_string);
+                        //console.log(alert_string);
                         let alert_message = alert_string.replace(/,/g, '\n');
-                        console.log(alert_message);
+                        //console.log(alert_message);
                         alert(alert_message);
                     }
                 });                
         },
         resetProfile() {
-            console.log('this is resetProfile');
+            //console.log('this is resetProfile');
             axios.get("/api/users/me/profile")
             .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.$router.push("/users/" + this.my_info.id + "/posts");
                     this.$router.go({path: "/users/" + this.my_info.id + "/posts", force: true});
             })

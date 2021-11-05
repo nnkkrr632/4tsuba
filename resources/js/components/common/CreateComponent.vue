@@ -95,7 +95,7 @@ export default {
     },
     methods: {
         store() {
-            console.log('this is store')
+            //console.log('this is store')
 
             const form_data = new FormData();
             form_data.append("body", this.input.body);
@@ -111,23 +111,23 @@ export default {
             }
             //確認
             for (let value of form_data.entries()) {
-                console.log(value);
+                //console.log(value);
             }
             //ポスト
             if(this.thread_or_post === 'post') {
-                console.log('this is store post');
+                //console.log('this is store post');
                 axios
                     .post("/api/posts", form_data, {
                         headers: { "content-type": "multipart/form-data" }
                     })
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         this.$emit("re_get_mainly_posts");
                         this.input.body = null;
                         this.input.image = null;
                     })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -136,19 +136,19 @@ export default {
             }
             //スレッド
             else {
-                console.log('this is store thread');
+                //console.log('this is store thread');
                 axios
                     .post("/api/threads", form_data, {
                         headers: { "content-type": "multipart/form-data" }
                     })
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         this.created_thread_id = response.data;
-                        console.log(this.created_thread_id);
+                        //console.log(this.created_thread_id);
                         this.$router.push({ name: 'thread.show', params: { thread_id: this.created_thread_id }})
                     })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -164,7 +164,7 @@ export default {
             }
         },
         writeAnchor(anchor) {
-                console.log('this is writeAchor');
+                //console.log('this is writeAchor');
                 this.input.body = anchor;
                 this.$refs.focusBody.focus();
         }

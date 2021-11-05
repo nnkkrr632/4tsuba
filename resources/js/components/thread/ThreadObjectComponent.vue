@@ -53,13 +53,13 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         deleteThread() {
-            console.log("this is deletePost");
+            //console.log("this is deletePost");
 
             if (confirm("スレッドを削除しますか？")) {
                 axios
@@ -69,7 +69,7 @@ export default {
                         }
                     })
                     .then(response => {
-                        console.log(response.data);
+                        //console.log(response.data);
                         if (response.data === "bad_user") {
                             alert("スタッフ以外は削除できません。");
                         } else {
@@ -77,7 +77,7 @@ export default {
                         }
                     })
                     .catch(error => {
-                        console.log(error.response.data);
+                        //console.log(error.response.data);
                     });
             }
         }

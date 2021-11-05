@@ -99,10 +99,10 @@ export default {
     methods: {
         narrowMaxWidth() {
             if(Object.keys(this.my_info).length) {
-                console.log('logined');
+                //console.log('logined');
                 this.max_width = 1085;
             } else {
-                console.log('not logined');
+                //console.log('not logined');
                 this.max_width = 880;
             }
         }

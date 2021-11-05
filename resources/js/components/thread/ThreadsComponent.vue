@@ -44,21 +44,21 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         updateOrderBy(emitted_order_by) {
-            console.log("this is updateSort");
+            //console.log("this is updateSort");
             this.order_by['column'] = emitted_order_by['column'];
             this.order_by['desc_asc'] = emitted_order_by['desc_asc'];
-            console.log(this.order_by);
+            //console.log(this.order_by);
             //他のメソッドはthis.methodName()で実行できる
             this.getThreads();
         },
         getThreads() {
-            console.log("this is getThreads");
+            //console.log("this is getThreads");
             axios
                 .get("/api/threads", {
                     params: {
@@ -70,7 +70,7 @@ export default {
                     this.threads = res.data;
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
                         alert(alert_array.flat().join().replace(/,/g, '\n'));

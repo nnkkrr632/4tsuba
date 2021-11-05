@@ -181,15 +181,15 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         getUserInfo() {
-            console.log("this is getUserInfo");
+            //console.log("this is getUserInfo");
             this.user_id = this.$route.params.user_id;
-            console.log('this page user is user_id '+ this.user_id);
+            //console.log('this page user is user_id '+ this.user_id);
             axios
                 .get("/api/users/" + this.user_id)
                 .then(res => {
@@ -197,7 +197,7 @@ export default {
                 });
         },
         getUserPosts() {
-            console.log("this is getUserPosts");
+            //console.log("this is getUserPosts");
             axios
                 .get("/api/posts", {
                     params: {
@@ -211,7 +211,7 @@ export default {
                 });
         },
         getUserLikePosts() {
-            console.log("this is getUserLikePosts");
+            //console.log("this is getUserLikePosts");
             axios
                 .get("/api/posts", {
                     params: {
@@ -225,7 +225,7 @@ export default {
                 });
         },
         switchMute() {
-            console.log("this is switchMute");
+            //console.log("this is switchMute");
 
             //ミュートする場合
             if (!this.user_info.is_login_user_mute) {
@@ -236,11 +236,11 @@ export default {
                             user_id: this.user_id
                         })
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                             this.getUserPosts();
                         })
                         .catch(error => {
-                            console.log(error.response);
+                            //console.log(error.response);
                             if(error.response.status === 422) {
                                 let alert_array = Object.values(error.response.data.errors);
                                 alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -252,7 +252,7 @@ export default {
             else {
                 if (confirm("ユーザーのミュートを解除しますか？")) {
                     this.user_info.is_login_user_mute = 0;
-                    console.log(this.user_id);
+                    //console.log(this.user_id);
                     axios
                         .delete("/api/mute_users", {
                             data: {
@@ -260,12 +260,12 @@ export default {
                             }
                         })
                         .then(response => {
-                            console.log(response);
-                            console.log("ユーザーミュート解除完了");
+                            //console.log(response);
+                            //console.log("ユーザーミュート解除完了");
                             this.getUserPosts();
                         })
                         .catch(error => {
-                            console.log(error.response);
+                            //console.log(error.response);
                             if(error.response.status === 422) {
                                 let alert_array = Object.values(error.response.data.errors);
                                 alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -275,7 +275,7 @@ export default {
             }
         },
         getPostedImagesForLightBox() {
-            console.log("this is getPostedImagesForLightBox");
+            //console.log("this is getPostedImagesForLightBox");
             axios
                 .get("/api/images/users/" + this.user_id + "/post")
                 .then(res => {
@@ -283,7 +283,7 @@ export default {
                 });
         },
         getLikedImagesForLightBox() {
-            console.log("this is getLikedImagesForLightBox");
+            //console.log("this is getLikedImagesForLightBox");
             axios
                 .get("/api/images/users/" + this.user_id + "/like")
                 .then(res => {

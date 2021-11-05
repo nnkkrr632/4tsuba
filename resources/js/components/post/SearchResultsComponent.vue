@@ -56,22 +56,22 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         getSearchedPosts() {
             if(this.search_string) {
-                console.log("this is getSearchedPosts");
-                console.log(this.search_string);
-                console.log(typeof this.search_string);
+                //console.log("this is getSearchedPosts");
+                //console.log(this.search_string);
+                //console.log(typeof this.search_string);
                 const search_word_list = this.search_string.trim().split(/[(\s)|(\t)]+/);
-                console.log(search_word_list);
+                //console.log(search_word_list);
                 //重複削除
                 const set_word_list = new Set(search_word_list);
                 this.unique_word_list = Array.from(set_word_list);
-                console.log(this.unique_word_list);
+                //console.log(this.unique_word_list);
                 if(this.unique_word_list != null) {
                 axios
                     .get("/api/posts", {
@@ -86,7 +86,7 @@ export default {
                         this.getImagesForLightBox();
                     })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if(error.response.status === 422) {
                             let alert_array = Object.values(error.response.data.errors);
                             alert(alert_array.flat().join().replace(/,/g, '\n'));
@@ -96,18 +96,18 @@ export default {
             }   
         },
         highlightSearchWord() {
-            console.log("this is highlightSearchWord");
+            //console.log("this is highlightSearchWord");
             let unique_all_kana_list = this.exchangeUniqueWordListIntoAllKanaList(this.unique_word_list);
             const unique_word_string = unique_all_kana_list.join('|');
             let regular_expressiion = new RegExp('(' + unique_word_string + ')', 'gi');
-            console.log(regular_expressiion);
+            //console.log(regular_expressiion);
 
             this.posts.forEach(function(post) {
                 post['body_for_search'] = post['body'].replace(regular_expressiion, '<span class="green lighten-3 font-weight-bold">$&</span>');
             })
         },
         getImagesForLightBox() {
-            console.log('this is getImagesForLightBox');
+            //console.log('this is getImagesForLightBox');
             axios
                 .get("/api/images/search", {
                     params: {
@@ -122,7 +122,7 @@ export default {
             this.$refs.lightbox.showImage(emitted_lightbox_index);
         },
         exchangeUniqueWordListIntoAllKanaList(unique_word_list) {
-            console.log('this is exchangeUniqueWordListIntoAllKanaList');
+            //console.log('this is exchangeUniqueWordListIntoAllKanaList');
             let all_kana_list = [];
             unique_word_list.forEach( function (unique_word) {
                 let hiragana = jaconv.toHiragana(unique_word);
@@ -130,15 +130,15 @@ export default {
                 let han_katakana = jaconv.toHanKana(unique_word);
                 let han_katakana_2 = jaconv.toHanKana(jaconv.toKatakana(unique_word));
                 let array = [hiragana, katakana, han_katakana, han_katakana_2];
-                console.log(array);
+                //console.log(array);
                 all_kana_list.push(array);
             });
             all_kana_list = all_kana_list.flat();
-            console.log(all_kana_list);
+            //console.log(all_kana_list);
             //重複削除
                 let set_list = new Set(all_kana_list);
                 let unique_all_kana_list = Array.from(set_list);
-                console.log(unique_all_kana_list);
+                //console.log(unique_all_kana_list);
                 return unique_all_kana_list;
         },
     },

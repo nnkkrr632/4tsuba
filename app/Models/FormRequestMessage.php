@@ -15,7 +15,7 @@ class FormRequestMessage extends Model
     }
     public function not_in($head)
     {
-        return  '【' . $head . '】' . '入力必須です。(not_in)';
+        return  '【' . $head . '】' . '入力必須です。';
     }
     public function onlyOwnerCanEdit($head)
     {

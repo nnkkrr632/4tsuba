@@ -425,7 +425,7 @@ export default {
     },
     methods: {
         like() {
-            console.log("this is like");
+            //console.log("this is like");
             this.post.login_user_liked = 1;
             this.post.likes_count++;
             axios
@@ -434,10 +434,10 @@ export default {
                     post_id: this.post.id
                 })
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if (error.response.status === 422) {
                         let alert_array = Object.values(
                             error.response.data.errors
@@ -453,7 +453,7 @@ export default {
                 });
         },
         dislike() {
-            console.log("this is dislike");
+            //console.log("this is dislike");
             this.post.login_user_liked = 0;
             this.post.likes_count--;
             axios
@@ -464,11 +464,11 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.$emit("re_get_posts_at_my_profile_like");
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if (error.response.status === 422) {
                         let alert_array = Object.values(
                             error.response.data.errors
@@ -484,13 +484,13 @@ export default {
                 });
         },
         editBody() {
-            console.log("this is editBody");
+            //console.log("this is editBody");
             this.is_editing = true;
             this.before_edit.body = this.post.body;
             this.before_edit.image = this.post.image;
         },
         editPost() {
-            console.log("this is editPost");
+            //console.log("this is editPost");
             const form_data = new FormData();
             form_data.append("thread_id", this.post.thread_id);
             form_data.append("id", this.post.id);
@@ -504,20 +504,20 @@ export default {
             }
             //確認
             for (let value of form_data.entries()) {
-                console.log(value);
+                //console.log(value);
             }
             axios
                 .post("/api/posts/edit", form_data, {
                     headers: { "content-type": "multipart/form-data" }
                 })
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.post.is_edited = 1;
                     this.is_editing = false;
                     this.$emit("re_get_mainly_posts");
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if (error.response.status === 422) {
                         let alert_array = Object.values(
                             error.response.data.errors
@@ -532,13 +532,13 @@ export default {
                 });
         },
         editCancel() {
-            console.log("this is editCancel");
+            //console.log("this is editCancel");
             this.post.body = this.before_edit.body;
             this.post.image = this.before_edit.image;
             this.is_editing = false;
         },
         displayMutedPost() {
-            console.log("this is displayMutedPost");
+            //console.log("this is displayMutedPost");
             if (this.post.has_mute_words === true) {
                 this.post.has_mute_words = false;
             }
@@ -547,7 +547,7 @@ export default {
             }
         },
         deletePost() {
-            console.log("this is deletePost");
+            //console.log("this is deletePost");
 
             if (confirm("書込を削除しますか？")) {
                 axios
@@ -557,12 +557,12 @@ export default {
                         }
                     })
                     .then(response => {
-                        console.log(response.data);
+                        //console.log(response.data);
                         this.post.deleted_at = "deleted";
                         this.$emit("re_get_mainly_posts");
                     })
                     .catch(error => {
-                        console.log(error.response);
+                        //console.log(error.response);
                         if (error.response.status === 422) {
                             let alert_array = Object.values(
                                 error.response.data.errors
@@ -578,15 +578,15 @@ export default {
             }
         },
         emitForResponses() {
-            console.log("this is emitForResponses");
+            //console.log("this is emitForResponses");
             this.$emit("receiveForResponses", this.post.displayed_post_id);
         },
         emitForAnchor() {
-            console.log("this is emitForAnchor★" + this.post.displayed_post_id);
+            //console.log("this is emitForAnchor★" + this.post.displayed_post_id);
             this.$emit("receiveForAnchor", this.post.displayed_post_id);
         },
         emitLightBoxIndex() {
-            console.log("this is emitLightBoxIndex emit " + this.post.lightbox_index);
+            //console.log("this is emitLightBoxIndex emit " + this.post.lightbox_index);
             this.$emit("igniteLightBox", this.post.lightbox_index);
         }
     }

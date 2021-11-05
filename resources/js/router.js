@@ -79,8 +79,8 @@ const router = new VueRouter({
             //ページ遷移前に存在チェックしてエラーハンドリング
             beforeEnter: (to, from, next) => {
                axios.get("/api/exists/threads/" + to.params.thread_id + "/responses/" + to.params.displayed_post_id).then((res) => {
-                  console.log('this is beforeEnter(threads/:thread_id/responses/displayed_post_id)');
-                  console.log(res.data);
+                  //console.log('this is beforeEnter(threads/:thread_id/responses/displayed_post_id)');
+                  //console.log(res.data);
                   if(res.data !== 0) {
                      next();
                   } else {
@@ -88,7 +88,7 @@ const router = new VueRouter({
                   }
                   next();
                }).catch((error) =>{
-                  console.log(error);
+                  //console.log(error);
                   next({path: '/404'});
                });
             },
@@ -105,8 +105,8 @@ const router = new VueRouter({
             //ページ遷移前に存在チェックしてエラーハンドリング
             beforeEnter: (to, from, next) => {
                axios.get("/api/exists/threads/" + to.params.thread_id).then((res) => {
-                  console.log('this is beforeEnter(threads/:thread_id)');
-                  console.log(res.data);
+                  //console.log('this is beforeEnter(threads/:thread_id)');
+                  //console.log(res.data);
                   if(res.data !== 0) {
                      next();
                   } else {
@@ -114,7 +114,7 @@ const router = new VueRouter({
                   }
                   next();
                }).catch((error) =>{
-                  console.log(error);
+                  //console.log(error);
                   next({path: '/404'});
                });
             },
@@ -136,8 +136,8 @@ const router = new VueRouter({
             //ページ遷移前に存在チェックしてエラーハンドリング
             beforeEnter: (to, from, next) => {
                axios.get("/api/exists/users/" + to.params.user_id).then((res) => {
-                  console.log('this is beforeEnter(users/:user_id/)');
-                  console.log(res.data);
+                  //console.log('this is beforeEnter(users/:user_id/)');
+                  //console.log(res.data);
                   if(res.data !== 0) {
                      next();
                   } else {
@@ -145,7 +145,7 @@ const router = new VueRouter({
                   }
                   next();
                }).catch((error) =>{
-                  console.log(error);
+                  //console.log(error);
                   next({path: '/404'});
                });
             },
@@ -158,8 +158,8 @@ const router = new VueRouter({
             //ページ遷移前に存在チェックしてエラーハンドリング
             beforeEnter: (to, from, next) => {
                axios.get("/api/exists/users/" + to.params.user_id).then((res) => {
-                  console.log('this is beforeEnter(users/:user_id/)');
-                  console.log(res.data);
+                  //console.log('this is beforeEnter(users/:user_id/)');
+                  //console.log(res.data);
                   if(res.data !== 0) {
                      next();
                   } else {
@@ -167,7 +167,7 @@ const router = new VueRouter({
                   }
                   next();
                }).catch((error) =>{
-                  console.log(error);
+                  //console.log(error);
                   next({path: '/404'});
                });
             },

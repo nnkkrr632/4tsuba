@@ -26,15 +26,15 @@ export default {
     },
     methods: {
         checkLogin() {
-            console.log('this is checkLogin');
+            //console.log('this is checkLogin');
             axios.get("/api/check/login").then(res => {
-                console.log(res);
+                //console.log(res);
                 if(!res.data == false)
                 this.getMyInfo();
             });
         },
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });

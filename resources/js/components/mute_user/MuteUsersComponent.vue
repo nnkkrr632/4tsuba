@@ -42,16 +42,16 @@ export default {
     },
     methods: {
         getMyId() {
-            console.log("this is getMyId");
+            //console.log("this is getMyId");
             axios.get("/api/users/me").then(res => {
                 this.my_id = res.data;
             });
         },
         getMuteUsers() {
-            console.log("this is getMuteUsers");
+            //console.log("this is getMuteUsers");
             axios.get("/api/mute_users").then(res => {
                 this.mute_users = res.data;
-                console.log(this.mute_users);
+                //console.log(this.mute_users);
             });
         },
     },

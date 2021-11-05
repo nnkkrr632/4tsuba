@@ -70,23 +70,23 @@ export default {
     },
     methods: {
         getMyInfo() {
-            console.log("this is getMyInfo");
+            //console.log("this is getMyInfo");
             axios.get("/api/users/me/info").then(res => {
                 this.my_info = res.data;
             });
         },
         getThread() {
-            console.log("this is getThread");
+            //console.log("this is getThread");
             axios.get("/api/threads/" + this.thread_id).then(res => {
                 this.thread = res.data;
             });
         },
         getPostsOrResponses() {
-            console.log('this is getPostsOrResponses');
+            //console.log('this is getPostsOrResponses');
             let path = this.$route.path;
             let displayed_post_id = path.match(/\d+$/)[0];
-            console.log(path);
-            console.log(displayed_post_id);
+            //console.log(path);
+            //console.log(displayed_post_id);
             if(!path.match(/responses/)) {
                 this.getPosts();
             } else {
@@ -94,7 +94,7 @@ export default {
             }
         },
         getPosts() {
-            console.log("this is getPosts");
+            //console.log("this is getPosts");
             axios
                 .get("/api/posts", {
                     params: {
@@ -109,7 +109,7 @@ export default {
                 });
         },
         getResponses(emitted_displayed_post_id) {
-            console.log("this is getResponses");
+            //console.log("this is getResponses");
             axios
                 .get("/api/posts", {
                     params: {
@@ -123,12 +123,12 @@ export default {
                 });
         },
         callWriteAnchor(emitted_displayed_post_id) {
-            console.log("this is callWriteAnchor");
+            //console.log("this is callWriteAnchor");
             this.anchor = '>>' + emitted_displayed_post_id + " ";
             this.$refs.create.writeAnchor(this.anchor);
         },
         updateEntry(driver) {
-            console.log('this is updateEntry');
+            //console.log('this is updateEntry');
             this.getPosts();
             this.getThread();
             if(driver == 'post') {
@@ -136,7 +136,7 @@ export default {
             }
         },
         getThreadImagesForLightBox() {
-            console.log('this is getThreadImagesForLightBox');
+            //console.log('this is getThreadImagesForLightBox');
             axios
                 .get("/api/images/threads/" + this.thread_id)
                 .then(res => {
@@ -144,7 +144,7 @@ export default {
                 });
         },
         getResponseImagesForLightBox(displayed_post_id) {
-            console.log('this is getResponseImagesForLightBox');
+            //console.log('this is getResponseImagesForLightBox');
             axios
                 .get("/api/images/threads/" + this.thread_id + '/responses/' + displayed_post_id)
                 .then(res => {
@@ -155,7 +155,7 @@ export default {
             this.$refs.lightbox.showImage(emitted_lightbox_index);
         },
         scrollToBottom() {
-            console.log('this is scrollToBottom');
+            //console.log('this is scrollToBottom');
             var element = document.documentElement;
             var bottom = element.scrollHeight - element.clientHeight;
             window.scrollTo({top: bottom, behavior: 'smooth'});            

@@ -34,7 +34,7 @@ export default {
     },
     methods: {
         destroyMuteWord() {
-            console.log('this is destroyMuteWord');
+            //console.log('this is destroyMuteWord');
             if (confirm("ミュートを解除しますか？")) {
             axios
                 .delete("/api/mute_words", {
@@ -43,11 +43,11 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.$emit("receiveUpdate");
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    //console.log(error.response);
                     if(error.response.status === 422) {
                         let alert_array = Object.values(error.response.data.errors);
                         alert(alert_array.flat().join().replace(/,/g, '\n'));

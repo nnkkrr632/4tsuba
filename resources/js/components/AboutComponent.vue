@@ -23,14 +23,14 @@ export default {
             axios
                 .post("api/logout")
                 .then(response => {
-                    console.log('ログアウトボタン押した');
-                    console.log(response);
+                    //console.log('ログアウトボタン押した');
+                    //console.log(response);
                     localStorage.removeItem("auth");
                     this.$router.push("/login");
                 })
                 .catch(error => {
-                    console.log('ログアウトメソッド時エラーキャッチ');
-                    console.log(error);
+                    //console.log('ログアウトメソッド時エラーキャッチ');
+                    //console.log(error);
                 });
         }
     }
