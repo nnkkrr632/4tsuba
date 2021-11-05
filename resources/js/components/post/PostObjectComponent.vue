@@ -61,6 +61,7 @@
                 </template>
                 <v-spacer></v-spacer>
                 <!-- 1行目4アイコン -->
+                <v-layout justify-end>
                 <template class="d-inline">
                     <template v-if="post.login_user_liked">
                         <v-tooltip bottom>
@@ -136,6 +137,7 @@
                         </v-tooltip>
                     </template>
                 </template>
+                </v-layout>
             </v-card-text>
 
             <!-- ２行目 -->
