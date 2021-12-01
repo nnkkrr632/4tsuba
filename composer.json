@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.2",
         "nunomaduro/collision": "^5.0",
+        "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7"
     },
     "require-dev": {
