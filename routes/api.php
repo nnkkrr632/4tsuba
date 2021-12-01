@@ -16,6 +16,7 @@ use App\Http\Controllers\MuteUserController;
 use App\Http\Controllers\LoginCheckController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GuestAuthController;
+use App\Http\Controllers\RedisPostController;
 
 
 /*

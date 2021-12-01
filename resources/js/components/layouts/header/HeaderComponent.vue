@@ -14,7 +14,7 @@
                     color="green lighten-2"
                     label="書き込みに含まれる単語を検索"
                     placeholder="単語1 単語2"
-                    hint="複数単語はOR検索になります"
+                    :hint="'直近の検索履歴：['+ search_history.join('] , [') + ']'"
                     outlined
                     v-model="search_string"
                 >
@@ -76,6 +76,7 @@ export default {
     data() {
         return {
             search_string: null,
+            search_history: [],
             max_width: 1085,
             others: [
                 {
@@ -105,10 +106,19 @@ export default {
                 console.log('not logined');
                 this.max_width = 880;
             }
+        },
+        getSearchHistory() {
+            console.log('this is getSearchHistory');
+            axios
+                .get("/api/redis/search_history")
+                .then(res => {
+                    this.search_history = res.data;
+                });
         }
     },
     mounted() {
         this.narrowMaxWidth();
+        this.getSearchHistory();
     },
     watch: {
         my_info: function() {

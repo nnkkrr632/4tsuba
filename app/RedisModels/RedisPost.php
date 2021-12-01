@@ -23,6 +23,8 @@ class RedisPost
         $unix_datetime_int = (int)($unix_datetime->format('U'));
         //redisのzsetに登録
         Redis::command('zadd', ['search_history', $unix_datetime_int, $search_word_string]);
+        //zsetのスコアの内、最も新しいもの(-1)から数えて6番目(-6)のものを削除することで直近の5件のみzsetに保てる
+        Redis::zremrangebyrank('search_history', -6, -6);
     }
     /**
      * @return array $search_history
