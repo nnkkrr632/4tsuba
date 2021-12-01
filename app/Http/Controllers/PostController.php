@@ -86,6 +86,10 @@ class PostController extends Controller
                 }
             });
             $query->orderBy('posts.created_at', 'desc');
+
+            //redisに検索ワードを記憶させる
+            $redis_post_controller = new RedisPostController();
+            $redis_post_controller->store($search_word_list);
         }
 
         //ポストの加工

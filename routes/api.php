@@ -89,6 +89,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //like
     Route::put('/like', [LikeController::class, 'store']);
     Route::delete('/like', [LikeController::class, 'destroy']);
+
+    //redis
+    Route::get('/redis/search_history', [RedisPostController::class, 'show']);
 });
 
 
