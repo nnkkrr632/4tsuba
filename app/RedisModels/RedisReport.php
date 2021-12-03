@@ -2,13 +2,14 @@
 
 namespace App\RedisModels;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
 //Carbonを使用する
 use Carbon\Carbon;
 
 
-class RedisDashboard
+class RedisReport
 {
     private const KEY_PREFIX_LOGIN = 'login-';
     private const LOGIN = 1;
@@ -35,5 +36,30 @@ class RedisDashboard
     public function test()
     {
         return self::KEY_PREFIX_LOGIN . 'aaa' . self::LOGIN;
+    }
+
+    /**
+     * @param string $year_month
+     * @return array
+     */
+    public function returnOverview(string $year_month)
+    {
+        $key_prefix = 'report-overview-';
+        $date = new Carbon($year_month);
+
+        $month_overview = [];
+        foreach (range(1, $date->daysInMonth) as $each_day) {
+
+            $suffix_day = sprintf("%02d", $each_day);
+            $date_string = $date->format("Y-m") . '-' . $suffix_day;
+
+            //それぞれの日のレポートをredisから取得
+            $hash_key = $key_prefix . $date_string;
+            $each_day_overview = Redis::hgetall($hash_key);
+            $each_day_overview['date'] = $date_string;
+
+            array_push($month_overview, $each_day_overview);
+        }
+        return $month_overview;
     }
 }

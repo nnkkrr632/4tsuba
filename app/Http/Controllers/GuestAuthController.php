@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GuestAuthRequest;
-use App\RedisModels\RedisDashboard;
+use App\RedisModels\RedisReport;
 
 class GuestAuthController extends Controller
 {
@@ -20,7 +20,7 @@ class GuestAuthController extends Controller
         if (!Auth::check() || Auth::id() === $guest_auth_request->user_id) {
             Auth::loginUsingId($guest_auth_request->user_id, $remember = true);
             //redisに本ユーザーのログインを登録
-            $redis_dashboard = new RedisDashboard();
+            $redis_dashboard = new RedisReport();
             $redis_dashboard->storeLogin();
             return response()->json(['message' => 'guest_login_success', 'name' => Auth::user()->name], 200);
         } else {

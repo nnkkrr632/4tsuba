@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\RedisModels\RedisDashboard;
+use App\RedisModels\RedisReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -22,7 +22,7 @@ class CookieAuthenticationController extends Controller
 
             if (Auth::attempt($credentials)) {
                 //redisに本ユーザーのログインを登録
-                $redis_dashboard = new RedisDashboard();
+                $redis_dashboard = new RedisReport();
                 $redis_dashboard->storeLogin();
 
                 return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);

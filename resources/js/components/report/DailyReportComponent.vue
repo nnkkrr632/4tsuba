@@ -1,6 +1,6 @@
 <template>
     <div>
-        <headline-component v-bind:headline="'レポート：' + month + '月'" />
+        <headline-component v-bind:headline="'レポート：総合'" />
         <date-picker-component 
             @receiveEmittedMonth="getReport"
         />
@@ -8,15 +8,16 @@
             :headers="headers"
             :items="dates"
             :items-per-page="dates.length"
+            hide-default-footer
         >
             <template v-slot:[`item.active_users_count`]="{ item }">
-                <a :href="link.active_user"> {{ item.active_users_count }}</a>
+                <a :href="links.active_user" class="green--text text--lighten-2"> {{ item.active_users_count }}</a>
             </template>
             <template v-slot:[`item.posts_count`]="{ item }">
-                <a :href="link.posts"> {{ item.posts_count }}</a>
+                <a :href="links.posts" class="green--text text--lighten-2"> {{ item.posts_count }}</a>
             </template>
             <template v-slot:[`item.likes_count`]="{ item }">
-                <a :href="link.likes"> {{ item.likes_count }}</a>
+                <a :href="links.likes" class="green--text text--lighten-2"> {{ item.likes_count }}</a>
             </template>
         </v-data-table>
     </div>
@@ -31,8 +32,7 @@ import DatePickerComponent from "./DatePickerComponent.vue";
 export default {
     data() {
         return {
-            month: 12,
-            link: {
+            links: {
                 active_user: '/report/active_user',
                 posts: '/report/posts',
                 likes: '/report/likes',
@@ -48,52 +48,19 @@ export default {
                 { text: "書込", value: "posts_count" },
                 { text: "いいね", value: "likes_count" },
             ],
-            dates: [
-                {
-                    date: "2020/12/3",
-                    active_users_count: 159,
-                    posts_count: 122,
-                    likes_count: 24,
-                },
-                {
-                    date: "2020/12/2",
-                    active_users_count: 408,
-                    posts_count: 331,
-                    likes_count: 87,
-                },
-                {
-                    date: "2020/12/1",
-                    active_users_count: 42,
-                    posts_count: 543,
-                    likes_count: 51,
-                },
-                {
-                    date: "2020/11/30",
-                    active_users_count: 518,
-                    posts_count: 243,
-                    likes_count: 65,
-                },
-                {
-                    date: "2020/11/29",
-                    active_users_count: 518,
-                    posts_count: 243,
-                    likes_count: 65,
-                },
-                {
-                    date: "2020/11/28",
-                    active_users_count: 518,
-                    posts_count: 243,
-                    likes_count: 65,
-                }
-            ],
+            dates: [],
         };
     },
     methods: {
         getReport(emitted_month) {
             console.log("this is getReport");
+            //最初のページ表示時はemitされてないので今月にセットしておく
+            if(!emitted_month) {
+                emitted_month = new Date().toISOString().substr(0, 7);
+            }
             console.log(emitted_month);
             axios
-                .get("/api/report/" + emitted_month)
+                .get("/api/report/overview/" + emitted_month)
                 .then(res => {
                     this.dates = res.data;
                 })
@@ -116,6 +83,9 @@ export default {
     components: {
         HeadlineComponent,
         DatePickerComponent,
+    },
+    mounted() {
+        this.getReport();
     }
 };
 </script>

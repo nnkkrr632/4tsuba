@@ -16,7 +16,7 @@ use App\Http\Controllers\MuteUserController;
 use App\Http\Controllers\LoginCheckController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GuestAuthController;
-use App\Http\Controllers\RedisDashboardController;
+use App\Http\Controllers\RedisReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +92,8 @@ Route::put('/like', [LikeController::class, 'store']);
 Route::delete('/like', [LikeController::class, 'destroy']);
 
 //redis
-Route::get('redis/dashboard/active_user_count', [RedisDashboardController::class, 'returnActiveUserCount']);
+Route::get('/report/overview/{year_month}', [RedisReportController::class, 'returnOverview']);
+Route::get('/dashboard/active_user_count', [RedisReportController::class, 'returnActiveUserCount']);
 
 
 
