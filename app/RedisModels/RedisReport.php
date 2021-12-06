@@ -11,6 +11,7 @@ use Carbon\Carbon;
 
 class RedisReport
 {
+    private const KEY_PREFIX_OVERVIEW = 'report-overview-';
     private const KEY_PREFIX_LOGIN = 'login-';
     private const LOGIN = 1;
 
@@ -44,7 +45,6 @@ class RedisReport
      */
     public function returnOverview(string $year_month)
     {
-        $key_prefix = 'report-overview-';
         $date = new Carbon($year_month);
 
         $month_overview = [];
@@ -54,12 +54,32 @@ class RedisReport
             $date_string = $date->format("Y-m") . '-' . $suffix_day;
 
             //それぞれの日のレポートをredisから取得
-            $hash_key = $key_prefix . $date_string;
+            $hash_key = self::KEY_PREFIX_OVERVIEW . $date_string;
             $each_day_overview = Redis::hgetall($hash_key);
             $each_day_overview['date'] = $date_string;
 
             array_push($month_overview, $each_day_overview);
         }
         return $month_overview;
+    }
+    /**
+     * @param string $field
+     * @return void
+     */
+    public function incrementHash(string $field)
+    {
+        $date = new Carbon('now');
+        $hash_key = self::KEY_PREFIX_OVERVIEW . $date->toDateString();
+        Redis::hincrby($hash_key, $field, 1);
+    }
+    /**
+     * @param string $field
+     * @return void
+     */
+    public function decrementHash(string $field)
+    {
+        $date = new Carbon('now');
+        $hash_key = self::KEY_PREFIX_OVERVIEW . $date->toDateString();
+        Redis::hincrby($hash_key, $field, -1);
     }
 }

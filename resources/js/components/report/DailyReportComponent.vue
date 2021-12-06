@@ -52,15 +52,15 @@ export default {
         };
     },
     methods: {
-        getReport(emitted_month) {
+        getReport(emitted_year_month) {
             console.log("this is getReport");
             //最初のページ表示時はemitされてないので今月にセットしておく
-            if(!emitted_month) {
-                emitted_month = new Date().toISOString().substr(0, 7);
+            if(!emitted_year_month) {
+                emitted_year_month = new Date().toISOString().substr(0, 7);
             }
-            console.log(emitted_month);
+            console.log(emitted_year_month);
             axios
-                .get("/api/report/overview/" + emitted_month)
+                .get("/api/report/overview/" + emitted_year_month)
                 .then(res => {
                     this.dates = res.data;
                 })

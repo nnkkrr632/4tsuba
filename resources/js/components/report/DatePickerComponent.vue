@@ -35,7 +35,7 @@
           <v-btn
             text
             color="green lighten-2"
-            @click="emitMonth"
+            @click="emitDate"
           >
             OK
           </v-btn>
@@ -53,8 +53,8 @@
       modal: false,
     }),
     methods: {
-        emitMonth() {
-            console.log('this is emitMonth');
+        emitDate() {
+            console.log('this is emitDate');
             this.menu = false;
             this.$emit('receiveEmittedMonth', this.date);
 
