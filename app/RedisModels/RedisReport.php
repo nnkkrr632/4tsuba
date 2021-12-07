@@ -52,7 +52,7 @@ class RedisReport
     }
 
     /**
-     * デイリーアクティブユーザーの詳細 array($user_id => 1, $user_id, 0,  ...)
+     * デイリーアクティブユーザーの詳細 array($user_id => 1, $user_id => 0,  ...)
      *
      * @param string $date
      * @return array
@@ -60,8 +60,7 @@ class RedisReport
     public function returnDailyActiveUsersBitMap(string $date)
     {
         $redis_key_for_date = $this->returnRedisKeyForDailyActiveUsers($date);
-        $daily_active_users_bitmap = $this->returnActiveUsersBitMap($redis_key_for_date);
-        return $daily_active_users_bitmap;
+        return $this->returnActiveUsersBitMap($redis_key_for_date);
     }
 
     /**
@@ -74,12 +73,11 @@ class RedisReport
     {
         //月の論理和bitの作成 & そのbitのkeyを取得
         $redis_key = $this->generateMonthBitMapAndReturnTheBitKey($year_month);
-        $monthly_active_users_count = (int)Redis::bitcount($redis_key);
-        return $monthly_active_users_count;
+        return  (int)Redis::bitcount($redis_key);
     }
 
     /**
-     * マンスリーアクティブユーザーの詳細 array($user_id => 1, $user_id, 0,  ...)
+     * マンスリーアクティブユーザーの詳細 array($user_id => 0, user_id => 1,  ...)
      *
      * @param string $year_month
      * @return array
@@ -88,8 +86,7 @@ class RedisReport
     {
         //月の論理和bitの作成 & そのbitのkeyを取得
         $redis_key_for_month = $this->generateMonthBitMapAndReturnTheBitKey($year_month);
-        $monthly_active_users_bitmap = $this->returnActiveUsersBitMap($redis_key_for_month);
-        return $monthly_active_users_bitmap;
+        return $this->returnActiveUsersBitMap($redis_key_for_month);
     }
 
 
