@@ -20,8 +20,9 @@ class GuestAuthController extends Controller
         if (!Auth::check() || Auth::id() === $guest_auth_request->user_id) {
             Auth::loginUsingId($guest_auth_request->user_id, $remember = true);
             //redisに本ユーザーのログインを登録
-            $redis_dashboard = new RedisReport();
-            $redis_dashboard->storeLogin();
+            $redis_report = new RedisReport();
+            $redis_report->storeAuthUserLoggedIn();
+
             return response()->json(['message' => 'guest_login_success', 'name' => Auth::user()->name], 200);
         } else {
             return response()->json(['message' => 'you_have_already_logged_in_another_account'], 200);

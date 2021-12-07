@@ -22,8 +22,8 @@ class CookieAuthenticationController extends Controller
 
             if (Auth::attempt($credentials)) {
                 //redisに本ユーザーのログインを登録
-                $redis_dashboard = new RedisReport();
-                $redis_dashboard->storeLogin();
+                $redis_report = new RedisReport();
+                $redis_report->storeAuthUserLoggedIn();
 
                 return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);
             }

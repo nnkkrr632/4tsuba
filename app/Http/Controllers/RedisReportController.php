@@ -17,17 +17,17 @@ class RedisReportController extends Controller
 
         //date_stringは柔軟。2021/10/10でも2021-10-10でもフォーマットできる(_は無理)
         $date = new Carbon($request->term);
-        $active_user_count = Redis::bitcount(self::KEY_PREFIX_LOGIN . $date->toDateString);
+        $active_user_count = Redis::bitcount(self::KEY_PREFIX_ACTIVE_USERS . $date->toDateString);
         return $active_user_count;
     }
     /**
      * @param Request $request
      * @return array
      */
-    public function returnOverview(Request $request)
+    public function returnMonthlyOverview(Request $request)
     {
         $redis_report = new RedisReport();
-        $month_overview = $redis_report->returnOverview($request->year_month);
+        $month_overview = $redis_report->returnMonthlyOverview($request->year_month);
         return $month_overview;
     }
 }
