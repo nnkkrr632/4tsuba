@@ -128,15 +128,15 @@ class RedisReport
         $carbon = new Carbon($year_month);
         $redis_key_for_monthly_active_users = self::KEY_PREFIX_ACTIVE_USERS . 'monthly-' . $carbon->format("Y-m");
 
-        $dates = [];
+        $keys = [];
         foreach (range(1, $carbon->daysInMonth) as $each_day) {
             $suffix_day = sprintf("%02d", $each_day);
             //.envでredisのprefix(=4tsuba-)を定義しているため、key名に'4tsuba-'が不要
             $each_key = self::KEY_PREFIX_ACTIVE_USERS . $carbon->format("Y-m") . '-' . $suffix_day;
-            array_push($dates, $each_key);
+            array_push($keys, $each_key);
         }
         //第3引数に論理演算対象のkeysが格納された配列を指定しbitop実行
-        Redis::bitop('or', $redis_key_for_monthly_active_users, $dates);
+        Redis::bitop('or', $redis_key_for_monthly_active_users, $keys);
 
         return $redis_key_for_monthly_active_users;
     }
