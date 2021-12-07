@@ -16,13 +16,6 @@ class RedisReport
     private const KEY_PREFIX_ACTIVE_USERS = 'active-users-';
     private const LOGIN = 1;
     private static $overview_fields = ['active_users_count', 'posts_count', 'likes_count'];
-    public $test = 'aaa';
-    protected $test2 = 'bbb';
-    private $test3 = 'ccc';
-    public $array_t = ['ddd', 'eee', 'fff'];
-    protected $array_t2 = ['ggg', 'hhh'];
-    private $array_t3 = ['iii', 'jjj'];
-
 
     //ログインしたユーザーIDをbitに登録
     public function storeAuthUserLoggedIn()
@@ -31,8 +24,8 @@ class RedisReport
         $redis_key = self::KEY_PREFIX_ACTIVE_USERS . $today->toDateString();
 
         //返り値は既にbitに格納されている値 故に初回ログイン時のみ返り値は0
-        $first_login_today = Redis::setbit($redis_key, Auth::id(), self::LOGIN);
-        if (!$first_login_today) {
+        $already_logged_in_today = Redis::setbit($redis_key, Auth::id(), self::LOGIN);
+        if (!$already_logged_in_today) {
             $this->incrementHashForOverview(self::$overview_fields[0]);
         }
     }
