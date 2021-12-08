@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
@@ -69,7 +67,7 @@ class Post extends Model
     {
         return $this->where('thread_id', $thread_id)->withTrashed()->count();
     }
-    public function HiddenColumnsForDeletedPost()
+    public function hiddenColumnsForDeletedPost()
     {
         return $this->makeHidden([
             'created_at', 'updated_at', 'user_id', 'body',
