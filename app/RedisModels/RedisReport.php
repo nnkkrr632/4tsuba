@@ -14,7 +14,6 @@ class RedisReport
 {
     private const KEY_PREFIX_OVERVIEW = 'report-overview-';
     private const KEY_PREFIX_ACTIVE_USERS = 'active-users-';
-    private const LOGIN = 1;
     private static $overview_fields = ['active_users_count', 'posts_count', 'likes_count'];
 
     //ログインしたユーザーIDをbitに登録
@@ -24,7 +23,7 @@ class RedisReport
         $redis_key = self::KEY_PREFIX_ACTIVE_USERS . $today->toDateString();
 
         //返り値は既にbitに格納されている値 故に初回ログイン時のみ返り値は0
-        $already_logged_in_today = Redis::setbit($redis_key, Auth::id(), self::LOGIN);
+        $already_logged_in_today = Redis::setbit($redis_key, Auth::id(), 1);
         if (!$already_logged_in_today) {
             $this->incrementHashForOverview(self::$overview_fields[0]);
         }
@@ -54,6 +53,10 @@ class RedisReport
     {
         $redis_key_for_date = $this->returnRedisKeyForDailyActiveUsers($date);
         return $this->returnActiveUsersBitMap($redis_key_for_date);
+    }
+
+    public function returnMonthlyActiveUsersDetail(string $year_month)
+    {
     }
 
     /**
@@ -117,6 +120,51 @@ class RedisReport
     }
 
     /**
+     * 【デイリー/マンスリー】redisキーを受け取り、そのキーに対するログインユーザーを返却
+     * 
+     * @param string $redis_key
+     * @return array
+     */
+    public function returnActiveUsersInfo(string $redis_key)
+    {
+        $users = User::get();
+        $users_info = [];
+        foreach ($users as $user) {
+            $zero_or_one = Redis::getbit($redis_key, $user->id);
+            if ($zero_or_one) {
+                $user_info = ['user_id' => $user->id, 'name' => $user->name, 'icon_name' => $user->icon_name];
+                array_push($users_info, $user_info);
+            }
+        }
+        return $users_info;
+    }
+
+    /**
+     * 【マンスリー】年/月を受け取り、その月のセットを返却
+     * [
+     *  [ '2021-12-01' => ['user_id' => 1, 'active' => 0, 'icon_name' => 'xxx'], ['user_id' => ...],]
+     *  [ '2021-12-02' => ['user_id' => 1, 'active' => 1, 'icon_name' => 'xxx'], ['user_id' => ...],]
+     * ]
+     * @param string $year_month
+     * @return array
+     */
+    public function returnMonthlyActiveUsersSet(string $year_month)
+    {
+        //carbonは月の1日0時0分0秒
+        $carbon = new Carbon($year_month);
+
+        $monthly_users_set = [];
+        foreach (range(1, $carbon->daysInMonth) as $each_day) {
+            $suffix_day = sprintf("%02d", $each_day);
+            //.envでredisのprefix(=4tsuba-)を定義しているため、key名に'4tsuba-'が不要
+            $each_key = self::KEY_PREFIX_ACTIVE_USERS . $carbon->format("Y-m") . '-' . $suffix_day;
+            $each_users_set = $this->returnActiveUsersInfo($each_key);
+            array_push($monthly_users_set, $each_users_set);
+        }
+        return $monthly_users_set;
+    }
+
+    /**
      * マンスリー集計用にbitop「or」でbitMap作成
      *
      * @param string $year_month
@@ -158,25 +206,31 @@ class RedisReport
 
             $suffix_day = sprintf("%02d", $each_day);
             $date_string = $date->format("Y-m") . '-' . $suffix_day;
+            $hash_key = self::KEY_PREFIX_OVERVIEW . $date_string;
+            $active_users_key = self::KEY_PREFIX_ACTIVE_USERS . $date_string;
 
             //それぞれの日のレポートをredisから取得
-            $hash_key = self::KEY_PREFIX_OVERVIEW . $date_string;
             $each_day_overview = Redis::hgetall($hash_key);
             $each_day_overview['date'] = $date_string;
+
+            $users_info = $this->returnActiveUsersInfo($active_users_key);
+            $each_day_overview['users_info'] = $users_info;
 
             array_push($month_overview, $each_day_overview);
         }
         return $month_overview;
     }
 
+
+    //ハッシュ作成・更新系
     /**
      * @param string $field
      * @return void
      */
     public function incrementHashForOverview(string $field)
     {
-        $date = new Carbon('now');
-        $hash_key = self::KEY_PREFIX_OVERVIEW . $date->toDateString();
+        $today = new Carbon('now');
+        $hash_key = self::KEY_PREFIX_OVERVIEW . $today->toDateString();
         Redis::hincrby($hash_key, $field, 1);
     }
 
@@ -186,8 +240,8 @@ class RedisReport
      */
     public function decrementHashForOverview(string $field)
     {
-        $date = new Carbon('now');
-        $hash_key = self::KEY_PREFIX_OVERVIEW . $date->toDateString();
+        $today = new Carbon('now');
+        $hash_key = self::KEY_PREFIX_OVERVIEW . $today->toDateString();
         Redis::hincrby($hash_key, $field, -1);
     }
 }

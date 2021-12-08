@@ -9,6 +9,7 @@ use App\Models\Like;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
 use App\Models\Monitor;
+use App\RedisModels\RedisReport;
 //authを使用する
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
@@ -18,6 +19,7 @@ use App\Http\Requests\StoreTPIRequest;
 use App\Http\Requests\EditPIRequest;
 use App\Http\Requests\DestroyPIRequest;
 use App\Http\Requests\GetPostsRequest;
+use Illuminate\Database\Eloquent\Collection;
 
 class PostController extends Controller
 {
@@ -36,7 +38,7 @@ class PostController extends Controller
                 },
             ]);
         //スレッド
-        if ($get_posts_request->where == 'thread_id') {
+        if ($get_posts_request->where === 'thread_id') {
             //スレッド内の返信関係を取得 thread_idを特定しないと掴みようがないため、この位置
             $response = new Response();
             $responded_count_table = $response->returnRespondedCountTable($get_posts_request->value);
@@ -46,7 +48,7 @@ class PostController extends Controller
             })->where('posts.thread_id', $get_posts_request->value)->orderBy('posts.id');
         }
         //返信
-        else if ($get_posts_request->where == 'responses') {
+        elseif ($get_posts_request->where === 'responses') {
             $response = new Response();
             $responded_count_table = $response->returnRespondedCountTable($get_posts_request->value);
 
@@ -64,11 +66,11 @@ class PostController extends Controller
                 })->orderBy('posts.id');
         }
         //プロフィール書込
-        else if ($get_posts_request->where == 'user_id') {
+        elseif ($get_posts_request->where === 'user_id') {
             $query->where('posts.user_id', $get_posts_request->value)->orderBy('posts.id', 'desc');
         }
         //プロフィールいいね欄
-        else if ($get_posts_request->where == 'user_like') {
+        elseif ($get_posts_request->where == 'user_like') {
             $like = new Like();
             $liked_posts_table = $like->returnLikedPostsTable($get_posts_request->value);
 
@@ -77,7 +79,7 @@ class PostController extends Controller
             })->whereNotNull('liked_posts_table.liked_post_id')->orderBy('liked_posts_table.liked_at', 'desc');
         }
         //ワード検索
-        else if ($get_posts_request->where == 'search') {
+        elseif ($get_posts_request->where === 'search') {
             //$get_posts_request->valueは検索単語の配列(vue側でsplit)
             $search_word_list = $get_posts_request->value;
             $query->where(function ($query) use ($search_word_list) {
@@ -88,26 +90,10 @@ class PostController extends Controller
             $query->orderBy('posts.created_at', 'desc');
         }
 
-        //ポストの加工
+        //ポストの提供前加工処理
         $posts = $query->get();
-        $mute_word = new MuteWord();
-        $posts = $mute_word->addHasMuteWordsKeyToPosts($posts);
-        $mute_user = new MuteUser();
-        $posts = $mute_user->addPostedByMuteUsersKeyToPosts($posts);
-
-        $lightbox_index = 0;
-        foreach ($posts as $post) {
-            //削除済みなら下記のプロパティをマスク
-            if ($post['deleted_at'] != null) {
-                $post->HiddenColumnsForDeletedPost();
-            }
-            //画像持ちポストに、lightboxのためのインデックスを付与
-            else if ($post['image']) {
-                $post['lightbox_index'] = $lightbox_index;
-                $lightbox_index++;
-            }
-        }
-        return $posts;
+        $processed_posts = $this->processPosts($posts);
+        return $processed_posts;
     }
 
 
@@ -141,6 +127,10 @@ class PostController extends Controller
         //modelにリレーションを定義しているからできること
         $post->thread()->increment('posts_count');
 
+        //redisのOverviewハッシュのインクリメント
+        $redis_report = new RedisReport();
+        $redis_report->incrementHashForOverview('posts_count');
+
         //画像があれば
         if ($store_t_p_i_request->image) {
             $store_t_p_i_request->merge([
@@ -150,7 +140,6 @@ class PostController extends Controller
             $image_controller->store($store_t_p_i_request);
         }
     }
-
 
     //ポスト更新
     public function edit(EditPIRequest $edit_pi_request)
@@ -191,7 +180,6 @@ class PostController extends Controller
         }
     }
 
-
     //ポスト削除
     public function destroy(DestroyPIRequest $destroy_p_i_request)
     {
@@ -200,10 +188,43 @@ class PostController extends Controller
 
         if ($response->allowed()) {
             $target_post->delete();
+            //redisのOverviewハッシュのデクリメント
+            $redis_report = new RedisReport();
+            $redis_report->decrementHashForOverview('posts_count');
+
             $image_controller = new ImageController();
             $image_controller->destroy($destroy_p_i_request->id);
         } else {
             return $response->message();
         }
+    }
+
+    /**
+     * getしたポストの加工
+     *
+     * @param Collection $posts
+     * @return Collection
+     */
+    private function processPosts(Collection $posts)
+    {
+        $mute_word = new MuteWord();
+        $posts = $mute_word->addHasMuteWordsKeyToPosts($posts);
+        $mute_user = new MuteUser();
+        $posts = $mute_user->addPostedByMuteUsersKeyToPosts($posts);
+
+        $lightbox_index = 0;
+        foreach ($posts as $post) {
+            //削除済みならプロパティをマスク
+            if ($post['deleted_at'] != null) {
+                $post->hiddenColumnsForDeletedPost();
+            }
+            //画像持ちポストに、lightboxのためのインデックスを付与
+            elseif ($post['image']) {
+                $post['lightbox_index'] = $lightbox_index;
+                $lightbox_index++;
+            }
+        }
+
+        return $posts;
     }
 }

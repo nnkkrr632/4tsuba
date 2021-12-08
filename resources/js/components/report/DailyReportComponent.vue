@@ -2,7 +2,7 @@
     <div>
         <headline-component v-bind:headline="'レポート：総合'" />
         <date-picker-component 
-            @receiveEmittedMonth="getReport"
+            @receiveEmittedMonth="getOverview"
         />
         <v-data-table
             :headers="headers"
@@ -10,9 +10,17 @@
             :items-per-page="dates.length"
             hide-default-footer
         >
-            <template v-slot:[`item.active_users_count`]="{ item }">
-                <a :href="links.active_user" class="green--text text--lighten-2"> {{ item.active_users_count }}</a>
+            <template v-slot:[`item.active_users_count`]="{ item }" >
+                <v-tooltip right >
+                <template v-slot:activator="{ on }">
+                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_count }}</span>
+                </template>
+                    <div v-for="user_info in item.users_info" :key="user_info.user_id">
+                        <span>{{ '(ID:'+ user_info.user_id + ')' + user_info.name}}</span>
+                    </div>
+                </v-tooltip>
             </template>
+            
             <template v-slot:[`item.posts_count`]="{ item }">
                 <a :href="links.posts" class="green--text text--lighten-2"> {{ item.posts_count }}</a>
             </template>
@@ -49,11 +57,12 @@ export default {
                 { text: "いいね", value: "likes_count" },
             ],
             dates: [],
+            monthly_active_users_set: [],
         };
     },
     methods: {
-        getReport(emitted_year_month) {
-            console.log("this is getReport");
+        getOverview(emitted_year_month) {
+            console.log("this is getOverview");
             //最初のページ表示時はemitされてないので今月にセットしておく
             if(!emitted_year_month) {
                 emitted_year_month = new Date().toISOString().substr(0, 7);
@@ -63,6 +72,7 @@ export default {
                 .get("/api/report/overview/" + emitted_year_month)
                 .then(res => {
                     this.dates = res.data;
+                    this.getMonthlyActiveUsersSet(emitted_year_month);
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -78,14 +88,39 @@ export default {
                         );
                     }
                 });
-        }
+        },
+        getMonthlyActiveUsersSet(year_month) {
+            console.log("this is getMonthlyActiveUsersSet");
+            //最初のページ表示時はemitされてないので今月にセットしておく
+            console.log(year_month);
+            axios
+                .get("/api/report/active_users/set/" + year_month)
+                .then(res => {
+                    this.monthly_active_users_set = res.data;
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    if (error.response.status === 422) {
+                        let alert_array = Object.values(
+                            error.response.data.errors
+                        );
+                        alert(
+                            alert_array
+                                .flat()
+                                .join()
+                                .replace(/,/g, "\n")
+                        );
+                    }
+                });
+        },
+
     },
     components: {
         HeadlineComponent,
         DatePickerComponent,
     },
     mounted() {
-        this.getReport();
+        this.getOverview();
     }
 };
 </script>

@@ -30,4 +30,14 @@ class RedisReportController extends Controller
         $month_overview = $redis_report->returnMonthlyOverview($request->year_month);
         return $month_overview;
     }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function returnMonthlyActiveUsersSet(Request $request)
+    {
+        $redis_report = new RedisReport();
+        return $redis_report->returnMonthlyActiveUsersSet($request->year_month);
+    }
 }
