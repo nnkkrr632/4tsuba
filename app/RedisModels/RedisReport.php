@@ -6,17 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-//Carbonを使用する
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 
 class RedisReport
 {
     private const KEY_PREFIX_OVERVIEW = 'report-overview-';
     private const KEY_PREFIX_ACTIVE_USERS = 'active-users-';
+    private const KEY_PREFIX_POSTS_COUNT = 'posts-count-';
     private static $overview_fields = ['active_users_count', 'posts_count', 'likes_count'];
 
-    //ログインしたユーザーIDをbitに登録
+    //【ストア系】
+
+    //アクティブユーザーをbitにストア
     public function storeAuthUserLoggedIn()
     {
         $today = new Carbon();
@@ -27,6 +30,15 @@ class RedisReport
         if (!$already_logged_in_today) {
             $this->incrementHashForOverview(self::$overview_fields[0]);
         }
+    }
+
+    //書込 ユーザーidと書込み数を zset(sorted set)にストア
+    public function storePostsCountAndPostedUserId(int $user_id)
+    {
+        $today = new Carbon();
+        $redis_key = self::KEY_PREFIX_POSTS_COUNT . $today->toDateString();
+        // zincrbyはキーが存在しない場合でもzsetを作成し、メンバーとスコアを生成してくれる
+        Redis::zincrby($redis_key, 1, $user_id);
     }
 
     //アクティブユーザー取得系
@@ -120,25 +132,42 @@ class RedisReport
     }
 
     /**
-     * 【デイリー/マンスリー】redisキーを受け取り、そのキーに対するログインユーザーを返却
+     * Overviewに呼び出される
+     * redisキーを受け取り、そのキーに対するログインユーザーを返却
      * 
      * @param string $redis_key
      * @return array
      */
-    public function returnActiveUsersInfo(string $redis_key)
+    public function returnActiveUsersInfo(Collection $users, string $redis_key)
     {
-        $users = User::get();
-        $users_info = [];
+        $active_users_info = [];
         foreach ($users as $user) {
             $zero_or_one = Redis::getbit($redis_key, $user->id);
             if ($zero_or_one) {
-                $user_info = ['user_id' => $user->id, 'name' => $user->name, 'icon_name' => $user->icon_name];
-                array_push($users_info, $user_info);
+                $active_user_info =
+                    ['user_id' => $user->id, 'name' => $user->name, 'icon_name' => $user->icon_name];
+                array_push($active_users_info, $active_user_info);
             }
         }
-        return $users_info;
+        return $active_users_info;
     }
 
+    //Overviewに呼び出される
+    public function returnPostsCountInfo(Collection $users, string $redis_key)
+    {
+        $users_and_posts_count = Redis::zrevrange($redis_key, 0, -1, 'withscores');
+
+        $posts_count_info = [];
+        foreach ($users_and_posts_count as $user_id => $posts_count) {
+            $each_post_count_info = [
+                'user_id' => $user_id, 'posts_count' => $posts_count,
+                'name' => $users->where('id', $user_id)[(int)$user_id - 1]->name,
+                'icon_name' => $users->where('id', $user_id)[(int)$user_id - 1]->icon_name,
+            ];
+            array_push($posts_count_info, $each_post_count_info);
+        }
+        return $posts_count_info;
+    }
 
     /**
      * マンスリー集計用にbitop「or」でbitMap作成
@@ -175,22 +204,37 @@ class RedisReport
      */
     public function returnMonthlyOverview(string $year_month)
     {
+        $users = User::get();
         $date = new Carbon($year_month);
 
         $month_overview = [];
         foreach (range(1, $date->daysInMonth) as $each_day) {
 
+            //redisキーの生成
             $suffix_day = sprintf("%02d", $each_day);
             $date_string = $date->format("Y-m") . '-' . $suffix_day;
             $hash_key = self::KEY_PREFIX_OVERVIEW . $date_string;
             $active_users_key = self::KEY_PREFIX_ACTIVE_USERS . $date_string;
+            $posts_count_key = self::KEY_PREFIX_POSTS_COUNT . $date_string;
 
-            //それぞれの日のレポートをredisから取得
+            //【ハッシュ】それぞれの日のレポートをredisから取得
             $each_day_overview = Redis::hgetall($hash_key);
             $each_day_overview['date'] = $date_string;
 
-            $users_info = $this->returnActiveUsersInfo($active_users_key);
-            $each_day_overview['users_info'] = $users_info;
+            //【アクティブユーザー情報】
+            $active_users_info = $this->returnActiveUsersInfo($users, $active_users_key);
+            $each_day_overview['active_users_info'] = $active_users_info;
+
+            //【ポストカウント情報】
+            $posts_count_info = $this->returnPostsCountInfo($users, $posts_count_key);
+            $each_day_overview['posts_count_info'] = $posts_count_info;
+            //ポストカウント日合計を計算 because $posts_count_infoのlengthを取得すると、
+            //一人あたりのpost回数にアクセスしないため、ポストした人の人数を取得することになってしまう
+            $daily_total_posts_count = 0;
+            foreach ($posts_count_info as $each_user_posts_count_info) {
+                $daily_total_posts_count += $each_user_posts_count_info['posts_count'];
+            }
+            $each_day_overview['daily_total_posts_count'] = $daily_total_posts_count;
 
             array_push($month_overview, $each_day_overview);
         }

@@ -13,22 +13,37 @@
             <template v-slot:[`item.active_users_count`]="{ item }" >
                 <v-tooltip right >
                 <template v-slot:activator="{ on }">
-                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_count }}</span>
+                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_info.length }}</span>
                 </template>
-                    <div v-for="user_info in item.users_info" :key="user_info.user_id">
+                    <div v-for="each_info in item.active_users_info" :key="each_info.user_id">
                         <v-list-item-avatar class="ml-n3 mr-3" size="30" tile>
                             <img
-                                :src="'/storage/icons/' + user_info.icon_name"
+                                :src="'/storage/icons/' + each_info.icon_name"
                                 style="object-fit: cover;"
                             />
                         </v-list-item-avatar>
-                        <span>{{ '【ID:'+ user_info.user_id + '】' + user_info.name}}</span>
+                        <span>{{ '【ID:'+ each_info.user_id + '】' + each_info.name}}</span>
                     </div>
                 </v-tooltip>
             </template>
             
             <template v-slot:[`item.posts_count`]="{ item }">
-                <a :href="links.posts" class="green--text text--lighten-2"> {{ item.posts_count }}</a>
+                <v-tooltip right >
+                <template v-slot:activator="{ on }">
+                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.daily_total_posts_count }}</span>
+                </template>
+                    <div v-for="each_info in item.posts_count_info" :key="each_info.user_id">
+                        <v-list-item-avatar class="ml-n3 mr-3" size="30" tile>
+                            <img
+                                :src="'/storage/icons/' + each_info.icon_name"
+                                style="object-fit: cover;"
+                            />
+                        </v-list-item-avatar>
+                        <span>{{ '<' + each_info.posts_count + '回> ' }}</span>
+                        <span>{{ '【ID:'+ each_info.user_id + '】' + each_info.name}}</span>
+
+                    </div>
+                </v-tooltip>
             </template>
             <template v-slot:[`item.likes_count`]="{ item }">
                 <a :href="links.likes" class="green--text text--lighten-2"> {{ item.likes_count }}</a>

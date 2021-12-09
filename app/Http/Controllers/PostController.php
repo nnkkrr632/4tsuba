@@ -130,6 +130,7 @@ class PostController extends Controller
         //redisのOverviewハッシュのインクリメント
         $redis_report = new RedisReport();
         $redis_report->incrementHashForOverview('posts_count');
+        $redis_report->storePostsCountAndPostedUserId(Auth::id());
 
         //画像があれば
         if ($store_t_p_i_request->image) {
