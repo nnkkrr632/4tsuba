@@ -12,11 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RedisReport
 {
-    private const KEY_PREFIX_OVERVIEW = 'report-overview-';
     private const KEY_PREFIX_ACTIVE_USERS = 'active-users-';
     private const KEY_PREFIX_POSTS_COUNT = 'posts-count-';
     private const KEY_PREFIX_LIKES_COUNT = 'likes-count-';
-    private static $overview_fields = ['active_users_count', 'posts_count', 'likes_count'];
 
     //【ストア系】
 
@@ -31,7 +29,7 @@ class RedisReport
     }
 
     //書込 ユーザーidと書込み数を zset(sorted set)にストア
-    public function storePostsCountAndPostedUserId(int $user_id)
+    public function incrementPostsCount(int $user_id)
     {
         $today = new Carbon();
         $redis_key = self::KEY_PREFIX_POSTS_COUNT . $today->toDateString();
@@ -40,7 +38,7 @@ class RedisReport
     }
 
     //いいね ユーザーidといいね数を zset(sorted set)にストア
-    public function storeLikesCountAndLikedUserId(int $user_id)
+    public function incrementLikesCount(int $user_id)
     {
         $today = new Carbon();
         $redis_key = self::KEY_PREFIX_LIKES_COUNT . $today->toDateString();
@@ -52,7 +50,7 @@ class RedisReport
     //【デストロイ系】↑のストア系の取り消し
 
     //書込 ユーザーidと書込み数を zset(sorted set)にストア
-    public function destroyPostsCountAndPostedUserId(int $user_id)
+    public function decrementPostsCount(int $user_id)
     {
         $today = new Carbon();
         $redis_key = self::KEY_PREFIX_POSTS_COUNT . $today->toDateString();
@@ -60,7 +58,7 @@ class RedisReport
     }
 
     //いいね ユーザーidといいね数を zset(sorted set)にストア
-    public function destroyLikesCountAndLikedUserId(int $user_id)
+    public function decrementLikesCount(int $user_id)
     {
         $today = new Carbon();
         $redis_key = self::KEY_PREFIX_LIKES_COUNT . $today->toDateString();
@@ -110,7 +108,7 @@ class RedisReport
             $likes_count_info = $this->returnLikesCountInfo($users, $likes_count_key);
             $each_day_overview['likes_count_info'] = $likes_count_info;
             //ポストカウント日合計を計算 because $likes_count_infoのlengthを取得すると、
-            //一人あたりのlike回数にアクセスしないため、ポストした人の人数を取得することになってしまう
+            //一人あたりのlike回数にアクセスしないため、いいねした人の人数を取得することになってしまう
             $daily_total_likes_count = 0;
             foreach ($likes_count_info as $each_user_likes_count_info) {
                 $daily_total_likes_count += $each_user_likes_count_info['likes_count'];
