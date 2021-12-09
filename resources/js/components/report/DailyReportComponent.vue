@@ -16,7 +16,13 @@
                     <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_count }}</span>
                 </template>
                     <div v-for="user_info in item.users_info" :key="user_info.user_id">
-                        <span>{{ '(ID:'+ user_info.user_id + ')' + user_info.name}}</span>
+                        <v-list-item-avatar class="ml-n3 mr-3" size="30" tile>
+                            <img
+                                :src="'/storage/icons/' + user_info.icon_name"
+                                style="object-fit: cover;"
+                            />
+                        </v-list-item-avatar>
+                        <span>{{ '【ID:'+ user_info.user_id + '】' + user_info.name}}</span>
                     </div>
                 </v-tooltip>
             </template>
@@ -72,7 +78,6 @@ export default {
                 .get("/api/report/overview/" + emitted_year_month)
                 .then(res => {
                     this.dates = res.data;
-                    this.getMonthlyActiveUsersSet(emitted_year_month);
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -89,31 +94,6 @@ export default {
                     }
                 });
         },
-        getMonthlyActiveUsersSet(year_month) {
-            console.log("this is getMonthlyActiveUsersSet");
-            //最初のページ表示時はemitされてないので今月にセットしておく
-            console.log(year_month);
-            axios
-                .get("/api/report/active_users/set/" + year_month)
-                .then(res => {
-                    this.monthly_active_users_set = res.data;
-                })
-                .catch(error => {
-                    console.log(error.response);
-                    if (error.response.status === 422) {
-                        let alert_array = Object.values(
-                            error.response.data.errors
-                        );
-                        alert(
-                            alert_array
-                                .flat()
-                                .join()
-                                .replace(/,/g, "\n")
-                        );
-                    }
-                });
-        },
-
     },
     components: {
         HeadlineComponent,
