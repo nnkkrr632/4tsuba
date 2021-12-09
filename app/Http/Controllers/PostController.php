@@ -129,7 +129,6 @@ class PostController extends Controller
 
         //redisのOverviewハッシュのインクリメント
         $redis_report = new RedisReport();
-        $redis_report->incrementHashForOverview('posts_count');
         $redis_report->storePostsCountAndPostedUserId(Auth::id());
 
         //画像があれば
@@ -191,7 +190,7 @@ class PostController extends Controller
             $target_post->delete();
             //redisのOverviewハッシュのデクリメント
             $redis_report = new RedisReport();
-            $redis_report->decrementHashForOverview('posts_count');
+            $redis_report->destroyPostsCountAndPostedUserId(Auth::id());
 
             $image_controller = new ImageController();
             $image_controller->destroy($destroy_p_i_request->id);

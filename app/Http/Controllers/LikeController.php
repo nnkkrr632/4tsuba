@@ -25,7 +25,7 @@ class LikeController extends Controller
         $thread->find($store_like_request->thread_id)->increment('likes_count');
         //redisのOverviewハッシュのインクリメント
         $redis_report = new RedisReport();
-        $redis_report->incrementHashForOverview('likes_count');
+        $redis_report->storeLikesCountAndLikedUserId(Auth::id());
     }
 
     public function destroy(DestroyLikeRequest $destroy_like_request)
@@ -40,6 +40,6 @@ class LikeController extends Controller
         $thread->find($destroy_like_request->thread_id)->decrement('likes_count');
         //redisのOverviewハッシュのデクリメント
         $redis_report = new RedisReport();
-        $redis_report->decrementHashForOverview('likes_count');
+        $redis_report->destroyLikesCountAndLikedUserId(Auth::id());
     }
 }
