@@ -139,30 +139,6 @@ class RedisReport
         return $users_info;
     }
 
-    /**
-     * 【マンスリー】年/月を受け取り、その月のセットを返却
-     * [
-     *  [ '2021-12-01' => ['user_id' => 1, 'active' => 0, 'icon_name' => 'xxx'], ['user_id' => ...],]
-     *  [ '2021-12-02' => ['user_id' => 1, 'active' => 1, 'icon_name' => 'xxx'], ['user_id' => ...],]
-     * ]
-     * @param string $year_month
-     * @return array
-     */
-    public function returnMonthlyActiveUsersSet(string $year_month)
-    {
-        //carbonは月の1日0時0分0秒
-        $carbon = new Carbon($year_month);
-
-        $monthly_users_set = [];
-        foreach (range(1, $carbon->daysInMonth) as $each_day) {
-            $suffix_day = sprintf("%02d", $each_day);
-            //.envでredisのprefix(=4tsuba-)を定義しているため、key名に'4tsuba-'が不要
-            $each_key = self::KEY_PREFIX_ACTIVE_USERS . $carbon->format("Y-m") . '-' . $suffix_day;
-            $each_users_set = $this->returnActiveUsersInfo($each_key);
-            array_push($monthly_users_set, $each_users_set);
-        }
-        return $monthly_users_set;
-    }
 
     /**
      * マンスリー集計用にbitop「or」でbitMap作成
