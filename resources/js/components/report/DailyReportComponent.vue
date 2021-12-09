@@ -10,13 +10,14 @@
             :items-per-page="dates.length"
             hide-default-footer
         >
+            <!-- アクティブユーザー数のツールチップ -->
             <template v-slot:[`item.active_users_count`]="{ item }" >
                 <v-tooltip right >
                 <template v-slot:activator="{ on }">
-                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_info.length }}</span>
+                    <span v-on="on" v-if="item.active_users_info.length" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.active_users_info.length }}</span>
                 </template>
                     <div v-for="each_info in item.active_users_info" :key="each_info.user_id">
-                        <v-list-item-avatar class="ml-n3 mr-3" size="30" tile>
+                        <v-list-item-avatar class="ml-n3" size="30" tile>
                             <img
                                 :src="'/storage/icons/' + each_info.icon_name"
                                 style="object-fit: cover;"
@@ -26,14 +27,16 @@
                     </div>
                 </v-tooltip>
             </template>
-            
+            <!-- 書込数のツールチップ -->            
             <template v-slot:[`item.posts_count`]="{ item }">
                 <v-tooltip right >
                 <template v-slot:activator="{ on }">
-                    <span v-on="on" style="cursor: pointer;" class="green--text text--lighten-2">{{ item.daily_total_posts_count }}</span>
+                    <span v-on="on" v-if="item.posts_count_info.length" style="cursor: pointer;" class="green--text text--lighten-2">
+                        <span v-if="item.daily_total_posts_count > 0">+</span>{{item.daily_total_posts_count}}
+                    </span>
                 </template>
                     <div v-for="each_info in item.posts_count_info" :key="each_info.user_id">
-                        <v-list-item-avatar class="ml-n3 mr-3" size="30" tile>
+                        <v-list-item-avatar class="ml-n3" size="30" tile>
                             <img
                                 :src="'/storage/icons/' + each_info.icon_name"
                                 style="object-fit: cover;"
@@ -45,8 +48,26 @@
                     </div>
                 </v-tooltip>
             </template>
+            <!-- いいね数のツールチップ -->            
             <template v-slot:[`item.likes_count`]="{ item }">
-                <a :href="links.likes" class="green--text text--lighten-2"> {{ item.likes_count }}</a>
+                <v-tooltip right >
+                <template v-slot:activator="{ on }">
+                    <span v-on="on" v-if="item.likes_count_info.length" style="cursor: pointer;" class="green--text text--lighten-2">
+                        <span v-if="item.daily_total_likes_count > 0">+</span>{{item.daily_total_likes_count}}
+                    </span>
+                </template>
+                    <div v-for="each_info in item.likes_count_info" :key="each_info.user_id">
+                        <v-list-item-avatar class="ml-n3" size="30" tile>
+                            <img
+                                :src="'/storage/icons/' + each_info.icon_name"
+                                style="object-fit: cover;"
+                            />
+                        </v-list-item-avatar>
+                        <span>{{ '<' + each_info.likes_count + '回> ' }}</span>
+                        <span>{{ '【ID:'+ each_info.user_id + '】' + each_info.name}}</span>
+
+                    </div>
+                </v-tooltip>
             </template>
         </v-data-table>
     </div>
@@ -73,9 +94,9 @@ export default {
                     sortable: true,
                     value: "date"
                 },
-                { text: "アクティブユーザー", value: "active_users_count" },
-                { text: "書込", value: "posts_count" },
-                { text: "いいね", value: "likes_count" },
+                { text: "アクティブユーザー数", value: "active_users_count" },
+                { text: "書込増減", value: "posts_count" },
+                { text: "いいね増減", value: "likes_count" },
             ],
             dates: [],
             monthly_active_users_set: [],
