@@ -73,7 +73,7 @@ class RedisReport
      */
     public function returnMonthlyOverview(string $year_month)
     {
-        $users = User::get();
+        $users = User::orderBy('id')->get();
         $date = new Carbon($year_month);
 
         $month_overview = [];
@@ -143,11 +143,20 @@ class RedisReport
 
         $posts_count_info = [];
         foreach ($users_and_posts_count as $user_id => $posts_count) {
-            $each_post_count_info = [
-                'user_id' => $user_id, 'posts_count' => $posts_count,
-                'name' => $users->where('id', $user_id)[(int)$user_id - 1]->name,
-                'icon_name' => $users->where('id', $user_id)[(int)$user_id - 1]->icon_name,
-            ];
+            if ($users->find($user_id)) {
+                $each_post_count_info = [
+                    'user_id' => $user_id, 'posts_count' => $posts_count,
+                    'name' => $users->find($user_id)->name,
+                    'icon_name' => $users->find($user_id)->icon_name,
+                ];
+            } else {
+                $each_post_count_info = [
+                    'user_id' => 'x', 'posts_count' => $posts_count,
+                    'name' => '退会済みユーザー',
+                    'icon_name' => 'no_image.png',
+                ];
+            }
+
             array_push($posts_count_info, $each_post_count_info);
         }
         return $posts_count_info;
@@ -160,11 +169,19 @@ class RedisReport
 
         $likes_count_info = [];
         foreach ($users_and_likes_count as $user_id => $likes_count) {
-            $each_like_count_info = [
-                'user_id' => $user_id, 'likes_count' => $likes_count,
-                'name' => $users->where('id', $user_id)[(int)$user_id - 1]->name,
-                'icon_name' => $users->where('id', $user_id)[(int)$user_id - 1]->icon_name,
-            ];
+            if ($users->find($user_id)) {
+                $each_like_count_info = [
+                    'user_id' => $user_id, 'likes_count' => $likes_count,
+                    'name' => $users->find($user_id)->name,
+                    'icon_name' => $users->find($user_id)->icon_name,
+                ];
+            } else {
+                $each_like_count_info = [
+                    'user_id' => 'x', 'likes_count' => $likes_count,
+                    'name' => '退会済みユーザー',
+                    'icon_name' => 'no_image.png',
+                ];
+            }
             array_push($likes_count_info, $each_like_count_info);
         }
         return $likes_count_info;
