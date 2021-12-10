@@ -89,6 +89,11 @@ export default {
                     link: "/register"
                 },
                 {
+                    name: "レポート",
+                    icon: "mdi-chart-timeline",
+                    link: "/report/daily"
+                },
+                {
                     name: "GitHub",
                     icon: "mdi-github-face",
                     link: "/github"

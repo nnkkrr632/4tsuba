@@ -24,6 +24,8 @@ import SettingDeleteComponent from "./components/setting/SettingDeleteComponent"
 import MuteWordsComponent from "./components/mute_word/MuteWordsComponent";
 //setting mute_users
 import MuteUsersComponent from "./components/mute_user/MuteUsersComponent";
+//report
+import ReportComponent from "./components/report/ReportComponent";
 //introduction
 import IntroductionComponent from "./components/common/IntroductionComponent";
 //not found
@@ -199,6 +201,12 @@ const router = new VueRouter({
             path: '/setting/mute_users',
             name: 'setting.mute_users',
             component: MuteUsersComponent,
+         },
+         //レポート
+         {
+            path: '/report/daily',
+            name: 'report.daily',
+            component: ReportComponent,
          },
          //github
          {

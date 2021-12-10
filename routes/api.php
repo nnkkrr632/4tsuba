@@ -16,7 +16,7 @@ use App\Http\Controllers\MuteUserController;
 use App\Http\Controllers\LoginCheckController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GuestAuthController;
-
+use App\Http\Controllers\RedisReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +63,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/posts', [PostController::class, 'destroy']);
 
     //responses
-    // Route::get('/threads/{thread_id}/responses', [ResponseController::class, 'returnResponseMapForTheThread']);
     Route::get('/exists/threads/{thread_id}/responses/{displayed_post_id}', [ResponseController::class, 'exists']);
 
     //images
@@ -89,9 +88,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //like
     Route::put('/like', [LikeController::class, 'store']);
     Route::delete('/like', [LikeController::class, 'destroy']);
+
+    //redis
+    Route::get('/report/overview/{year_month}', [RedisReportController::class, 'returnMonthlyOverview']);
+    Route::get('/dashboard/active_user_count', [RedisReportController::class, 'returnActiveUserCount']);
 });
-
-
 
 
 

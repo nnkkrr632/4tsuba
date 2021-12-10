@@ -9,6 +9,7 @@ use App\Models\Like;
 use App\Models\MuteWord;
 use App\Models\MuteUser;
 use App\Models\Monitor;
+use App\RedisModels\RedisReport;
 //authを使用する
 use Illuminate\Support\Facades\Auth;
 //認可gateを使用する
@@ -126,6 +127,10 @@ class PostController extends Controller
         //modelにリレーションを定義しているからできること
         $post->thread()->increment('posts_count');
 
+        //redisのOverviewハッシュのインクリメント
+        $redis_report = new RedisReport();
+        $redis_report->incrementPostsCount(Auth::id());
+
         //画像があれば
         if ($store_t_p_i_request->image) {
             $store_t_p_i_request->merge([
@@ -183,6 +188,10 @@ class PostController extends Controller
 
         if ($response->allowed()) {
             $target_post->delete();
+            //redisのOverviewハッシュのデクリメント
+            $redis_report = new RedisReport();
+            $redis_report->decrementPostsCount(Auth::id());
+
             $image_controller = new ImageController();
             $image_controller->destroy($destroy_p_i_request->id);
         } else {

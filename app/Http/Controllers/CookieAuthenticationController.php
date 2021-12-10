@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\RedisModels\RedisReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -20,7 +21,10 @@ class CookieAuthenticationController extends Controller
             $credentials = $login_request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
-                //$login_request->session()->regenerate();
+                //redisに本ユーザーのログインを登録
+                $redis_report = new RedisReport();
+                $redis_report->storeAuthUserLoggedIn();
+
                 return response()->json(['message' => 'login_success', 'name' => Auth::user()->name], 200);
             }
             //↓のHTTP422エラーが出るときはフォームリクエストのバリデーションを突破している
