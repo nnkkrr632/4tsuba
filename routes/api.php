@@ -91,7 +91,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //redis
     Route::get('/report/overview/{year_month}', [RedisReportController::class, 'returnMonthlyOverview']);
-    Route::get('/dashboard/active_user_count', [RedisReportController::class, 'returnActiveUserCount']);
 });
 
 
