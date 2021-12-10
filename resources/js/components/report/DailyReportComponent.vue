@@ -82,11 +82,6 @@ import DatePickerComponent from "./DatePickerComponent.vue";
 export default {
     data() {
         return {
-            links: {
-                active_user: '/report/active_user',
-                posts: '/report/posts',
-                likes: '/report/likes',
-            },
             headers: [
                 {
                     text: "西暦",
@@ -99,7 +94,6 @@ export default {
                 { text: "いいね増減", value: "likes_count" },
             ],
             dates: [],
-            monthly_active_users_set: [],
         };
     },
     methods: {
