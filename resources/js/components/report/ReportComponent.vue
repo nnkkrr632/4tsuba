@@ -44,7 +44,6 @@
                         </v-list-item-avatar>
                         <span>{{ '<' + each_info.posts_count + '回> ' }}</span>
                         <span>{{ '【ID:'+ each_info.user_id + '】' + each_info.name}}</span>
-
                     </div>
                 </v-tooltip>
             </template>
@@ -65,7 +64,6 @@
                         </v-list-item-avatar>
                         <span>{{ '<' + each_info.likes_count + '回> ' }}</span>
                         <span>{{ '【ID:'+ each_info.user_id + '】' + each_info.name}}</span>
-
                     </div>
                 </v-tooltip>
             </template>
@@ -107,7 +105,12 @@ export default {
             axios
                 .get("/api/report/overview/" + emitted_year_month)
                 .then(res => {
+                    let response_data = res.data
                     this.dates = res.data;
+                    //↓効果なし...
+                    this.dates.splice();
+                    console.log('dates更新OK');
+                    console.log(this.dates);
                 })
                 .catch(error => {
                     console.log(error.response);
