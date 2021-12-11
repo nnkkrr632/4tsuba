@@ -20,7 +20,7 @@
                 v-bind:post="post"
                 v-bind:index="index"
                 v-bind:my_info="my_info"
-                @re_get_mainly_posts="updateEntry('update_or_destroy')"
+                @updateEntry="updateEntry"
                 @receiveForResponses="getPaginatorForResponses"
                 @receiveForAnchor="callWriteAnchor"
                 @igniteLightBox="showImages"
@@ -41,7 +41,7 @@
         <!-- 書き込み部分 -->
         <create-component
             ref="create"
-            @re_get_mainly_posts="updateEntry('post')"
+            @updateEntry="updateEntry"
             v-bind:thread_id="thread_id"
         ></create-component>
         <span ref="bottom"></span>
@@ -148,12 +148,12 @@ export default {
             this.anchor = '>>' + emitted_displayed_post_id + " ";
             this.$refs.create.writeAnchor(this.anchor);
         },
-        updateEntry(driver) {
-            this.getPaginator(this.paginator.last_page);
+        updateEntry(emitted_updated_by) {
             //スレッドオブジェクト内の書込数/いいね数更新
             this.getThread();
-            if(driver == 'post') {
-                setTimeout(this.scrollToBottom, 500)
+            if(emitted_updated_by === 'post') {
+                this.getPaginator(this.paginator.last_page);
+                setTimeout(this.scrollToBottom, 500);
             }
         },
         getThreadImagesForLightBox() {

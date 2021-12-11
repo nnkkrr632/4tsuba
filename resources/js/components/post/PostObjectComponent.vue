@@ -448,7 +448,7 @@ export default {
                                 .join()
                                 .replace(/,/g, "\n")
                         );
-                        this.$emit("re_get_mainly_posts");
+                        this.$emit("updateEntry");
                     }
                 });
         },
@@ -479,7 +479,7 @@ export default {
                                 .join()
                                 .replace(/,/g, "\n")
                         );
-                        this.$emit("re_get_mainly_posts");
+                        this.$emit("updateEntry");
                     }
                 });
         },
@@ -514,7 +514,7 @@ export default {
                     console.log(response);
                     this.post.is_edited = 1;
                     this.is_editing = false;
-                    this.$emit("re_get_mainly_posts");
+                    this.$emit("updateEntry", 'edit');
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -559,7 +559,7 @@ export default {
                     .then(response => {
                         console.log(response.data);
                         this.post.deleted_at = "deleted";
-                        this.$emit("re_get_mainly_posts");
+                        this.$emit("updateEntry", 'delete');
                     })
                     .catch(error => {
                         console.log(error.response);
