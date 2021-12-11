@@ -21,7 +21,7 @@
                 v-bind:index="index"
                 v-bind:my_info="my_info"
                 @re_get_mainly_posts="updateEntry('update_or_destroy')"
-                @receiveForResponses="getResponses"
+                @receiveForResponses="getPaginatorForResponses"
                 @receiveForAnchor="callWriteAnchor"
                 @igniteLightBox="showImages"
             >
@@ -31,8 +31,8 @@
         <template>
         <div class="text-center">
         <v-pagination
-            v-model="page"
-            color="green lighten-4"
+            v-model="paginator.current_page"
+            color="green lighten-5"
             :length="paginator.last_page"
         ></v-pagination>
         </div>
@@ -48,6 +48,15 @@
     </div>
 </template>
 
+<style>
+.v-pagination__navigation {
+  box-shadow: none !important;
+}
+
+.v-pagination__item {
+  box-shadow: none !important;
+}
+</style>
 <script>
 import ThreadObjectComponent from "../thread/ThreadObjectComponent.vue";
 import PostObjectComponent from "./PostObjectComponent.vue";
@@ -59,7 +68,6 @@ export default {
     props: {
         thread_id: {
             type: Number,
-            default: 1,
             required: true
         },
         dest_d_post_id: {
@@ -71,7 +79,7 @@ export default {
         return {
             my_info: {},
             thread: {},
-            posts: {},
+            // posts: {},
             paginator: {},
             anchor: null,
             media: [],
@@ -91,32 +99,20 @@ export default {
                 this.thread = res.data;
             });
         },
-        getPostsOrResponses() {
-            console.log('this is getPostsOrResponses');
-            let path = this.$route.path;
-            let displayed_post_id = path.match(/\d+$/)[0];
-            console.log(path);
-            console.log(displayed_post_id);
-            if(!path.match(/responses/)) {
-                this.getPosts();
-            } else {
-                this.getResponses(displayed_post_id);
-            }
-        },
-        getPosts() {
-            console.log("this is getPosts");
-            axios
-                .get("/api/posts", {
-                    params: {
-                        where: "thread_id",
-                        value: this.thread_id
-                    }
-                })
-                .then(res => {
-                    this.posts = res.data;
-                    this.getThreadImagesForLightBox();
-                });
-        },
+        // getPosts() {
+        //     console.log("this is getPosts");
+        //     axios
+        //         .get("/api/posts", {
+        //             params: {
+        //                 where: "thread_id",
+        //                 value: this.thread_id
+        //             }
+        //         })
+        //         .then(res => {
+        //             this.posts = res.data;
+        //             this.getThreadImagesForLightBox();
+        //         });
+        // },
         getPaginator(page_number) {
             console.log("this is getPaginator");
             axios
@@ -132,17 +128,18 @@ export default {
                     this.getThreadImagesForLightBox();
                 });
         },
-        getResponses(emitted_displayed_post_id) {
-            console.log("this is getResponses");
+        getPaginatorForResponses(emitted_displayed_post_id) {
+            console.log("this is getPaginatorForResponses");
             axios
-                .get("/api/posts", {
+                .get("/api/posts/paginated", {
                     params: {
                         where: "responses",
                         value: [this.thread_id, emitted_displayed_post_id],
+                        //pageはなしでOK ない場合リクエストクエリに入らないがLaravel側で自動で1が入ってる？
                     }
                 })
                 .then(res => {
-                    this.posts = res.data;
+                    this.paginator = res.data;
                     this.getResponseImagesForLightBox(emitted_displayed_post_id);
                 });
         },
@@ -152,9 +149,7 @@ export default {
             this.$refs.create.writeAnchor(this.anchor);
         },
         updateEntry(driver) {
-            console.log('this is updateEntry');
-            //ページを最後のページにセットすることで自分の書込を表示させる
-            this.page = this.paginator.last_page;
+            this.getPaginator(this.paginator.last_page);
             //スレッドオブジェクト内の書込数/いいね数更新
             this.getThread();
             if(driver == 'post') {
@@ -195,8 +190,8 @@ export default {
     },
     watch: {
         //ページが変更されるとページネーターを再取得
-        page: function() {
-            this.getPaginator(this.page);
+        'paginator.current_page': function() {
+            this.getPaginator(this.paginator.current_page);
         }
     },
     mounted() {
