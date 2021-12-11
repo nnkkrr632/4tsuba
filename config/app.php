@@ -176,6 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         //localでのみ使用する(本番環境で使用しない)ためコメントアウト
         App\Providers\TelescopeServiceProvider::class,
+        // elasticsearchを使うため追加
+        //ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
 
         //laravel-log-viewer
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
