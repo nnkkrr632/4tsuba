@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- スレッドタイトル部分 -->
-        <div @click="getPosts" style="cursor: pointer;">
+        <div @click="getPaginator(1)" style="cursor: pointer;">
         <thread-object-component
             v-bind:thread="thread"
         ></thread-object-component>
@@ -15,7 +15,7 @@
         ></light-box>
 
         <!-- ポスト部分 -->
-        <div v-for="(post, index) in posts" :key="post.id">
+        <div v-for="(post, index) in paginator.data" :key="post.id">
             <post-object-component
                 v-bind:post="post"
                 v-bind:index="index"
@@ -27,7 +27,16 @@
             >
             </post-object-component>
         </div>
-
+        <!-- ページネーション -->
+        <template>
+        <div class="text-center">
+        <v-pagination
+            v-model="page"
+            color="green lighten-4"
+            :length="paginator.last_page"
+        ></v-pagination>
+        </div>
+        </template>
         <v-divider></v-divider>
         <!-- 書き込み部分 -->
         <create-component
@@ -63,9 +72,10 @@ export default {
             my_info: {},
             thread: {},
             posts: {},
+            paginator: {},
             anchor: null,
             media: [],
-            response_map: {},
+            page: 1,
         };
     },
     methods: {
@@ -105,7 +115,21 @@ export default {
                 .then(res => {
                     this.posts = res.data;
                     this.getThreadImagesForLightBox();
-                    //this.getResponseMap();
+                });
+        },
+        getPaginator(page_number) {
+            console.log("this is getPaginator");
+            axios
+                .get("/api/posts/paginated", {
+                    params: {
+                        where: "thread_id",
+                        value: this.thread_id,
+                        page: page_number,
+                    }
+                })
+                .then(res => {
+                    this.paginator = res.data;
+                    this.getThreadImagesForLightBox();
                 });
         },
         getResponses(emitted_displayed_post_id) {
@@ -129,7 +153,9 @@ export default {
         },
         updateEntry(driver) {
             console.log('this is updateEntry');
-            this.getPosts();
+            //ページを最後のページにセットすることで自分の書込を表示させる
+            this.page = this.paginator.last_page;
+            //スレッドオブジェクト内の書込数/いいね数更新
             this.getThread();
             if(driver == 'post') {
                 setTimeout(this.scrollToBottom, 500)
@@ -167,10 +193,17 @@ export default {
         CreateComponent,
         LightBox,
     },
+    watch: {
+        //ページが変更されるとページネーターを再取得
+        page: function() {
+            this.getPaginator(this.page);
+        }
+    },
     mounted() {
         this.getMyInfo();
         this.getThread();
-        this.getPosts();
+        //this.getPosts();
+        this.getPaginator(1);
     },
 };
 </script>
