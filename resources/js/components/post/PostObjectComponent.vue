@@ -586,8 +586,8 @@ export default {
             this.$emit("receiveForAnchor", this.post.displayed_post_id);
         },
         emitLightBoxIndex() {
-            console.log("this is emitLightBoxIndex emit " + this.post.lightbox_index);
-            this.$emit("igniteLightBox", this.post.lightbox_index);
+            console.log("this is emitLightBoxIndex emit / emit post_id:" + this.post.id);
+            this.$emit("igniteLightBox",this.post.id);
         }
     }
 };

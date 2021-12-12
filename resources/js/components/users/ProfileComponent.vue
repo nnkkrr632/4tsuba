@@ -290,11 +290,15 @@ export default {
                     this.liked_media = res.data;
                 });
         },
-        showPostedImages(emitted_lightbox_index) {
-            this.$refs.lightbox_for_post.showImage(emitted_lightbox_index);
+        showPostedImages(emitted_post_id) {
+            let target_posted_medium = this.posted_media.find((posted_medium) => posted_medium.post_id === emitted_post_id);
+            let lightbox_index = this.posted_media.indexOf(target_posted_medium);
+            this.$refs.lightbox_for_post.showImage(lightbox_index);
         },
-        showLikedImages(emitted_lightbox_index) {
-            this.$refs.lightbox_for_like.showImage(emitted_lightbox_index);
+        showLikedImages(emitted_post_id) {
+            let target_liked_medium = this.liked_media.find((liked_medium) => liked_medium.post_id === emitted_post_id);
+            let lightbox_index = this.liked_media.indexOf(target_liked_medium);
+            this.$refs.lightbox_for_like.showImage(lightbox_index);
         },
     },
     mounted() {

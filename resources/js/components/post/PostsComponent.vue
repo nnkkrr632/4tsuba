@@ -172,8 +172,11 @@ export default {
                     this.media = res.data;
                 });
         },
-        showImages(emitted_lightbox_index) {
-            this.$refs.lightbox.showImage(emitted_lightbox_index);
+        showImages(emitted_post_id) {
+            console.log('this is showImages');
+            let target_medium = this.media.find((medium) => medium.post_id === emitted_post_id);
+            let lightbox_index = this.media.indexOf(target_medium);
+            this.$refs.lightbox.showImage(lightbox_index);
         },
         scrollToBottom() {
             console.log('this is scrollToBottom');
