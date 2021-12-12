@@ -138,11 +138,6 @@ class PostController extends Controller
             if ($post['deleted_at'] != null) {
                 $post->hiddenColumnsForDeletedPost();
             }
-            //画像持ちポストに、lightboxのためのインデックスを付与
-            elseif ($post['image']) {
-                $post['lightbox_index'] = $lightbox_index;
-                $lightbox_index++;
-            }
         }
         return $posts;
     }
