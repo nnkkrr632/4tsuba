@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //posts
     Route::get('/posts/', [PostController::class, 'index']);
+    Route::get('/posts/paginated', [PostController::class, 'returnPaginator']);
     Route::post('/posts', [PostController::class, 'store']);
     Route::post('/posts/edit', [PostController::class, 'edit']);
     Route::delete('/posts', [PostController::class, 'destroy']);

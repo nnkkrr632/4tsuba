@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- スレッドタイトル部分 -->
-        <div @click="getPosts" style="cursor: pointer;">
+        <div @click="getPaginator(1)" style="cursor: pointer;">
         <thread-object-component
             v-bind:thread="thread"
         ></thread-object-component>
@@ -15,30 +15,48 @@
         ></light-box>
 
         <!-- ポスト部分 -->
-        <div v-for="(post, index) in posts" :key="post.id">
+        <div v-for="(post, index) in paginator.data" :key="post.id">
             <post-object-component
                 v-bind:post="post"
                 v-bind:index="index"
                 v-bind:my_info="my_info"
-                @re_get_mainly_posts="updateEntry('update_or_destroy')"
-                @receiveForResponses="getResponses"
+                @updateEntry="updateEntry"
+                @receiveForResponses="getPaginatorForResponses"
                 @receiveForAnchor="callWriteAnchor"
                 @igniteLightBox="showImages"
             >
             </post-object-component>
         </div>
-
+        <!-- ページネーション -->
+        <template>
+        <div class="text-center">
+        <v-pagination
+            v-model="paginator.current_page"
+            color="green lighten-5"
+            :length="paginator.last_page"
+        ></v-pagination>
+        </div>
+        </template>
         <v-divider></v-divider>
         <!-- 書き込み部分 -->
         <create-component
             ref="create"
-            @re_get_mainly_posts="updateEntry('post')"
+            @updateEntry="updateEntry"
             v-bind:thread_id="thread_id"
         ></create-component>
         <span ref="bottom"></span>
     </div>
 </template>
 
+<style>
+.v-pagination__navigation {
+  box-shadow: none !important;
+}
+
+.v-pagination__item {
+  box-shadow: none !important;
+}
+</style>
 <script>
 import ThreadObjectComponent from "../thread/ThreadObjectComponent.vue";
 import PostObjectComponent from "./PostObjectComponent.vue";
@@ -50,7 +68,6 @@ export default {
     props: {
         thread_id: {
             type: Number,
-            default: 1,
             required: true
         },
         dest_d_post_id: {
@@ -62,10 +79,11 @@ export default {
         return {
             my_info: {},
             thread: {},
-            posts: {},
+            // posts: {},
+            paginator: {},
             anchor: null,
             media: [],
-            response_map: {},
+            page: 1,
         };
     },
     methods: {
@@ -81,44 +99,47 @@ export default {
                 this.thread = res.data;
             });
         },
-        getPostsOrResponses() {
-            console.log('this is getPostsOrResponses');
-            let path = this.$route.path;
-            let displayed_post_id = path.match(/\d+$/)[0];
-            console.log(path);
-            console.log(displayed_post_id);
-            if(!path.match(/responses/)) {
-                this.getPosts();
-            } else {
-                this.getResponses(displayed_post_id);
-            }
-        },
-        getPosts() {
-            console.log("this is getPosts");
+        // getPosts() {
+        //     console.log("this is getPosts");
+        //     axios
+        //         .get("/api/posts", {
+        //             params: {
+        //                 where: "thread_id",
+        //                 value: this.thread_id
+        //             }
+        //         })
+        //         .then(res => {
+        //             this.posts = res.data;
+        //             this.getThreadImagesForLightBox();
+        //         });
+        // },
+        getPaginator(page_number) {
+            console.log("this is getPaginator");
             axios
-                .get("/api/posts", {
+                .get("/api/posts/paginated", {
                     params: {
                         where: "thread_id",
-                        value: this.thread_id
+                        value: this.thread_id,
+                        page: page_number,
                     }
                 })
                 .then(res => {
-                    this.posts = res.data;
+                    this.paginator = res.data;
                     this.getThreadImagesForLightBox();
-                    //this.getResponseMap();
                 });
         },
-        getResponses(emitted_displayed_post_id) {
-            console.log("this is getResponses");
+        getPaginatorForResponses(emitted_displayed_post_id) {
+            console.log("this is getPaginatorForResponses");
             axios
-                .get("/api/posts", {
+                .get("/api/posts/paginated", {
                     params: {
                         where: "responses",
                         value: [this.thread_id, emitted_displayed_post_id],
+                        //pageはなしでOK ない場合リクエストクエリに入らないがLaravel側で自動で1が入ってる？
                     }
                 })
                 .then(res => {
-                    this.posts = res.data;
+                    this.paginator = res.data;
                     this.getResponseImagesForLightBox(emitted_displayed_post_id);
                 });
         },
@@ -127,12 +148,12 @@ export default {
             this.anchor = '>>' + emitted_displayed_post_id + " ";
             this.$refs.create.writeAnchor(this.anchor);
         },
-        updateEntry(driver) {
-            console.log('this is updateEntry');
-            this.getPosts();
+        updateEntry(emitted_updated_by) {
+            //スレッドオブジェクト内の書込数/いいね数更新
             this.getThread();
-            if(driver == 'post') {
-                setTimeout(this.scrollToBottom, 500)
+            if(emitted_updated_by === 'post') {
+                this.getPaginator(this.paginator.last_page);
+                setTimeout(this.scrollToBottom, 500);
             }
         },
         getThreadImagesForLightBox() {
@@ -151,8 +172,11 @@ export default {
                     this.media = res.data;
                 });
         },
-        showImages(emitted_lightbox_index) {
-            this.$refs.lightbox.showImage(emitted_lightbox_index);
+        showImages(emitted_post_id) {
+            console.log('this is showImages');
+            let target_medium = this.media.find((medium) => medium.post_id === emitted_post_id);
+            let lightbox_index = this.media.indexOf(target_medium);
+            this.$refs.lightbox.showImage(lightbox_index);
         },
         scrollToBottom() {
             console.log('this is scrollToBottom');
@@ -167,10 +191,17 @@ export default {
         CreateComponent,
         LightBox,
     },
+    watch: {
+        //ページが変更されるとページネーターを再取得
+        'paginator.current_page': function() {
+            this.getPaginator(this.paginator.current_page);
+        }
+    },
     mounted() {
         this.getMyInfo();
         this.getThread();
-        this.getPosts();
+        //this.getPosts();
+        this.getPaginator(1);
     },
 };
 </script>

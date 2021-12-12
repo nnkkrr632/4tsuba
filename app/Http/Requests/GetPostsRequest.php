@@ -33,18 +33,21 @@ class GetPostsRequest extends FormRequest
                 'required',
                 'not_in:"null",".*",".+"',
             ],
-
+            'page' => [
+                'numeric'
+            ],
         ];
     }
     public function messages()
     {
         $form_request_message = new FormRequestMessage();
-        $heads = ['where', 'value'];
+        $heads = ['where', 'value', 'page'];
         return [
             'where.required' => $form_request_message->cancel($heads[0]),
             'where.in' => $form_request_message->cancel($heads[0]),
             'value.required' => $form_request_message->cancel($heads[1]),
             'value.not_in' => $form_request_message->notUseRegularExpression($heads[1]),
+            'page.numeric' => $form_request_message->cancel($heads[2]),
         ];
     }
 }
