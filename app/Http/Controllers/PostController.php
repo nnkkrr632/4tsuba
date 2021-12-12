@@ -23,10 +23,36 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PostController extends Controller
 {
-    //★ポスト取得
-    //※query() ：動的にwhere句を生成。=>スレッド個別とユーザープロフィールでこのメソッドを使い回す。
-    //クエリパラメータで値を渡す api/posts?where=thread_id&value=2
+    //ポスト取得
+    //get_post_requestはクエリパラメータを持つ api/posts?where=thread_id&value=2
     public function index(GetPostsRequest $get_posts_request)
+    {
+        $query = $this->makeEloquentQuery($get_posts_request);
+        $posts = $query->get();
+        $processed_posts = $this->processPosts($posts);
+        return $processed_posts;
+    }
+
+    //ページネーター取得(スレッドのページネート対応)
+    public function returnPaginator(GetPostsRequest $get_posts_request)
+    {
+        $query = $this->makeEloquentQuery($get_posts_request);
+        //$paginator は Illuminate\Pagination\LengthAwarePaginator
+        $paginator = $query->paginate(50);
+        $posts = $paginator->getCollection();
+        $processed_posts = $this->processPosts($posts);
+        $paginator->setCollection($processed_posts);
+        return $paginator;
+    }
+
+    /**
+     * 呼び出されprivateメソッド
+     * ポスト取得条件(where)句を動的に生成する
+     *
+     * @param Collection $posts
+     * @return Collection
+     */
+    private function makeEloquentQuery(GetPostsRequest $get_posts_request)
     {
         //select(*)ないと外部結合した列がでなくなるので注意
         $query = Post::query();
@@ -65,12 +91,12 @@ class PostController extends Controller
                     });
                 })->orderBy('posts.id');
         }
-        //プロフィール書込
+        //プロフィール書込欄
         elseif ($get_posts_request->where === 'user_id') {
             $query->where('posts.user_id', $get_posts_request->value)->orderBy('posts.id', 'desc');
         }
         //プロフィールいいね欄
-        elseif ($get_posts_request->where == 'user_like') {
+        elseif ($get_posts_request->where === 'user_like') {
             $like = new Like();
             $liked_posts_table = $like->returnLikedPostsTable($get_posts_request->value);
 
@@ -86,14 +112,34 @@ class PostController extends Controller
                 foreach ($search_word_list as $search_word) {
                     $query->orWhere('posts.body', 'LIKE', "%" . $search_word . "%");
                 }
-            });
-            $query->orderBy('posts.created_at', 'desc');
+            })->orderBy('posts.created_at', 'desc');
         }
 
-        //ポストの提供前加工処理
-        $posts = $query->get();
-        $processed_posts = $this->processPosts($posts);
-        return $processed_posts;
+        return $query;
+    }
+
+    /**
+     * 呼び出されprivateメソッド
+     * getしたポストの加工
+     *
+     * @param Collection $posts
+     * @return Collection
+     */
+    private function processPosts(Collection $posts)
+    {
+        $mute_word = new MuteWord();
+        $posts = $mute_word->addHasMuteWordsKeyToPosts($posts);
+        $mute_user = new MuteUser();
+        $posts = $mute_user->addPostedByMuteUsersKeyToPosts($posts);
+
+        $lightbox_index = 0;
+        foreach ($posts as $post) {
+            //削除済みならプロパティをマスク
+            if ($post['deleted_at'] != null) {
+                $post->hiddenColumnsForDeletedPost();
+            }
+        }
+        return $posts;
     }
 
 
@@ -197,34 +243,5 @@ class PostController extends Controller
         } else {
             return $response->message();
         }
-    }
-
-    /**
-     * getしたポストの加工
-     *
-     * @param Collection $posts
-     * @return Collection
-     */
-    private function processPosts(Collection $posts)
-    {
-        $mute_word = new MuteWord();
-        $posts = $mute_word->addHasMuteWordsKeyToPosts($posts);
-        $mute_user = new MuteUser();
-        $posts = $mute_user->addPostedByMuteUsersKeyToPosts($posts);
-
-        $lightbox_index = 0;
-        foreach ($posts as $post) {
-            //削除済みならプロパティをマスク
-            if ($post['deleted_at'] != null) {
-                $post->hiddenColumnsForDeletedPost();
-            }
-            //画像持ちポストに、lightboxのためのインデックスを付与
-            elseif ($post['image']) {
-                $post['lightbox_index'] = $lightbox_index;
-                $lightbox_index++;
-            }
-        }
-
-        return $posts;
     }
 }
