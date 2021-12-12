@@ -122,7 +122,7 @@ export default {
                     })
                     .then(response => {
                         console.log(response);
-                        this.$emit("updateEntry", 'post');
+                        this.$emit("re_get_mainly_posts");
                         this.input.body = null;
                         this.input.image = null;
                     })

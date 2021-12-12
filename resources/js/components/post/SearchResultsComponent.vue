@@ -22,7 +22,7 @@
                 v-bind:need_thread="true"
                 v-bind:search="true"
                 @igniteLightBox="showImages"
-                @updateEntry="getSearchedPosts"                
+                @re_get_mainly_posts="getSearchedPosts"                
             >
             </post-object-component>
         </div>
@@ -118,11 +118,8 @@ export default {
                     this.media = res.data;
                 });
         },
-        showImages(emitted_post_id) {
-            console.log('this is showImages');
-            let target_medium = this.media.find((medium) => medium.post_id === emitted_post_id);
-            let lightbox_index = this.media.indexOf(target_medium);
-            this.$refs.lightbox.showImage(lightbox_index);
+        showImages(emitted_lightbox_index) {
+            this.$refs.lightbox.showImage(emitted_lightbox_index);
         },
         exchangeUniqueWordListIntoAllKanaList(unique_word_list) {
             console.log('this is exchangeUniqueWordListIntoAllKanaList');
