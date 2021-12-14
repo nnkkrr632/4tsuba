@@ -14,14 +14,13 @@
         "laravel/framework": "^8.12",
         "laravel/sail": "^1.0.1",
         "laravel/sanctum": "^2.10",
-        "laravel/scout": "^8.3",
+        "laravel/scout": "^9.0",
         "laravel/telescope": "^4.6",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.2",
         "nunomaduro/collision": "^5.0",
         "predis/predis": "^1.1",
-        "rap2hpoutre/laravel-log-viewer": "^1.7",
-        "tamayo/laravel-scout-elastic": "^8.0"
+        "rap2hpoutre/laravel-log-viewer": "^1.7"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.3.3",
