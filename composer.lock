@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "504915bf243ada692bf5e6d421c7479a",
+    "content-hash": "d73076fa0b345f3eb334ceac70655e45",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1460,6 +1460,74 @@
                 }
             ],
             "time": "2021-10-06T17:43:30+00:00"
+        },
+        {
+            "name": "jeroen-g/explorer",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jeroen-G/Explorer.git",
+                "reference": "7a7f737b9e3caf9db9ece5f211068c1b2c574340"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jeroen-G/Explorer/zipball/7a7f737b9e3caf9db9ece5f211068c1b2c574340",
+                "reference": "7a7f737b9e3caf9db9ece5f211068c1b2c574340",
+                "shasum": ""
+            },
+            "require": {
+                "elasticsearch/elasticsearch": "^7.9",
+                "illuminate/support": "~7|~8",
+                "laravel/scout": "~8|~9",
+                "php": "^7.4|^8.0",
+                "webmozart/assert": "^1.9"
+            },
+            "require-dev": {
+                "infection/infection": "^0.20",
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "~6",
+                "phpunit/phpunit": "~9.0",
+                "symplify/easy-coding-standard": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeroenG\\Explorer\\ExplorerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeroenG\\Explorer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "EUPL-1.2"
+            ],
+            "authors": [
+                {
+                    "name": "Jeroen",
+                    "email": "jeroengjeroeng@gmail.com",
+                    "homepage": "https://jeroeng.dev"
+                }
+            ],
+            "description": "Next-gen Elasticsearch driver for Laravel Scout.",
+            "homepage": "https://jeroen-g.github.io/Explorer/",
+            "keywords": [
+                "elastic",
+                "elasticsearch",
+                "explorer",
+                "laravel",
+                "scout",
+                "search"
+            ],
+            "support": {
+                "issues": "https://github.com/Jeroen-G/Explorer/issues",
+                "source": "https://github.com/Jeroen-G/Explorer/tree/2.4.1"
+            },
+            "time": "2021-12-13T16:35:39+00:00"
         },
         {
             "name": "laravel/framework",
