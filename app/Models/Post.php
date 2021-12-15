@@ -5,14 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+//正確なファイルパス：vendor/laravel/scout/src/Searchable.php
 use Laravel\Scout\Searchable;
+//explorerパッケージ(ElasticSearchのためのパッケージ)を使用する
+use JeroenG\Explorer\Application\Explored;
 
 use Carbon\Carbon;
 
-class Post extends Model
+class Post extends Model implements Explored
 {
     use HasFactory;
     use SoftDeletes;
+    //Laravel Scoutの導入
+    //クラス内にuse Searchableを記述することで、メソッドによりポストを「mysql」にCRUDしたとき、
+    //「ElasticSearch」(scout driverに登録した検索エンジン)にも勝手にCRUDしてくれる
     use Searchable;
 
     protected $fillable = [
@@ -69,6 +75,7 @@ class Post extends Model
     {
         return $this->where('thread_id', $thread_id)->withTrashed()->count();
     }
+
     public function hiddenColumnsForDeletedPost()
     {
         return $this->makeHidden([
@@ -76,5 +83,21 @@ class Post extends Model
             'is_edited', 'likes_count', 'posted_by_mute_users', 'thread',
             'image', 'user', 'has_mute_words'
         ]);
+    }
+
+    //explorer
+    public function mappableAs(): array
+    {
+        return [
+            'id' => 'keyword',
+            'created_at' => 'date',
+            'updated_at' => 'date',
+            'deleted_at' => 'date',
+            'user_id' => 'keyword',
+            'thread_id' => 'keyword',
+            'displayed_post_id' => 'keyword',
+            'body' => 'text',
+            'is_edited' => 'boolean',
+        ];
     }
 }
