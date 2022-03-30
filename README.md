@@ -4,6 +4,8 @@
 
 #### URL: [https://4tsuba.site](https://4tsuba.site)
 
+※2022/03/30 公開停止
+
 #### twitter ぽく使える掲示板です。
 
 twitter や他の掲示板を参考に、こんな機能の掲示板があればと思いつくりました。  
